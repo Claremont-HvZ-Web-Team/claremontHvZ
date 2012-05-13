@@ -1,0 +1,3 @@
+<Response>
+	<Sms>{{ response }}</Sms>
+</Response>

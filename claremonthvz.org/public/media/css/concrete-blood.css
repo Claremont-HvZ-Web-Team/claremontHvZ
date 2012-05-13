@@ -1,0 +1,12 @@
+.foreground, .navbar, .navbar li, .background, body{
+    background-color: #000;
+    color: #FFF;
+}
+
+.selected {
+    background-color: #ef8930;
+}
+
+.simple {
+    background-color: white;
+}

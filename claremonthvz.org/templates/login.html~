@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+<form method="POST" action="/login/">
+	{% csrf_token %}
+	{{ form }}
+	<button type="button" onclick="login_auth()">Log In</button>
+</form>

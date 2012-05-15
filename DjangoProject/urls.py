@@ -2,10 +2,9 @@ from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-
-from settings import MEDIA_ROOT
-
 admin.autodiscover()
+
+#import DjangoProject.HvZ.views
 
 urlpatterns = patterns(
     '',
@@ -49,14 +48,13 @@ urlpatterns = patterns(
     (r'^status/(?P<category>[\w]+)/$','DjangoProject.HvZ.views.stats_category_view'),
     (r'^status/(?P<category>[\w]+)/(?P<specific>[\w]+)/$','DjangoProject.HvZ.views.stats_detail_view'),
 
-    # The following chunk is for development ONLY!
-    (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': MEDIA_ROOT}
-    ),
-
     # Uncomment the admin/doc line below to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
 )
+
+"""  
+old status
+"""

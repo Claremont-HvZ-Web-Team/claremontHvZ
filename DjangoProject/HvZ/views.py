@@ -813,10 +813,10 @@ def year_team_counts(humans, zombies):
 		  "zombies": zombies_per_year[y-y0]} for y in xrange(y0, yf)]
 
 def stats_home_view(request):
-	return stats_home(request, "stat_home.html")
+	return stats_home(request, "stats/stat_home.html")
 
 def stats_home_fast(request):
-	return stats_home(request, "stat_home_fast.html")
+	return stats_home(request, "stats/stat_home_fast.html")
 
 def stats_home(request, template):
 	g = get_current_game()
@@ -983,14 +983,14 @@ def stats_category_view(request,category):
 			player_list.append(pdata)
 
 	if category in ["school","dorm","year"]:
-		return render_to_response('stat_category.html',
+		return render_to_response('stats/stat_category.html',
 			{
 				"user":ui,
 				'data':data,
 			},
 			context_instance=RequestContext(request))
 	else:
-		return render_to_response('stat_team.html',
+		return render_to_response('stats/stat_team.html',
 			{
 				"user":ui,
 				'category':category,
@@ -1128,7 +1128,7 @@ def stats_detail_view(request,category,specific):
 			'o_time':m.time.isoformat(' ')
 		})
 
-	return render_to_response('stat_detail.html',
+	return render_to_response('stats/stat_detail.html',
 		{
 			"user": ui,
 			'category': cat,

@@ -1,5 +1,6 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
+import os
 import local_settings
 
 ### The following settings should all be defined in a file called
@@ -7,7 +8,10 @@ import local_settings
 
 # The absolute root of your app's home directory, something like
 # "/home/claremontHvZ/claremonthvz.org/"
-LOCAL_ROOT = local_settings.LOCAL_ROOT
+PROJECT_PATH = local_settings.PROJECT_PATH
+
+def absolute_path(path):
+    return os.path.join(PROJECT_PATH, path)
 
 # Do you want the site to display a bunch of information when
 # something goes wrong? Either True or False.
@@ -94,7 +98,7 @@ LANGUAGE_CODE = local_settings.LANGUAGE_CODE
 
 ### We're done here! ###
 
-CACHE_BACKEND = "file://" + LOCAL_ROOT + "cache"
+CACHE_BACKEND = "file://" + absolute_path('cache')
 
 MANAGERS = ADMINS
 
@@ -110,7 +114,7 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = LOCAL_ROOT + 'public/media'
+MEDIA_ROOT = absolute_path('public/media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -120,7 +124,7 @@ MEDIA_URL = '/media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/admin-media/'
 
 # List of callables that know how to import templates from various sources.
 
@@ -150,10 +154,11 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'DjangoProject.urls'
 
 TEMPLATE_DIRS = (
-    LOCAL_ROOT + 'templates',
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    absolute_path('templates'),
+    # Put strings here, like "/home/html/django_templates" or
+    # "C:/www/django/templates".  Always use forward slashes, even on
+    # Windows.  Don't forget to use absolute paths, not relative
+    # paths.
 )
 
 INSTALLED_APPS = (

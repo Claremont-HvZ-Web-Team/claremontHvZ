@@ -1,7 +1,0 @@
-<div id="login_error" class="ui-state-highlight"></div>
-<form method="POST" action="/login/">
-	{% csrf_token %}
-	{{ form }}
-	<button type="button" onclick="login_auth()">Log In</button>
-	<button type="button" onclick="forgot_password()">Forgot Password</button>
-</form>

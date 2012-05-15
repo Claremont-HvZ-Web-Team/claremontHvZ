@@ -94,7 +94,7 @@ LANGUAGE_CODE = local_settings.LANGUAGE_CODE
 
 ### We're done here! ###
 
-CACHE_BACKEND = LOCAL_ROOT + "cache"
+CACHE_BACKEND = "file://" + LOCAL_ROOT + "cache"
 
 MANAGERS = ADMINS
 
@@ -150,7 +150,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'DjangoProject.urls'
 
 TEMPLATE_DIRS = (
-    '/home/claremontHvZ/claremonthvz.org/templates',
+    LOCAL_ROOT + 'templates',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.

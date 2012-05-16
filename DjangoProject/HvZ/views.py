@@ -9,6 +9,7 @@ from django.core.mail import send_mail
 from random import randint
 from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
+from django.db import connection
 
 def get_current_game():
 	''' returns an instance of the most recent game
@@ -23,73 +24,76 @@ def get_team(p):
 	else:
 		return "N"
 
-def eat(eater,eaten,time=datetime.today(),location=None,description=None):
-        g = get_current_game()
-        #double check to make sure meal is valid
+def check_eat(eater,eaten,time=datetime.today()):
+	g = get_current_game()
         errors = ""
+
+	#is eater playing in this game
+	eater_reg_list = Registration.objects.filter(player=eater,game=g)
+	if eater_reg_list.exists():
+	    eater_reg = eater_reg_list.get()
+	else:
+	    errors += "You have to be playing to eat someone!\n"
+	
+	#is eater a zombie
+	if eater_reg.team=="Z":
+	    print "The eater is a zombie, all is well\n"
+	else:
+	    errors += "Don't be a cannibal!\n"
+	
+	#is eaten playing in this game
+	eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
+	if eaten_reg_list.exists():
+	    eaten_reg = eaten_reg_list.get()
+	else:
+	    errors += "You can only eat the brains of people playing this game!\n"
+	
+	#is eaten a human
+	if eaten_reg.team=="H":
+	    print "The eaten is a human, all is well"
+	else:
+	    errors += "Eating zombie brains doesn't help!\n"
+	
+	#is eater also eaten
+	if eaten_reg==eater_reg:
+	    errors += "You can't eat yourself!\n"
+	else:
+	    print "You aren't eating yourself, all is well"
+
+        #is meal in the future
+	if time > datetime.today():
+	    errors += "That time is in the future!\n"
 
         #does eater have too many bad attempts
         if eater.bad_meals > 9:
-            errors += "You have attempted too many bad meals. Please see a moderator immediately."
-        else:
+            errors = "You have attempted too many bad meals. Please see a moderator immediately."
 
-	        #is eater playing in this game
-	        eater_reg_list = Registration.objects.filter(player=eater,game=g)
-	        if eater_reg_list.exists():
-	            eater_reg = eater_reg_list.get()
-	        else:
-	            errors += "You have to be playing to eat someone!\n"
-	
-	        #is eater a zombie
-	        if eater_reg.team=="Z":
-	            print "The eater is a zombie, all is well\n"
-	        else:
-	            errors += "Don't be a cannibal!\n"
-	
-	        #is eaten playing in this game
-	        eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
-	        if eaten_reg_list.exists():
-	            eaten_reg = eaten_reg_list.get()
-	        else:
-	            errors += "You can only eat the brains of people playing this game!\n"
-	
-	        #is eaten a human
-	        if eaten_reg.team=="H":
-	            print "The eaten is a human, all is well"
-	        else:
-	            errors += "Eating zombie brains doesn't help!\n"
-	
-	        #is eater also eaten
-	        if eaten_reg==eater_reg:
-	            errors += "You can't eat yourself!\n"
-	        else:
-	            print "You aren't eating yourself, all is well"
+	return errors
 
-               #is meal in the future
-	        if time > datetime.today():
-	            errors += "That time is in the future!\n"
+def eat(eater,eaten,time=datetime.today(),location=None,description=None):
+        g = get_current_game()
+        #double check to make sure meal is valid
+        errors = check_eat(eater,eaten,time=datetime.today())
 	
-	        #save the meal
-	        if errors == "":
-	            Meal(eater=eater,eaten=eaten,game=g,time=time,location=location,description=description).save()
+	if errors != "":
+		eater.bad_meals += 1
+	        eater.save()
+		return errors
+	#save the meal
+	Meal(eater=eater,eaten=eaten,game=g,time=time,location=location,description=description).save()
 	
-	            #turn eaten into zombie
-	            eaten_reg.team="Z"
+	#turn eaten into zombie
+	eaten_reg.team="Z"
 	
-	            #change eaten's upgrade
-	            #if eaten_reg is not Null and eaten_reg.upgrade.size:
-	            #eaten_reg.upgrade = "Ex-"+eaten_reg.upgrade
+	#change eaten's upgrade
+	#if eaten_reg is not Null and eaten_reg.upgrade.size:
+	#eaten_reg.upgrade = "Ex-"+eaten_reg.upgrade
 	
-	            #save changes to eaten
-	            eaten_reg.save()
+	#save changes to eaten
+	eaten_reg.save()
 
-	            #return all clear
-	            errors = "You have eaten "+str(eaten)+"!\n"
-	        else:
-	            eater.bad_meals += 1
-	            eater.save()
-	
-	        return errors
+	#return all clear
+	return "You have eaten "+str(eaten)+"!\n"
 
 def anonymous_info():
 	return {"username": "AnonymousUser",
@@ -331,19 +335,12 @@ def logout_view(request):
 	from django.contrib.auth import logout
 	if request.method == 'POST':
 		logout(request)
-		return render_to_response('logout.html',
-			{
-				"worked":True,
-			},
-			context_instance=RequestContext(request),
-		)
-	else:
-		return render_to_response('logout.html',
-			{
-				"worked": False
-			},
-			context_instance=RequestContext(request),
-		)
+	return render_to_response('logout.html',
+		{
+			"worked": request.method == 'POST'
+		},
+		context_instance=RequestContext(request),
+	)
 
 def twilio_call_view(request):
 	od = get_on_duty()	
@@ -762,7 +759,23 @@ def meal_histograms(g):
 		
 	return (per_hour, upto_hour)
 
-def school_team_counts(humans, zombies):
+def get_stat(game, constraints):
+	# We're not using a QuerySet because they don't support joins (not that I could find, anyway).
+	# This could (should) be improved by using 'group by' for sets of stats. That will take some
+	# annoying reformatting to be useful, though.
+	baseQuery = "select count(*) from HvZ_registration, HvZ_player where HvZ_player.id=player_id and HvZ_registration.game_id="
+	# Yes, I know you're thinking 'Security risk!!', but all strings passed to getStat will be hardcoded SQL
+	# or autogenerated id's, so there shouldn't be any injection opportunities.
+	query = baseQuery + str(game.id)
+	while len(constraints) != 0:
+		query += ' and ' + constraints.pop()
+
+	cursor = connection.cursor()
+	cursor.execute(query)
+	results = cursor.fetchall()
+	return int(results[0][0])
+
+def school_team_counts(game):
 	"""Get the number of humans and zombies per school."""
 	all_schools = School.objects.all()
 
@@ -770,41 +783,20 @@ def school_team_counts(humans, zombies):
         for s in all_schools:
 		school_scores[s] = {
 			'name':s.name,
-			'humans':0,
-			'zombies':0
+			'humans': get_stat(game, ["team='H'", "school_id="+str(s.id)]) ,
+			'zombies': get_stat(game, ["team='Z'", "school_id="+str(s.id)])
 			}
-            
-	for h in humans.select_related("player__school"):
-		school_scores[h.player.school]['humans'] += 1
-
-	for z in zombies.select_related("player__school"):
-		school_scores[z.player.school]['zombies'] += 1
-
 	return school_scores.values()
 
-
-def year_team_counts(humans, zombies):
+def year_team_counts(humans, zombies, game):
 	"""Get the number of humans and zombies per year."""
 	# We should do something better than this with our constants!
+	# For some reason, this function used to return nonzero graduates for 2019. That's been fixed.
 	y0 = 2012
 	yf = 2020
-
-	humans_per_year = [0] * (yf - y0)
-	zombies_per_year = [0] * (yf - y0)
-
-	for h in humans:
-	    if h.player.grad_year:
-		i = h.player.grad_year - y0
-		humans_per_year[i] += 1
-
-	for z in zombies:
-	    if z.player.grad_year:
-		i = z.player.grad_year - y0
-		zombies_per_year[i] += 1
-
 	return [{"year": y,
-		  "humans": humans_per_year[y-y0],
-		  "zombies": zombies_per_year[y-y0]} for y in xrange(y0, yf)]
+		  "humans": get_stat(game, ["team='H'", "grad_year="+str(y)]),
+		  "zombies": get_stat(game, ["team='Z'", "grad_year="+str(y)])} for y in xrange(y0, yf)]
 
 def stats_home_view(request):
 	return stats_home(request, "stats/stat_home.html")
@@ -819,9 +811,9 @@ def stats_home(request, template):
 	humans = all.filter(team="H")
 	zombies = all.filter(team="Z")
 
-	schools = school_team_counts(humans, zombies)
+	schools = school_team_counts(g)
 
-	years = year_team_counts(humans, zombies)
+	years = year_team_counts(humans, zombies, g)
 
 	all_dorms = Building.objects.filter(building_type="D")
 	dorms = dorm_populations(all_dorms, humans, zombies)

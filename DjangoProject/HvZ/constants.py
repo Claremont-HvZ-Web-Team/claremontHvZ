@@ -61,14 +61,14 @@ DAYS_TT = (
 )
 
 LOCATION_LEGEND = {
-        "S": "Start",
+        "S": "Start at",
         "T": "Do task at",
         "F": "Find something at",
         "G": "Go to",
         "E": "Escort to",
-        "R": "Respawn",
-        "C": "Complete mission"
-    }
+        "R": "Respawn at",
+        "C": "Complete mission at"
+}
 
 LOCATION_LEGEND_TT = (
     ("S","Start"),
@@ -94,24 +94,28 @@ MISSION_LEGEND_TT = (
     ("Y","Legendary"),
 )
 
+TIME_FORMAT = "%a %I:%M %p"
+
 TIMES = {
-    "E":"Early Morning (Before 8 AM)",
+    "E":"Early Morning (6-8 AM)",
     "M":"Morning (8-11 AM)",
     "L":"Lunch (11 AM-1 PM)",
     "A":"Afternoon (1-3 PM)",
     "B":"Before Dinner (3-5 PM)",
     "D":"Dinner (5-7 PM)",
     "I":"Mission (7-10 PM)",
+    "N":"Night (10 PM-6 AM)", 
 }
 
 TIMES_TT = (
-    ("E","Early Morning (Before 8 AM)"),
+    ("E","Early Morning (6-8 AM)"),
     ("M","Morning (8-11 AM)"),
     ("L","Lunch (11 AM-1 PM)"),
     ("A","Afternoon (1-3 PM)"),
     ("B","Before Dinner (3-5 PM)"),
     ("D","Dinner (5-7 PM)"),
-    ("I","Mission (7-9 PM)"),
+    ("I","Mission (7-10 PM)"),
+    ("N","Night (10 PM-6 AM)"),
 )
 
 VICTORY = {
@@ -121,6 +125,15 @@ VICTORY = {
     "D":  "Draw",
     "ZP": "Zombie Partial",
     "ZF": "Zombie Full",
+}
+
+VICTORY_ORDER = {
+    "N":  0,
+    "HF": 1,
+    "HP": 2,
+    "D":  3,
+    "ZP": 4,
+    "ZF": 5,
 }
 
 VICTORY_TT = (

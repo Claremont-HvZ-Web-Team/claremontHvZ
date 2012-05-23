@@ -152,6 +152,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'DjangoProject.urls'
@@ -177,4 +178,5 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     # 'tinymce',
     'HvZ',
+    'django.contrib.flatpages',
 )

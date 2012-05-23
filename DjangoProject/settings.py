@@ -112,6 +112,9 @@ USE_I18N = False
 # calendars according to the current locale
 USE_L10N = True
 
+#This is a new setting in Django 1.4. If you use timezone aware shenanigans everything breaks.
+USE_TZ = False
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = absolute_path('public/media/')

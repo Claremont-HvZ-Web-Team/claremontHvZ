@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 
 from datetime import datetime,timedelta
 
@@ -307,8 +309,8 @@ class Plot(models.Model):
 class Player(models.Model):
     """extra information about users that doesn't involve messing with the django users model"""
     user = models.OneToOneField(User)
-    school = models.ForeignKey(School,blank=True)
-    dorm = models.ForeignKey(Dorm,blank=True)
+    school = models.ForeignKey(School,blank=True,null=True)
+    dorm = models.ForeignKey(Dorm,blank=True,null=True)
     class_year = models.CharField(max_length=1,choices=CLASS_YEAR_TT,blank=True)
     cell = models.DecimalField(max_digits=10,decimal_places=0,blank=True,null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0)
@@ -388,8 +390,8 @@ class Character(models.Model):
     meals = models.PositiveSmallIntegerField(default=0,blank=False)
 
     #These 3 fields are redundant most of the time, but are useful for archiving games
-    lives_in = models.ForeignKey(Dorm)
-    goes_to = models.ForeignKey(School)
+    lives_in = models.ForeignKey(Dorm,blank=True,null=True)
+    goes_to = models.ForeignKey(School,blank=True,null=True)
     year = models.CharField(max_length=1,choices=CLASS_YEAR_TT,blank=True,null=True)
     
     def __unicode__(self):
@@ -451,23 +453,28 @@ class FeedCode(models.Model):
     def get_character(self):
         """Get the name of the person the feed code is for or "Nobody" if it isn't assoicated with a player."""
         if self.character is None:
-            return "Nobody"
+            return "Leftover Brains"
         else:
             return str(self.character)
 
     def __unicode__(self):
         """Returns a string representation of the meal"""
-        return "%s's code: %s"%(self.get_character(),code)        
+        return "%s's code: %s"%(self.get_character(),self.code)        
 
 class Meal(models.Model):
     """Meals are what happens when one player eats another"""
     #A bunch of validation should be added to this...
     eater = models.ForeignKey(Character,related_name="eater")
-    eaten = models.ForeignKey(Character,related_name="eaten")
+    eaten = models.ForeignKey(Character,related_name="eaten",blank=True,null=True)
     feed = models.ForeignKey(FeedCode)
+    game = models.ForeignKey(Game)
     time = models.DateTimeField()
-    location = models.ForeignKey(Building,blank=True,null=True)
+    location = models.ForeignKey(Building,blank=True)
     description = models.TextField(blank=True,null=True)
+
+    def get_eaten(self):
+        """Returns the name of the eaten."""
+        return self.feed.get_character()
 
     def __unicode__(self):
         """Returns a string representation of a meal"""
@@ -590,6 +597,7 @@ class Achievement(models.Model):
     """Achievements are instances of characters earning awards"""
     character = models.ForeignKey(Character)
     award = models.ForeignKey(Award)
+    description = models.CharField(max_length=255)
     earned_time = models.DateTimeField()
 
     def __unicode__(self):
@@ -605,14 +613,16 @@ class MealsPerHour(models.Model):
     start = models.DateTimeField(blank=False)
     meals = models.PositiveSmallIntegerField(blank=False)
 
-    def increment(self):
-        """Adds one meal to the number of meals that occured that hour"""
-        self.meals += 1
+    def recount(self):
+        """Counts the number of meals again in case there has been a change"""
+        mc = Meal.objects.filter(game=self.game,time__gte=self.start,time__lt=self.start+timedelta(hours=1)).count()
+        self.meals = mc
         self.save()
 
     def __unicode__(self):
         """Return a string representation of the number of meals per hour"""
-        return "%s in %s has %s meals"%(self.start.strftime("%a %I %p"),str(self.game),str(start.meals))
+        dt = self.start
+        return "%s in %s has %s meals"%(dt,str(self.game),str(self.meals))
 
 class MealsPerBuilding(models.Model):
     """MealsPerBuilding is the number of meals that have occured at a given location over the course of a game. It is automatically updated when a meal is entered."""
@@ -620,14 +630,15 @@ class MealsPerBuilding(models.Model):
     location = models.ForeignKey(Building,blank=False)
     meals = models.PositiveSmallIntegerField(blank=False)
 
-    def increment(self):
-        """Adds one meal to the number of meals that occured that hour"""
-        self.meals += 1
+    def recount(self):
+        """Counts the number of meals again in case there has been a change"""
+        mc = Meal.objects.filter(game=self.game,location=self.location).count()
+        self.meals = mc
         self.save()
 
     def __unicode__(self):
         """Returns a string representation of the number of meals a building has accrued in a game"""
-        return "%s has %s meals in %s"%(str(self.location), str(self.meals), str(game))
+        return "%s has %s meals in %s"%(str(self.location), str(self.meals), str(self.game))
 
 ########
 # Misc #
@@ -646,62 +657,70 @@ class OnDuty(models.Model):
 ####################
 # Signal Functions #
 ####################
+
+@receiver(post_save, sender=Dorm)
 def add_dorm_kind(sender, instance, signal, *args, **kwargs):
     """Add a building kind entry for dorms when someone adds a new dorm"""
-    k = BuildingKind(building=instance,kind="D")
-    k.save()
+    bk = BuildingKind.objects.filter(building=instance,kind="D").exists()
+    if not bk:
+        k = BuildingKind(building=instance,kind="D")
+        k.save()
 
+@receiver(post_save, sender=Academic)
 def add_academic_kind(sender, instance, signal, *args, **kwargs):
     """Add a building kind entry for academic buildings when someone adds a new academic building"""
-    k = BuildingKind(building=instance,kind="C")
-    k.save()
+    bk = BuildingKind.objects.filter(building=instance,kind="C").exists()
+    if not bk:
+        k = BuildingKind(building=instance,kind="C")
+        k.save()
 
+@receiver(pre_save, sender=MealsPerHour,dispatch_uid="round hour once")
+def round_hour_down(sender, instance, signal, *args, **kwargs):
+    print (instance.start)
+    instance.start = instance.start-timedelta(minutes=instance.start.minute,seconds=instance.start.second,microseconds=instance.start.microsecond)
+    print (instance.start)
+
+@receiver(post_save, sender=Meal)
 def add_hour_meal(sender, instance, signal, *args, **kwargs):
     """Add a meal to the MealsPerHour when someone adds a meal"""
-    meals = MealsPerHour.objects.filter(game=instance.game,start=instance.time-timedelta(minutes=instance.time.minutes,seconds=instance.time.seconds))
+    meals = MealsPerHour.objects.filter(game=instance.game,start=instance.time)
     if len(meals)>0:
         m = meals[0]
     else:
-        m = MealsPerHour(game=instance.game,start=instance.time-timedelta(minutes=instance.time.minutes,seconds=instance.time.seconds))
-    m.increment()
+        m = MealsPerHour(game=instance.game,start=instance.time-timedelta(minutes=instance.time.minute,seconds=instance.time.second))
+    m.recount()
 
+@receiver(post_save, sender=Meal)
 def add_building_meal(sender, instance, signal, *args, **kwargs):
     """Add a meal to the MealsPerBuilding when someone adds a meal"""
-    meals = MealsPerBuilding.objects.filter(game=instance.game,building=instance.location)
+    meals = MealsPerBuilding.objects.filter(game=instance.game,location=instance.location)
     if len(meals)>0:
         m = meals[0]
     else:
-        m = MealsPerBuilding(game=instance.game,building=instance.location)
-    m.increment()
+        m = MealsPerBuilding(game=instance.game,location=instance.location)
+    m.recount()
 
+@receiver(post_save, sender=Character)
 def change_team_visibility(sender, instance, signal, *args, **kwargs):
     """Update the visibility of anything on a player's profile to the team they are currently on when they switch teams"""
     prof = PlayerProfile.objects.filter(player=instance.player)
-    if instance.team=="Z":
-        if prof.show_school=="H":
-            prof.show_school="Z"
-        if prof.show_dorm=="H":
-            prof.show_dorm="Z"
-        if prof.show_year=="H":
-            prof.show_year="Z"
-        if prof.show_cell=="H":
-            prof.show_cell="Z"
-    else:
-        if prof.show_school=="Z":
-            prof.show_school="H"
-        if prof.show_dorm=="Z":
-            prof.show_dorm="H"
-        if prof.show_year=="Z":
-            prof.show_year="H"
-        if prof.show_cell=="Z":
-            prof.show_cell="H"
-    prof.save()
-    
-######################
-# Signal Connections #
-######################
-post_save.connect(add_dorm_kind,sender=Dorm)
-post_save.connect(add_academic_kind,sender=Academic)
-post_save.connect(add_hour_meal,sender=Meal)
-post_save.connect(add_building_meal,sender=Meal)
-post_save.connect(change_team_visibility,sender=Character)
+    if prof:
+        if instance.team=="Z":
+            if prof.show_school=="H":
+                prof.show_school="Z"
+            if prof.show_dorm=="H":
+                prof.show_dorm="Z"
+            if prof.show_year=="H":
+                prof.show_year="Z"
+            if prof.show_cell=="H":
+                prof.show_cell="Z"
+        else:
+            if prof.show_school=="Z":
+                prof.show_school="H"
+            if prof.show_dorm=="Z":
+                prof.show_dorm="H"
+            if prof.show_year=="Z":
+                prof.show_year="H"
+            if prof.show_cell=="Z":
+                prof.show_cell="H"
+        prof.save()

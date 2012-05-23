@@ -1,0 +1,141 @@
+##################
+# Building Stuff #
+##################
+
+School 
+*just a list of the 7Cs plus Off Campus/Non Student
+*It's used to indicate where people go or what building something belongs to
+
+Building
+*list of all the buildings and landmarks on campus based on the maps
+*added a space for nicknames (so people know that the Coop and SCC are the same or Jungel-Wenklers and JGW)
+*lat/lng are so that we can put the point on google maps. That means that latitude is between between -90 and +90 and longitude is between 0 and 180.
+*I think lat/lng are actually in the current DB backwards. I can never keep them straight.
+
+Building Kind
+*1:N field for types of buildings
+*Historically we've just allowed 1 type of building and just gave priority to dorms if it was multiple types.
+*That is messy, so we are going to do it correctly
+
+Dorm
+*A subclass of buidling
+*It keeps a count of residents to reduce DB calls
+*It automatically creates a building kind entry for it as a dorm when you save it
+
+Academic
+*A subclass of building
+*It keeps track of how many people have class in it at various times to reduce DB calls
+*It automatically creates a building kind entry for it as an academic building when you save it.
+*As far as I can tell, you can't create a building with two subclasses in the UI, so places like oldenborg will have to be done manually
+
+###############
+# Game Things #
+###############
+
+Game
+*Games are the actual events that we run
+*start date is mostly important so the DB knows when to start the meals per hour clock
+
+Rule
+*Rules are instances of individual rules
+*title and description are always visible
+*examples, youtube, image, and location are hidden until someone clicks on them
+*only buildings should have a location
+*the image does appear by default for classes
+
+#################
+# Mission Stuff #
+#################
+
+Mission
+*Events that happen during game days
+*lots of things have human_something or zombie_something because the two sides get different versions
+*get_title, story, reward, and sms all take visibility into account (so we don't have leaks like last game)
+
+MissionPic
+*Mission Pics are pictures that hook up to missions
+*Mission Pics have visibility settings independent of the mission's visibility setting because sometimes we show humans and zeds different versions of things
+
+MissionPoint
+*Mission Points are so that we can mark off important locations on a map
+*Historically we haven't done this at all, but it might be worth adding since not everyone knows the 5Cs all that well
+*It lets you indicate what kind of objective happens at the point
+
+Plot
+*Story stuff that isn't related to missions
+*So far, we've had almost none of it and nobody looked at the timeline page anyway.
+*To be visible, the story must both have a visibility that says they can see it and it must be after the reveal time. Reveal time exists so that we can set things to automatically appear.
+*This isn't divided into human and zombie versions because there won't necessarily be a 1:1 ratio of human to zombie stories added
+
+################
+# Player Stuff #
+################
+
+Player
+*Player represents an actual real world person
+*Player contains extra fields that should be linked to users, but without actually touching users
+*This is the way that django recommends adding extra fields to users
+*bad_posts and bad_meals are how we moderate players abusing the systems we have
+
+PlayerSetting
+*Player settings are any customizations a player wants to make to how the website or SMS interact with them
+*Right now it only includes options to customize when they get text messages
+*Historically, these settings have never actually been used
+
+PlayerProfile
+*Player profiles are for the displays people have on the website
+*They get two images to upload (a human one and a zombie one) that change based on the status of their current character
+*The visibility settings indicate what biographic information we have on them should be visible and to whom. These fields automatically change when a a player's team changes.
+
+###################
+# Character Stuff #
+###################
+# This is the section I'm most unsure about #
+
+Character
+*Characters are the personas that our players LARP as
+*This used to be called registrations
+*It includes fields for dorm, school, and class year so that we can archive games
+*Can eat and increment bad meals are to check if a player has been abusing the system trying to eat. Bad posts are the same but for the forum.
+
+FeedCode
+*Feed codes are the codes that people have that represent brains
+*It's separated out so that we have the freedom to do more with them than just have 1:1
+*When pulled out like this we can have the following
+**meals that don't make you a zombie (extra lives)
+**meals that don't link to anyone (so they can be rewards)
+**meals that are worth more than others (so we can create higher value targets)
+
+Meal
+*Meals are how one player can eat another
+*They connect a player to a feed code, which only indirectly leads to a player
+*To avoid constantly using select_related (and underlying joins) I've included an extra field for eaten, even though it isn't strictly necessary
+*Only have eaten equal to none for bonus meals, so we can easily tell whether we should follow a link back.
+
+Classes
+*Classes are a way people can indicate when they'll be in what buildings
+*They are a new feature that some people said they wanted but I doubt will be used since it'll be difficult to put in the system
+
+###############
+# Squad Stuff #
+###############
+
+Squad
+*Squads are groups of characters
+*I linked it to characters so people are free to be in different squads each game
+
+Squad Member
+*Squad members are how we put characters into squads
+*People can only be in one squad per game
+*We might want to set up options for automatically removing someone from a squad or making them "ex" members upon being eaten
+*Approve_new is probably going to be used for all moderation activities for a squad. I just can't think of any at the moment.
+
+###############
+# Forum Stuff #
+###############
+
+Forum Thread
+*Threads are top level elements on a forum
+
+Forum Post
+*Posts are responses on a thread

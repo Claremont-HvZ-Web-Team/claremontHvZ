@@ -53,6 +53,12 @@ MISSION_LEGEND = (
     ("Y","Legendary"),
 )
 
+#Teams are the sides playing the game.
+TEAMS = (
+    ("H","Humans"),
+    ("Z","Zombies")
+)
+
 #Time format is the standard time format used on most of the site. An example is Tue 9:22 PM.
 TIME_FORMAT = "%a %I:%M %p"
 

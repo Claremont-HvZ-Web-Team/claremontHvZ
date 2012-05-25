@@ -3,3 +3,5 @@ cache
 core
 local_settings.py
 *.pyc
+reset.sql
+*_old.py

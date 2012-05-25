@@ -4,8 +4,6 @@ from django.contrib import admin
 admin.site.register(School)
 admin.site.register(Building)
 admin.site.register(BuildingKind)
-admin.site.register(Dorm)
-admin.site.register(Academic)
 admin.site.register(Game)
 admin.site.register(Rule)
 admin.site.register(MissionStory)

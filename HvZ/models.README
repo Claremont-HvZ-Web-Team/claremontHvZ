@@ -136,6 +136,33 @@ Squad Member
 
 Forum Thread
 *Threads are top level elements on a forum
+*Threads determine visibility of all their children
 
 Forum Post
 *Posts are responses on a thread
+*Right now we don't have it set up to allow posts in response to other posts even though some people requested that
+
+################
+# Achievements #
+################
+# This is another section that may need to be rethought #
+
+Award
+*Awards are things that people can earn in a game
+*Multiple people can get the same award
+*People can get multiple awards
+*The description is an overview of the award
+
+Achievement
+*Achievements are instances of characters earning an award
+*The description field here is for how they earned that award
+
+###############################
+# Efficiency Stuff for Graphs #
+###############################
+# I would like feedback from someone who knows what they are doing on here #
+
+Meals Per Hour
+*A count for the number of meals that maps to an hour
+*It recalculates this number every time a meal is added. I used to have it increment, but then I remembered that sometimes meals are changed, not just created.
+

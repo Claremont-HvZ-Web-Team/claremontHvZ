@@ -112,9 +112,6 @@ USE_I18N = False
 # calendars according to the current locale
 USE_L10N = True
 
-#This is a new setting in Django 1.4. If you use timezone aware shenanigans everything breaks.
-USE_TZ = False
-
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = absolute_path('public/media/')
@@ -155,7 +152,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
-ROOT_URLCONF = 'DjangoProject.urls'
+ROOT_URLCONF = 'Django.urls'
 
 TEMPLATE_DIRS = (
     absolute_path('templates'),
@@ -180,3 +177,8 @@ INSTALLED_APPS = (
     'HvZ',
     'django.contrib.flatpages',
 )
+
+#Django 1.4 Stuff
+USE_TZ = local_settings.USE_TZ
+STATIC_ROOT = local_settings.STATIC_ROOT
+STATIC_URL = local_settings.STATIC_URL

@@ -45,7 +45,7 @@ class BuildingKind(models.Model):
 
     def __unicode__(self):
         """Return a string representation of the building's kind."""
-        return "%s as a %s"%(self.building.name, self.get_kind())
+        return "%s as a %s"%(self.building.name, self.get_kind_display())
 
 ###############
 # Game Things #
@@ -57,10 +57,12 @@ class Game(models.Model):
     def __unicode__(self):
         """Return a string representation of the game"""
         if self.start_date.month<6:
-            return "Spring %s"%(str(self.start_date.year)[-2:])
+            return "Spring '%s"%(str(self.start_date.year)[-2:])
         else:
-            return "Fall %s"%(str(self.start_date.year)[-2:])
+            return "Fall '%s"%(str(self.start_date.year)[-2:])
 
+    def get_current(self):
+        return Game.objects.order_by("-start_date")[0]
 
 class Rule(models.Model):
     """Rules are each individual rule in the game"""
@@ -74,7 +76,7 @@ class Rule(models.Model):
     category= models.CharField(max_length=1,choices=CATS, help_text="Which basic kind of rule is it?")
     examples = models.TextField(blank=True, help_text="Specific details, examples, clarifications, or exceptions related to the rule that won't come up often.")
     youtube = models.URLField(verify_exists=True, blank=True, help_text="A link to a youtube video of the rule.")
-    image = models.ImageField(upload_to="img/rule/", blank=True, help_text="A picture, diagram, graph, or photo of the rule.")
+    image = models.ImageField(upload_to="rule/", blank=True, help_text="A picture, diagram, graph, or photo of the rule.")
     location = models.ForeignKey(Building, blank=True, null=True, help_text="If the rule is about a single location, include it here.")
     priority = models.PositiveSmallIntegerField(default=0, help_text="Rules with a higher priority appear earlier in the list.")
 
@@ -94,6 +96,10 @@ class MissionStory(models.Model):
     rules = models.TextField(blank=True)
     reward = models.TextField(blank=True)
     SMS = models.CharField(max_length=140,blank=True)
+
+    def __unicode__(self):
+        """Return a string representation of a story"""
+        return str(self.title)
     
 
 class Mission(models.Model):
@@ -160,13 +166,22 @@ class Mission(models.Model):
 
     def __unicode__(self):
         """Returns a string representation of the game"""
-        return "%s: %s/%s" % (self.game, self.human.title, self.zombie.title)
+        if self.human:
+            ht = self.human.title
+        else:
+            ht="No Human Title"
+        if self.zombie:
+            zt=self.zombie.title
+        else:
+            zt="No Zombie Title"
+            
+        return "%s: %s/%s" % (self.game, ht, zt)
 
 class MissionPic(models.Model):
     """MissionPics are how you store pictures for missions"""
     mission = models.ForeignKey(Mission)
     title = models.CharField(max_length=256)
-    image = models.ImageField(upload_to="img/mission/")
+    image = models.ImageField(upload_to="mission/")
     visibility = models.CharField(max_length=1, choices=VISIBILITY)
 
     def __unicode__(self):
@@ -182,7 +197,7 @@ class MissionPoint(models.Model):
 
     def __unicode__(self):
         """Returns a string represntation of the mission point."""
-        return "%s %s for %s"%(self.get_kind(), str(self.location), str(self.mission))
+        return "%s %s for %s"%(self.get_kind_display(), str(self.location), str(self.mission))
 
 class Plot(models.Model):
     """Plots are story elements that are not part of missions"""
@@ -256,8 +271,8 @@ class PlayerCellSetting(models.Model):
 class PlayerProfileSetting(models.Model):
     """Player profile information"""
     player = models.OneToOneField(Player)
-    human_pic = models.ImageField(upload_to="img/profile/", blank=True)
-    zombie_pic = models.ImageField(upload_to="img/profile/", blank=True)
+    human_pic = models.ImageField(upload_to="human profile/", blank=True)
+    zombie_pic = models.ImageField(upload_to="zombie profile/", blank=True)
     bio = models.TextField(blank=True)
 
     #visibility related settings
@@ -336,7 +351,7 @@ class FeedCode(models.Model):
 
     def __unicode__(self):
         """Returns a string representation of the meal"""
-        return "%s's code: %s"%(self.get_character(),self.code)        
+        return "%s's code: %s"%(self.character,self.code)        
 
 class Meal(models.Model):
     """Meals are what happens when one player eats another"""
@@ -359,14 +374,14 @@ class Meal(models.Model):
 class Classes(models.Model):
     """Classes are character enrollment in courses during a game. It exists so they can coordinate arriving and leaving in groups."""
     character = models.ForeignKey(Character)
-    classroom = models.ForeignKey(Building)
+    building = models.ForeignKey(Building)
     day = models.CharField(max_length=1, choices=DAYS)
     arrive = models.CharField(max_length=1, choices=TIMES)
     leave = models.CharField(max_length=1, choices=TIMES)
 
     def __unicode__(self):
         """Returns a string representation of the person in class"""
-        return str(self.character)+" is in "+str(self.classroom)+" on "+self.get_day()+" from "+self.get_arrive()+" until "+self.get_leave()
+        return str(self.character)+" is in "+str(self.classroom)+" on "+self.get_day_display()+" from "+self.get_arrive_display()+" until "+self.get_leave_display()
 
 class MissionAttendance(models.Model):
     character = models.ForeignKey(Character)
@@ -381,7 +396,7 @@ class Squad(models.Model):
     name = models.CharField(max_length=255);
     game = models.ForeignKey(Game)
     description = models.TextField()
-    icon = models.ImageField(upload_to="icons/squads/", blank=True)
+    icon = models.ImageField(upload_to="squads/", blank=True)
 
     def __unicode__(self):
         """Returns a string representation of the squad"""
@@ -445,7 +460,7 @@ class Award(models.Model):
     """Awards are things that characters can earn over the course of the game. Some are game specific, others are not."""
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=255, blank=True)
-    icon = models.ImageField(upload_to="icons/awards/", blank=True)
+    icon = models.ImageField(upload_to="awards/", blank=True)
 
     def __unicode__(self):
         """Return a string representation of an award"""
@@ -499,10 +514,9 @@ class MealsPerBuilding(models.Model):
 
 class ClassAttendance(models.Model):
     """Class Attendance is the number of students enrolled in a class in a building for various times a day during a given game"""
-    #This still needs an associated signal function.
     building = models.ForeignKey(Building)
     game = models.ForeignKey(Game)
-    days = models.CharField(max_length=1,choices=DAYS)
+    day = models.CharField(max_length=1,choices=DAYS)
     early = models.PositiveSmallIntegerField(default=0, help_text="Students in class in the early morning")
     morning = models.PositiveSmallIntegerField(default=0, help_text="Students in class in the morning")
     lunch = models.PositiveSmallIntegerField(default=0, help_text="Students in class during lunch")
@@ -515,6 +529,10 @@ class ClassAttendance(models.Model):
     def __unicdoe__(self):
         """Returns a string representation of the class attendance"""
         return "Attendance for %s on %s for %s"%(str(self.building), self.get_days_display(), str(self.game))
+
+    def recount(self):
+        #Obviously this doesn't actually work yet.
+        print "No"
 
 ########
 # Misc #
@@ -563,8 +581,9 @@ def add_building_meal(sender, instance, signal, *args, **kwargs):
 @receiver(post_save, sender=Character)
 def change_team_visibility(sender, instance, signal, *args, **kwargs):
     """Update the visibility of anything on a player's profile to the team they are currently on when they switch teams"""
-    prof = PlayerProfile.objects.filter(player=instance.player)
+    prof = PlayerProfileSetting.objects.filter(player=instance.player,game=game.get_current())
     if prof:
+        prof = prof[0]
         if instance.team=="Z":
             if prof.show_school=="H":
                 prof.show_school="Z"
@@ -584,3 +603,13 @@ def change_team_visibility(sender, instance, signal, *args, **kwargs):
             if prof.show_cell=="Z":
                 prof.show_cell="H"
         prof.save()
+
+@receiver(post_save, sender=Classes)
+def add_class_attendance(sender, instance, signal, *args, **kwargs):
+    att = ClassAttendance.objects.filter(building=instance.building, game=instance.character.game, day=instance.day)
+    if len(att)>0:
+        a = att.get()
+    else:
+        a = ClassAttendance(building=instance.building, game=instance.character.game, day=instance.day)
+    a.recount()
+    a.save()

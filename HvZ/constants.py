@@ -21,17 +21,18 @@ CLASS_YEAR = (
     ("J","Junior"),
     ("N","Senior"),
     ("U","Super Senior"),
+    ("G","Grad Student"),
     ("A","Alum")
 )
 
 #Days is a 0-indexed list of days that game events occur on. It is most important in missions where we refer to Tuesday as day 1.
 DAYS = (
-    (0,"Monday"),
-    (1,"Tuesday"),
-    (2,"Wednesday"),
-    (3,"Thursday"),
-    (4,"Friday"),
-    (5,"Saturday"),
+    ("0","Monday"),
+    ("1","Tuesday"),
+    ("2","Wednesday"),
+    ("3","Thursday"),
+    ("4","Friday"),
+    ("5","Saturday"),
 )
 
 #Location legend is a list of tasks that can be completed at a point on a mission. It is used in the missionpoint model.

@@ -2,6 +2,7 @@ tmp
 cache
 core
 local_settings.py
+uploads/*
 *.pyc
 reset.sql
 *_old.py

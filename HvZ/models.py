@@ -24,8 +24,8 @@ class Building(models.Model):
     name = models.CharField(max_length=100, help_text="The name of the building")
     nick = models.CharField(max_length=100, blank=True, help_text="A nickname of the building")
     campus = models.ForeignKey(School,blank=True,null=True, help_text="The school is the building a part of")
-    lat = models.DecimalField(max_digits=9, decimal_places=6, blank=True, help_text="The latitude of the building")
-    lng = models.DecimalField(max_digits=9, decimal_places=6, blank=True, help_text="The longitude of the building")
+    lat = models.DecimalField(max_digits=9, decimal_places=6, help_text="The latitude of the building")
+    lng = models.DecimalField(max_digits=9, decimal_places=6, help_text="The longitude of the building")
     
     def __unicode__(self):
         """Return a string representation of the building"""
@@ -234,6 +234,7 @@ class Player(models.Model):
     dorm = models.ForeignKey(Building, blank=True, null=True)
     class_year = models.CharField(max_length=1, choices=CLASS_YEAR, blank=True)
     cell = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
+    box = models.CharField(max_length=25, blank=True)
     bad_meals = models.PositiveSmallIntegerField(default=0)
     bad_posts = models.PositiveSmallIntegerField(default=0)
 
@@ -316,6 +317,11 @@ class Character(models.Model):
         """Returns a string representation of the character"""
         return "%s (%s)" %(str(self.player),str(self.game))
 
+    def eat(self,code):
+        """Takes in a feed code (the letters) and creates the appropriate meal including updating characters as necessary."""
+        #Obviously this needs to be implemented.
+        return True
+
     def can_eat(self):
         """Returns true if the user has few enough bad meal attempts that they are allowed to try eating"""
         if self.player.bad_meals<10:
@@ -344,7 +350,7 @@ class FeedCode(models.Model):
     """FeedCodes are the way that meals are handled. Now that there are so many new options, it has been pulled out."""
     character = models.ForeignKey(Character, blank=True, null=True)
     game = models.ForeignKey(Game)
-    #This only legitimately contain the letters A, C, D, E, K, L, N, P, S, T, W, and Z.
+    #This only legitimately contain the letters A, C, D, E, K, L, N, P, S, T, W, and Z. But mods might make feed codes containing illegal characters in old game data
     code = models.CharField(max_length=6)
     value = models.PositiveSmallIntegerField(default=1)
     turns = models.BooleanField(default=True)
@@ -381,7 +387,7 @@ class Classes(models.Model):
 
     def __unicode__(self):
         """Returns a string representation of the person in class"""
-        return str(self.character)+" is in "+str(self.classroom)+" on "+self.get_day_display()+" from "+self.get_arrive_display()+" until "+self.get_leave_display()
+        return str(self.character)+" is in "+str(self.building)+" on "+self.get_day_display()+" from "+self.get_arrive_display()+" until "+self.get_leave_display()
 
 class MissionAttendance(models.Model):
     character = models.ForeignKey(Character)
@@ -531,8 +537,27 @@ class ClassAttendance(models.Model):
         return "Attendance for %s on %s for %s"%(str(self.building), self.get_days_display(), str(self.game))
 
     def recount(self):
-        #Obviously this doesn't actually work yet.
-        print "No"
+        #I have no idea how efficient this will be. It should be better than some of my earlier ideas for it though.
+        att = Classes.objects.filter(building=self.building,day=self.day,character__game=self.game).values('arrive','leave')
+        self.early = self.morning = self.lunch = self.afternoon = self.predinner = self.dinner = self.mission = self.night = 0
+        for a in att:
+            ar = range(TIMES_ORDER[a["arrive"]],TIMES_ORDER[a["leave"]])
+            if 0 in ar:
+                self.early += 1
+            if 1 in ar:
+                self.morning += 1
+            if 2 in ar:
+                self.lunch += 1
+            if 3 in ar:
+                self.afternoon += 1
+            if 4 in ar:
+                self.predinner += 1
+            if 5 in ar:
+                self.dinner += 1
+            if 6 in ar:
+                self.mission += 1
+            if 7 in ar:
+                self.night += 1
 
 ########
 # Misc #
@@ -581,7 +606,7 @@ def add_building_meal(sender, instance, signal, *args, **kwargs):
 @receiver(post_save, sender=Character)
 def change_team_visibility(sender, instance, signal, *args, **kwargs):
     """Update the visibility of anything on a player's profile to the team they are currently on when they switch teams"""
-    prof = PlayerProfileSetting.objects.filter(player=instance.player,game=game.get_current())
+    prof = PlayerProfileSetting.objects.filter(player=instance.player)
     if prof:
         prof = prof[0]
         if instance.team=="Z":

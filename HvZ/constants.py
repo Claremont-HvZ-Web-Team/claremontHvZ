@@ -75,6 +75,18 @@ TIMES = (
     ("N","Night (10 PM-6 AM)"),
 )
 
+#Times order lets you get the times in order for use in the recount function of ClassAttendance
+TIMES_ORDER = {
+    "E":0,
+    "M":1,
+    "L":2,
+    "A":3,
+    "B":4,
+    "D":5,
+    "I":6,
+    "N":7,
+}
+
 #Victory is the outcome of the mission. It is used in missions.
 VICTORY = (
     ("N","Not Over"),

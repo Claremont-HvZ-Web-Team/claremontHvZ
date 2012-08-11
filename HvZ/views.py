@@ -1,5 +1,5 @@
 from stat_views import *
-
+"""
 def get_team(p):
 	reg_list = Registration.objects.filter(game=get_current_game(),player=p)
 	if reg_list.exists():
@@ -17,26 +17,26 @@ def check_eat(eater,eaten,time=datetime.today()):
 	    eater_reg = eater_reg_list.get()
 	else:
 	    errors += "You have to be playing to eat someone!\n"
-	
+
 	#is eater a zombie
 	if eater_reg.team=="Z":
 	    print "The eater is a zombie, all is well\n"
 	else:
 	    errors += "Don't be a cannibal!\n"
-	
+
 	#is eaten playing in this game
 	eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
 	if eaten_reg_list.exists():
 	    eaten_reg = eaten_reg_list.get()
 	else:
 	    errors += "You can only eat the brains of people playing this game!\n"
-	
+
 	#is eaten a human
 	if eaten_reg.team=="H":
 	    print "The eaten is a human, all is well"
 	else:
 	    errors += "Eating zombie brains doesn't help!\n"
-	
+
 	#is eater also eaten
 	if eaten_reg==eater_reg:
 	    errors += "You can't eat yourself!\n"
@@ -52,26 +52,28 @@ def check_eat(eater,eaten,time=datetime.today()):
             errors = "You have attempted too many bad meals. Please see a moderator immediately."
 
 	return errors
+"""
+
 
 def eat(eater,eaten,time=datetime.today(),location=None,description=None):
         g = get_current_game()
         #double check to make sure meal is valid
         errors = check_eat(eater,eaten,time=datetime.today())
-	
+
 	if errors != "":
 		eater.bad_meals += 1
 	        eater.save()
 		return errors
 	#save the meal
 	Meal(eater=eater,eaten=eaten,game=g,time=time,location=location,description=description).save()
-	
+
 	#turn eaten into zombie
 	eaten_reg.team="Z"
-	
+
 	#change eaten's upgrade
 	#if eaten_reg is not Null and eaten_reg.upgrade.size:
 	#eaten_reg.upgrade = "Ex-"+eaten_reg.upgrade
-	
+
 	#save changes to eaten
 	eaten_reg.save()
 
@@ -127,7 +129,7 @@ def clean_feed_code(inputString):
 	output = inputString
 	for old, new in replacements:
 		output = output.replace(old, new)
-	output = output.upper()	
+	output = output.upper()
 	return output
 
 class EatForm(forms.Form):
@@ -198,7 +200,7 @@ class RegForm(forms.Form):
 	email = forms.EmailField(label='Email Address',required=True,help_text="<div class='reminder'>Enter in an email address that you check regularly since you will be receiving game updates approximately 3 times per day during the week of the game. This email address will also be used to log you in to the website</div>")
 	password = forms.CharField(required=True,widget=forms.PasswordInput,help_text="<div class='reminder'>Enter a password that will be easy for you to remember but difficult for others to guess.</div>")
 	school = forms.ModelChoiceField(queryset=School.objects.all().order_by('name'),required=True,empty_label="None",help_text="<div class='reminder'>Select which school you attend. If you do not attend one of the 7Cs, select \"None\".</div>")
-	dorm = forms.ModelChoiceField(queryset=Building.objects.filter(building_type='D').order_by('name'),required=True,empty_label="Off Campus",help_text="<div class='reminder'>Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"</div>")
+	dorm = forms.ModelChoiceField(queryset=Building.objects.filter(buildingkind__kind='D').order_by('name'),required=True,empty_label="Off Campus",help_text="<div class='reminder'>Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"</div>")
 	grad = forms.ChoiceField(label='Graduation Year', choices = (("2011","2011"),("2012","2012"),("2013","2013"),("2014","2014"),("2015","2015"),("2016","2016"),("2017","2017"),("","Not a Student")), initial="2011",required=False,help_text="<div class='reminder'>Select which year you expect to graduate. If you don't know yet, select 5 years after the fall of your first year.</div>")
 	cell = forms.DecimalField(max_digits=10,decimal_places=0,required=False,help_text="<div class='reminder'>If you want to be able to text message the game's website enter in your phone number here. Include the area code, but do not include hyphens or the leading 1. We will not use this number except in emergencies or in response to texts from you.</div>")
 	oz = forms.BooleanField(label='OZ Pool',required=False,help_text="<div class='reminder'>Check this box if you would like to begin afflicted with the zombie curse.</div>")
@@ -233,7 +235,7 @@ class PostForm(forms.Form):
 class ResetForm(forms.Form):
 	email = forms.EmailField(label='Email Address',required=True,help_text="<div class='reminder'>Enter in the email address you used to register for the game. This is the same address that you received a password reset email in.</div>")
 	password = forms.CharField(required=True,widget=forms.PasswordInput,help_text="<div class='reminder'>Enter a password that will be easy for you to remember but difficult for others to guess.</div>")
-	hash = forms.IntegerField(required=True,widget=forms.HiddenInput)	
+	hash = forms.IntegerField(required=True,widget=forms.HiddenInput)
 
 def log_user_in(request):
 	"""Logs a user in if possible and returns a string
@@ -245,7 +247,7 @@ def log_user_in(request):
 
 	if not user:
 		return "Bad username or password"
-	
+
 	if user.is_active:
 		login(request, user)
 		return "success"
@@ -284,13 +286,14 @@ def logout_view(request):
 	)
 
 def twilio_call_view(request):
-	od = get_on_duty()	
+	od = get_on_duty()
 	return render_to_response('call.xml',
 		{"name":od["name"],
 		 "cell":od["cell"]},
 		context_instance=RequestContext(request),
 		mimetype="text/xml")
 
+"""
 def twilio_sms_view(request):
 	from HvZ.models import Player, Registration, PlayerSetting, School, Meal, Game
 	import re
@@ -388,6 +391,8 @@ def twilio_sms_view(request):
 		},
 		context_instance=RequestContext(request),
 		mimetype="text/xml")
+"""
+
 
 def all_meals(g, zombies):
 	"""Map each zombie to the number of meals he or she has eaten.
@@ -416,6 +421,8 @@ def all_meals(g, zombies):
 
 	return ret
 
+
+"""
 @cache_page(60*5)
 def player_user_search(request):
 	''' if logged in, currently returns terrible table of all users, if not
@@ -431,7 +438,7 @@ def player_user_search(request):
 
 	# FIXME: Humans can have meals too!
 	meals = all_meals(g, zombies)
-	
+
 	players = []
 	for r in registrations:
 		p = r.player
@@ -453,7 +460,7 @@ def player_user_search(request):
 		if r.upgrade:
 			temp["class"] = r.upgrade
 		players.append(temp)
-		
+
 	return render_to_response('user_search.html',
 				  {"user": ui,
                                "players": players,
@@ -534,7 +541,7 @@ def homepage_view(request):
 		else:
 			m["goals"] = mission.zombie_goals
 			m["rules"] = mission.zombie_rules
-		
+
 		return render_to_response('homepage.html',
 			{
 				"user": ui,
@@ -544,13 +551,15 @@ def homepage_view(request):
 				"onduty":get_on_duty(),
 			},
 			context_instance=RequestContext(request))
+"""
+
 
 @cache_page(60*5)
 def mission_list_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	team = ui["team"]
 	if team=="H":
 		missions = Mission.objects.filter(game=get_current_game()).exclude(show_players="M").exclude(show_players="Z")
@@ -580,7 +589,7 @@ def mission_json_view(request,mission_id):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	team = ui["team"]
 
 	m = Mission.objects.get(id=mission_id)
@@ -623,33 +632,6 @@ def mission_json_view(request,mission_id):
 		context_instance=RequestContext(request),
 		mimetype="application/json")
 
-'''
-def old_histograms(g):
-	"""Generate two dictionaries used to display the cumulative and meal density graphs.
-
-	This function is deprecated by meal_histograms, which does not
-	make one db query for every hour since game start.
-
-	"""
-	per_hour = []
-	upto_hour = []
-	
-	start_time = datetime.combine(g.start_date,time(8))
-	end_time = datetime.combit(g.start_date,time(21))+timedelta(days=4)
-	hum = Registration.objects.filter(game=g).count()-10
-	zom = 10                                               
-	end_add = timedelta(hours=1)
-	while start_time < datetime.today() and start_time < end_time: # One query for every hour
-		meals_in_hour = Meal.objects.filter(game=g,
-						    time__gte=start_time,
-						    time__lt=start_time+end_add).count()
-		per_hour.append({"hour": start_time, "meals": meals_in_hour})
-		hum -= meals_in_hour
-		zom += meals_in_hour
-		upto_hour.append({"hour": start_time+end_add, "humans": hum, "zombies": zom}) 
-		start_time += end_add
-	return per_hour, upto_hour
-'''
 
 @cache_page(60*5)
 def rules_list_view(request):
@@ -682,7 +664,7 @@ def rules_json_view(request,rule_type,rule_id):
     if rule_type == "l":
         loc = Building.objects.get(id=rule_id)
         # Give blank defaults in case rule does not exist
-        details = {"lat":float(loc.lat), "lng":float(loc.lng), "pic":"", 
+        details = {"lat":float(loc.lat), "lng":float(loc.lng), "pic":"",
                    "youtube": "", "details": ""}
         # Search for the associated rule
         try:
@@ -711,6 +693,7 @@ def rules_json_view(request,rule_type,rule_id):
         mimetype="application/json",
     )
 
+"""
 def eat_view(request):
 	ui = get_user_info(request)
 	g = get_current_game()
@@ -760,7 +743,9 @@ def eat_view(request):
 		},
 		context_instance=RequestContext(request),
 	)
+"""
 
+"""
 def register_view(request):
 	if request.method == 'POST':
 		form = RegForm(request.POST)
@@ -820,6 +805,8 @@ def register_view(request):
 		},
 		context_instance=RequestContext(request),
 	)
+"""
+
 
 @cache_page(60*5)
 def plot_view(request):
@@ -828,7 +815,7 @@ def plot_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	g = get_current_game()
 
 	plot = dict()
@@ -887,6 +874,8 @@ def plot_view(request):
 		context_instance=RequestContext(request),
 	)
 
+
+"""
 def mobile_eat_view(request,FeedCode=""):
 	ui = get_user_info(request)
 	g = get_current_game()
@@ -991,12 +980,14 @@ def mobile_eat_view(request,FeedCode=""):
 			},
 			context_instance=RequestContext(request),
 		)
+"""
+
 
 def forum_thread_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	g = get_current_game()
 	threads = ForumThread.objects.filter(game=g)
 
@@ -1037,7 +1028,7 @@ def format_slightly(text):
 
 	This will only work if the entire description has been wrapped
 	in <p> tags!
-	
+
 	"""
 	text = strip_tags(text)
 	text.replace("\n\n", "</p><p>")
@@ -1142,6 +1133,7 @@ def forum_new_thread_view(request):
 			context_instance=RequestContext(request),
 		)
 
+"""
 def email_view(request):
 	ui = get_user_info(request)
 	g = get_current_game()
@@ -1157,7 +1149,10 @@ def email_view(request):
 		)
 	else:
 		return forbidden(request)
+"""
 
+
+"""
 def attendance_view(request):
 	ui = get_user_info(request)
 	g = get_current_game()
@@ -1216,6 +1211,8 @@ def not_registered_view(request):
 		},
 		context_instance=RequestContext(request),
 	)
+"""
+
 
 def password_reset_view(request,hash=""):
 	g = get_current_game()

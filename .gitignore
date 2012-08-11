@@ -5,4 +5,5 @@ local_settings.py
 uploads/*
 *.pyc
 reset.sql
+*.sw*
 *_old.py

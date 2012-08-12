@@ -7,3 +7,6 @@ uploads/*
 reset.sql
 *.sw*
 *_old.py
+HvZ.sublime-project
+HvZ.sublime-workspace
+claremontHvZ_django

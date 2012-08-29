@@ -779,11 +779,11 @@ def rules_list_view(request):
     rule_list = Rule.objects
     ui = get_user_info(request)
     basics = []
-    for r in rule_list.filter(category="B").order_by(' - priority'):
+    for r in rule_list.filter(category="B").order_by('-priority'):
         basics.append({"id": r.id, "title": r.title, "description": r.description})
 
     classes = []
-    for r in rule_list.filter(category="C").order_by(' - priority'):
+    for r in rule_list.filter(category="C").order_by('-priority'):
         classes.append({
             "id": r.id,
             "title": r.title,

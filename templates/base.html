@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
@@ -6,9 +7,9 @@
 
     <!-- Load css -->
     <link rel="stylesheet" href="{% block colorScheme %}{% endblock %}" />
-    <link rel="stylesheet" href="/media/css/layout.css" />
-	{% if user.team = "Z" %}
-	<link rel="stylesheet" href="/media/css/zombie/jquery-ui-1.8.18.custom.css" /><style type="text/css">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}" />
+	{% if user.team == "Z" %}
+	<link rel="stylesheet" href="{% static 'css/zombie/jquery-ui-1.8.18.custom.css' %}" /><style type="text/css">
 		a {
 			color: green;
 			}
@@ -61,7 +62,7 @@
         // If the button doesn't exist, nothing should happen
         page_name = "#main"
         if (page_url.length > 3 && page_url[3] != "")
-            page_name = "#"+page_url[3];  
+            page_name = "#"+page_url[3];
         $(page_name).button("option", "disabled", true);
 	});
 
@@ -144,18 +145,18 @@
       <!-- Logo -->
       <div id="topleft">
         <div id="logoContainer" class="background">
-	      <img id="logo" src="/media/img/logo.png" alt="Claremont HvZ logo"/>
+	      <img id="logo" src="{% static 'img/logo.png' %}" alt="Claremont HvZ logo"/>
         </div>
         <div id="greeting" class="foreground">Welcome, {{ user.firstname }}</div>
       </div>
       <!-- Upper Right Buttons (eat, logout, legendary) -->
       <div id="topright" class="foreground">
-        {% if user.team = "N" %}
+        {% if user.team == "N" %}
         <div id="noteam">
           <p>Go to a dining hall to register for the game</p>
         </div>
         {% endif %}
-        {% if user.team = "Z" %}
+        {% if user.team == "Z" %}
         <button type="button" onclick="parent.location='/player/eat/'">
         Eat</button>
         {% endif %}
@@ -193,11 +194,11 @@
         {% block content %}{% endblock %}
       </div>
     </div>
-  
+
 	{% if user.username = "AnonymousUser" %}
 	<div id="login"></div>
 	{% endif %}
-  
+
   <div id = "footer">
     <p>
       Humans vs Zombies and HvZ are property of <a

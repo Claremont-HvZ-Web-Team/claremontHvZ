@@ -79,6 +79,9 @@ SECRET_KEY = local_settings.SECRET_KEY
 DATABASES = local_settings.DATABASES
 
 
+CACHES = local_settings.CACHES
+
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -99,7 +102,7 @@ LANGUAGE_CODE = local_settings.LANGUAGE_CODE
 
 ### We're done here! ###
 
-CACHE_BACKEND = "file://" + absolute_path('cache')
+#CACHE_BACKEND = "file://" + absolute_path('cache')
 
 MANAGERS = ADMINS
 

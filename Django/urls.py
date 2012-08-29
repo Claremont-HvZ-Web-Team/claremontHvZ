@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -16,4 +16,15 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', 'HvZ.views.homepage_view', name='home_view'),
+    url(r'^rules/$', 'HvZ.views.rules_list_view', name='rules_list'),
+    url(r'^forum/$', 'HvZ.views.forum_thread_view'),
+    url(r'^mission/$', 'HvZ.views.mission_list_view',),
+    url(r'^status/$', 'HvZ.views.stats_down_view'),
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.STATIC_ROOT,
+        }),
+   )

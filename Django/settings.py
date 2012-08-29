@@ -10,6 +10,7 @@ import local_settings
 # "/home/claremontHvZ/claremonthvz.org/"
 PROJECT_PATH = local_settings.PROJECT_PATH
 
+
 def absolute_path(path):
     return os.path.join(PROJECT_PATH, path)
 

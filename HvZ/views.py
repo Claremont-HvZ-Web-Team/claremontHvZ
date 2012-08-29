@@ -1,22 +1,24 @@
 from stat_views import *
 from django.views.decorators.cache import cache_page
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django import forms
 
 
-"""
 def get_team(p):
-    reg_list = Registration.objects.filter(game=get_current_game(), player=p)
+    reg_list = Character.objects.filter(game=get_current_game(), player=p)
     if reg_list.exists():
         return reg_list.get().team
     else:
         return "N"
 
+
 def check_eat(eater, eaten, time=datetime.today()):
     g = get_current_game()
-        errors = ""
+    errors = ""
 
     # is eater playing in this game
-    eater_reg_list = Registration.objects.filter(player=eater, game=g)
+    eater_reg_list = Character.objects.filter(player=eater, game=g)
     if eater_reg_list.exists():
         eater_reg = eater_reg_list.get()
     else:
@@ -29,7 +31,7 @@ def check_eat(eater, eaten, time=datetime.today()):
         errors += "Don't be a cannibal!\n"
 
     # is eaten playing in this game
-    eaten_reg_list = Registration.objects.filter(player=eaten, game=g)
+    eaten_reg_list = Character.objects.filter(player=eaten, game=g)
     if eaten_reg_list.exists():
         eaten_reg = eaten_reg_list.get()
     else:
@@ -56,7 +58,6 @@ def check_eat(eater, eaten, time=datetime.today()):
             errors = "You have attempted too many bad meals. Please see a moderator immediately."
 
     return errors
-"""
 
 
 def eat(eater, eaten, time=datetime.today(), location=None, description=None):
@@ -419,9 +420,9 @@ def twilio_call_view(request):
         context_instance=RequestContext(request),
         mimetype="text / xml")
 
-"""
+
 def twilio_sms_view(request):
-    from HvZ.models import Player, Registration, PlayerSetting, School, Meal, Game
+    from HvZ.models import Player, Character, PlayerSetting, School, Meal, Game
     import re
     if request.GET.get("To", 0) == " + 19095254551":
         # received something from twilio
@@ -434,7 +435,7 @@ def twilio_sms_view(request):
             sender_team = get_team(sender_player)
             resp = "You have been identified as: " + str(sender_player)
             if True:
-                sender_pots = Registration.objects.filter(player=sender_player, game=get_current_game())
+                sender_pots = Character.objects.filter(player=sender_player, game=get_current_game())
                 if sender_pots.exists():
                     sender_reg = sender_pots.get()
                     if cmd == "mod":
@@ -446,7 +447,7 @@ def twilio_sms_view(request):
                         sender_player.save()
                         resp = "You have been removed from all ZOMCOM and TacNet texting services. You are still playing the game. To sign up again, go to the website."
                     elif cmd == "status":
-                        regs = Registration.objects.filter(game=get_current_game())
+                        regs = Character.objects.filter(game=get_current_game())
                         H = regs.filter(team="H").count()
                         Z = regs.filter(team="Z").count()
                         if len(arg) == 0:
@@ -468,7 +469,7 @@ def twilio_sms_view(request):
                     elif cmd == "feed" or cmd == "eat":
                         code = arg.partition(" ")[0].upper()
                         desc = arg.partition(" ")[2]
-                        eaten_reg = Registration.objects.get(feed=clean_feed_code(code))
+                        eaten_reg = Character.objects.get(feed=clean_feed_code(code))
                         resp = eat(eater=sender_player, eaten=eaten_reg.player, description=desc, time=datetime.now())
                     elif cmd == "mission":
                         missions = Mission.objects.filter(result="N").order_by(' - day', ' - kind')
@@ -517,7 +518,6 @@ def twilio_sms_view(request):
         },
         context_instance=RequestContext(request),
         mimetype="text / xml")
-"""
 
 
 def all_meals(g, zombies):
@@ -548,8 +548,7 @@ def all_meals(g, zombies):
     return ret
 
 
-"""
-@cache_page(60*5)
+@cache_page(60 * 5)
 def player_user_search(request):
     ''' if logged in, currently returns terrible table of all users, if not
         logged in asks user to log in (theoretically) '''
@@ -557,16 +556,16 @@ def player_user_search(request):
     if ui["team"] == 'N':
         return forbidden(request)
     g = get_current_game()
-    registrations = Registration.objects.filter(game=g).select_related("player",
+    Characters = Character.objects.filter(game=g).select_related("player",
                                        "player__user",
                                        "player__school")
-    zombies = registrations.filter(team="Z") # Only needed for all_meals
+    zombies = Characters.filter(team="Z")  # Only needed for all_meals
 
     # FIXME: Humans can have meals too!
     meals = all_meals(g, zombies)
 
     players = []
-    for r in registrations:
+    for r in Characters:
         p = r.player
         u = p.user
         temp = {}
@@ -575,7 +574,7 @@ def player_user_search(request):
         temp["last"] = u.last_name
         temp["school"] = str(p.school)
         temp["year"] = str(p.grad_year)
-        temp["past"] = 0 # len(Registration.objects.filter(game__id__lt=g.id, player=p))
+        temp["past"] = 0  # len(Character.objects.filter(game__id__lt=g.id, player=p))
         temp["hardcore"] = r.hardcore
         if r.team == "H":
             temp["team"] = "Human"
@@ -604,7 +603,7 @@ def player_user_profile(request, user_name):
     g = get_current_game()
     user = User.objects.filter(username__iexact=user_name)[0]
     player = Player.objects.filter(user=user)[0]
-    reg = Registration.objects.filter(player=player, game=g)[0]
+    reg = Character.objects.filter(player=player, game=g)[0]
     return render_to_response('profile.html',
                 {
                     "user": ui,
@@ -621,13 +620,14 @@ def player_user_profile(request, user_name):
                 },
                   context_instance=RequestContext(request))
 
-@cache_page(60*5)
+
+@cache_page(60 * 5)
 def homepage_view(request):
     ui = get_user_info(request)
     g = get_current_game()
 
-    h_count = Registration.objects.filter(game=g, team="H").count()
-    z_count = Registration.objects.filter(game=g, team="Z").count()
+    h_count = Character.objects.filter(game=g, team="H").count()
+    z_count = Character.objects.filter(game=g, team="Z").count()
 
     if ui["team"] == 'N':
         return render_to_response('homepage.html',
@@ -653,7 +653,7 @@ def homepage_view(request):
             # returning a mission that happens to not be
             # over yet. What we really need is a dummy
             # mission to return.
-            mission = Mission.objects.filter(result!="N")[0]
+            mission = Mission.objects.filter(result != "N")[0]
 
         m = dict()
         m["title"] = mission.get_title(team)
@@ -677,7 +677,6 @@ def homepage_view(request):
                 "onduty": get_on_duty(),
             },
             context_instance=RequestContext(request))
-"""
 
 
 @cache_page(60 * 5)
@@ -839,7 +838,7 @@ def rules_json_view(request, rule_type, rule_id):
         mimetype="application / json",
     )
 
-"""
+
 def eat_view(request):
     ui = get_user_info(request)
     g = get_current_game()
@@ -849,13 +848,13 @@ def eat_view(request):
         form = EatForm(request.POST)
         if form.is_valid():
             clean_fc = clean_feed_code(form.cleaned_data['feed_code'])
-            eaten_reg_list = Registration.objects.filter(game=get_current_game, feed=clean_fc)
+            eaten_reg_list = Character.objects.filter(game=get_current_game, feed=clean_fc)
             if eaten_reg_list.exists():
                 eaten_reg = eaten_reg_list.get()
                 eaten = eaten_reg.player
                 eater = Player.objects.get(user=request.user)
 
-                mealtime = datetime.combine(g.start_date, time.min) + timedelta(days=int(form.cleaned_data['meal_day']) - 1, hours=int(form.cleaned_data['meal_hour']) + 12*int(form.cleaned_data['meal_ap']), minutes=int(form.cleaned_data['meal_mins']))
+                mealtime = datetime.combine(g.start_date, time.min) + timedelta(days=int(form.cleaned_data['meal_day']) - 1, hours=int(form.cleaned_data['meal_hour']) + 12 * int(form.cleaned_data['meal_ap']), minutes=int(form.cleaned_data['meal_mins']))
                 eat_check = eat(eater=eater, eaten=eaten, time=mealtime, description=form.cleaned_data['description'], location=form.cleaned_data['location'])
                 if "You have eaten" in eat_check:
                     form = EatForm()
@@ -889,9 +888,8 @@ def eat_view(request):
         },
         context_instance=RequestContext(request),
     )
-"""
 
-"""
+
 def register_view(request):
     if request.method == 'POST':
         form = RegForm(request.POST)
@@ -903,44 +901,44 @@ def register_view(request):
                 if u.password == "potato" or u2.exists():
                     if u2.exists():
                         u = u2.get()
-                        u.email=form.cleaned_data['email']
-                        u.username=form.cleaned_data['email']
-                    u.first_name=form.cleaned_data['first']
-                    u.last_name=form.cleaned_data['last']
+                        u.email = form.cleaned_data['email']
+                        u.username = form.cleaned_data['email']
+                    u.first_name = form.cleaned_data['first']
+                    u.last_name = form.cleaned_data['last']
                     u.set_password(form.cleaned_data['password'])
                     u.save()
                     p = Player.objects.get(user=u)
-                    p.school=form.cleaned_data['school']
-                    p.dorm=form.cleaned_data['dorm']
-                    p.grad_year=form.cleaned_data['grad']
-                    p.cell=form.cleaned_data['cell']
+                    p.school = form.cleaned_data['school']
+                    p.dorm = form.cleaned_data['dorm']
+                    p.grad_year = form.cleaned_data['grad']
+                    p.cell = form.cleaned_data['cell']
                     p.save()
-                    if len(Registration.objects.filter(player=p, game=get_current_game())) == 0:
-                        r = Registration(player=p, game=get_current_game(), team="H", feed=clean_fc, hardcore=form.cleaned_data['hardcore'])
+                    if len(Character.objects.filter(player=p, game=get_current_game())) == 0:
+                        r = Character(player=p, game=get_current_game(), team="H", feed=clean_fc, hardcore=form.cleaned_data['hardcore'])
                         if form.cleaned_data['oz']:
-                            r.upgrade="OZ Pool"
+                            r.upgrade = "OZ Pool"
                         r.save()
                         preform = "Welcome to another game, " + str(u.first_name) + " " + str(u.last_name) + "!"
                     else:
                         preform = "You are already registered for this game"
-                    form=RegForm()
+                    form = RegForm()
                 else:
                     preform = "Someone with that email address already exists"
             else:
                     u = User.objects.create_user(form.cleaned_data['email'], form.cleaned_data['email'], form.cleaned_data['password'])
-                    u.first_name=form.cleaned_data['first']
-                    u.last_name=form.cleaned_data['last']
+                    u.first_name = form.cleaned_data['first']
+                    u.last_name = form.cleaned_data['last']
                     u.save()
                     p = Player(user=u, school=form.cleaned_data['school'], dorm=form.cleaned_data['dorm'], grad_year=form.cleaned_data['grad'], cell=form.cleaned_data['cell'])
                     p.save()
-                    r = Registration(player=p, game=get_current_game(), team="H", feed=clean_fc, hardcore=form.cleaned_data['hardcore'])
+                    r = Character(player=p, game=get_current_game(), team="H", feed=clean_fc, hardcore=form.cleaned_data['hardcore'])
                     if form.cleaned_data['oz']:
-                        r.upgrade="OZ Pool"
+                        r.upgrade = "OZ Pool"
                     r.save()
                     preform = "Welcome to the game, " + str(u.first_name) + " " + str(u.last_name) + "!"
                     form = RegForm()
         else:
-            preform= "Something went wrong in your registration."
+            preform = "Something went wrong in your Character."
     else:
         form = RegForm()
         preform = ""
@@ -951,7 +949,6 @@ def register_view(request):
         },
         context_instance=RequestContext(request),
     )
-"""
 
 
 @cache_page(60 * 5)
@@ -1002,7 +999,6 @@ def plot_view(request):
     )
 
 
-"""
 def mobile_eat_view(request, FeedCode=""):
     ui = get_user_info(request)
     g = get_current_game()
@@ -1059,13 +1055,13 @@ def mobile_eat_view(request, FeedCode=""):
         e_form = EatForm(request.POST)
         if e_form.is_valid():
             clean_fc = clean_feed_code(e_form.cleaned_data['feed_code'])
-            eaten_reg_list = Registration.objects.filter(game=get_current_game, feed=clean_fc)
+            eaten_reg_list = Character.objects.filter(game=get_current_game, feed=clean_fc)
             if eaten_reg_list:
                 eaten_reg = eaten_reg_list.get()
                 eaten = eaten_reg.player
                 eater = Player.objects.get(user=request.user)
 
-                mealtime = datetime.combine(g.start_date, time.min) + timedelta(days=int(e_form.cleaned_data['meal_day']) - 1, hours=int(e_form.cleaned_data['meal_hour']) + 12*int(e_form.cleaned_data['meal_ap']), minutes=int(e_form.cleaned_data['meal_mins']))
+                mealtime = datetime.combine(g.start_date, time.min) + timedelta(days=int(e_form.cleaned_data['meal_day']) - 1, hours=int(e_form.cleaned_data['meal_hour']) + 12 * int(e_form.cleaned_data['meal_ap']), minutes=int(e_form.cleaned_data['meal_mins']))
                 eat_check = eat(eater=eater, eaten=eaten, time=mealtime, description=e_form.cleaned_data['description'], location=e_form.cleaned_data['location'])
             else:
                 eat_check = "You have entered an invalid feed code.\n"
@@ -1097,7 +1093,7 @@ def mobile_eat_view(request, FeedCode=""):
         else:
             l_form = ""
         e_form = EatForm(initial={"feed_code": FeedCode})
-        preform=""
+        preform = ""
         return render_to_response('mobileeat.html',
             {
                 "user": ui,
@@ -1107,7 +1103,6 @@ def mobile_eat_view(request, FeedCode=""):
             },
             context_instance=RequestContext(request),
         )
-"""
 
 
 def forum_thread_view(request):
@@ -1274,13 +1269,13 @@ def forum_new_thread_view(request):
             context_instance=RequestContext(request),
         )
 
-"""
+
 def email_view(request):
     ui = get_user_info(request)
     g = get_current_game()
     if ui["isMod"]:
-        humans = Registration.objects.filter(game=g, team="H")
-        zombies = Registration.objects.filter(game=g, team="Z")
+        humans = Character.objects.filter(game=g, team="H")
+        zombies = Character.objects.filter(game=g, team="Z")
         return render_to_response("email.html", {
                 "user": ui,
                 "humans": humans,
@@ -1290,17 +1285,15 @@ def email_view(request):
         )
     else:
         return forbidden(request)
-"""
 
 
-"""
 def attendance_view(request):
     ui = get_user_info(request)
     g = get_current_game()
     day_list = [1, 2, 3, 4]
     nb_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
     if ui["isMod"]:
-        players = Registration.objects.filter(game=g).order_by('player__user__last_name', 'player__user__first_name')
+        players = Character.objects.filter(game=g).order_by('player__user__last_name', 'player__user__first_name')
         return render_to_response("here.html", {
                 "dl": day_list,
                 "nl": nb_list,
@@ -1310,6 +1303,7 @@ def attendance_view(request):
         )
     else:
         return forbidden(request)
+
 
 def duplicate_view(request):
     g = get_current_game()
@@ -1323,8 +1317,8 @@ def duplicate_view(request):
                     parent_player = Player.objects.get(user=parent)
                     child_player = Player.objects.get(user=child)
                     if parent_player.school == child_player.school:
-                        left_regs = Registration.objects.filter(player__user=child)
-                        right_regs = Registration.objects.filter(player__user=parent)
+                        left_regs = Character.objects.filter(player__user=child)
+                        right_regs = Character.objects.filter(player__user=parent)
                         if len(left_regs) < 2 and len(right_regs) < 2:
                             dups.append({"left": child, "left_in": left_regs, "right": parent, "right_in": right_regs})
     return render_to_response("duplicates.html", {
@@ -1332,6 +1326,7 @@ def duplicate_view(request):
             },
             context_instance=RequestContext(request),
         )
+
 
 def not_registered_view(request):
     g = get_current_game()
@@ -1341,9 +1336,9 @@ def not_registered_view(request):
     humans = []
     zombies = []
     for p in all:
-        if Registration.objects.filter(game=lg, player=p).exists() and not Registration.objects.filter(game=g, player=p).exists():
+        if Character.objects.filter(game=lg, player=p).exists() and not Character.objects.filter(game=g, player=p).exists():
             humans.append({"player": p})
-        elif Registration.objects.filter(game=g, player=p).exists() and not Registration.objects.filter(game=lg, player=p).exists():
+        elif Character.objects.filter(game=g, player=p).exists() and not Character.objects.filter(game=lg, player=p).exists():
             zombies.append({"player": p})
     return render_to_response("email.html", {
             "user": ui,
@@ -1352,7 +1347,6 @@ def not_registered_view(request):
         },
         context_instance=RequestContext(request),
     )
-"""
 
 
 def password_reset_view(request, hash=""):

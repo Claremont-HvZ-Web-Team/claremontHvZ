@@ -1,8 +1,13 @@
 from stat_views import *
+from django.http import Http404
 from django.views.decorators.cache import cache_page
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
+
+
+def dummy(request):
+    raise Http404()
 
 
 def get_team(p):

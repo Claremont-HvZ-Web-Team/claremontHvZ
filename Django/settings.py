@@ -182,7 +182,10 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
 )
 
-#Django 1.4 Stuff
+# Do we have time zone support? (Might as well say yes...)
 USE_TZ = local_settings.USE_TZ
-STATIC_ROOT = local_settings.STATIC_ROOT
-STATIC_URL = local_settings.STATIC_URL
+
+# In theory, these could become local settings independent of the rest of the code.
+# At the moment, we are not at theory status.
+STATIC_ROOT = absolute_path('static/media')
+STATIC_URL = 'media/'

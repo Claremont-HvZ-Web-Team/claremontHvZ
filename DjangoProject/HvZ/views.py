@@ -1,4 +1,5 @@
 from stat_views import *
+from .forms import EatForm, LoginForm, RegForm, ResetForm
 
 def get_team(p):
     reg_list = Character.objects.filter(game=get_current_game(),player=p)

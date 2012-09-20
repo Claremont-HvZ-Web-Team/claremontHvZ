@@ -38,8 +38,8 @@ class MissionAdmin(admin.ModelAdmin):
 			request.META['QUERY_STRING'] = request.GET.urlencode()
 		return super(MissionAdmin,self).changelist_view(request, extra_context=extra_context)
 
-class RegistrationInline(admin.TabularInline):
-	model = Registration
+class CharacterInline(admin.TabularInline):
+	model = Character
 
 class PlayerAdmin(admin.ModelAdmin):
 	list_display = ('first_name','last_name','school','dorm','grad_year','bad_meals','hash')
@@ -48,9 +48,9 @@ class PlayerAdmin(admin.ModelAdmin):
 	list_per_page = 100
 	ordering = ('user',)
 	search_fields = ['user__first_name','user__last_name','user__email','cell']
-	inlines = [ RegistrationInline, ]
+	inlines = [ CharacterInline, ]
 
-class RegistrationAdmin(admin.ModelAdmin):
+class CharacterAdmin(admin.ModelAdmin):
 	list_display = ('first_name','last_name','school','dorm','team','upgrade','feed','bonus')
 	list_display_links = ('first_name','last_name')
 	list_editable = ('upgrade','team','feed','bonus')
@@ -63,7 +63,7 @@ class RegistrationAdmin(admin.ModelAdmin):
 			q['game__id__exact'] = 2
 			request.GET = q
 			request.META['QUERY_STRING'] = request.GET.urlencode()
-		return super(RegistrationAdmin,self).changelist_view(request, extra_context=extra_context)
+		return super(CharacterAdmin,self).changelist_view(request, extra_context=extra_context)
 
 class MealAdmin(admin.ModelAdmin):
 	list_display = ('game','eater','eaten','time','location','description')
@@ -95,7 +95,7 @@ admin.site.register(Player, PlayerAdmin)
 #admin.site.register(Squad)
 admin.site.register(PlayerSetting)
 admin.site.register(Game)
-admin.site.register(Registration, RegistrationAdmin)
+admin.site.register(Character, CharacterAdmin)
 admin.site.register(Meal,MealAdmin)
 #admin.site.register(Award)
 #admin.site.register(Achievement)

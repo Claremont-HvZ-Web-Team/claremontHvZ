@@ -1,7 +1,7 @@
 from django.db import connection, reset_queries
 from django.http import HttpRequest
 from time import clock
-from HvZ.models import Registration, User
+from HvZ.models import Character, User
 from HvZ.views import *
 
 me = User.objects.get(email="jthemphill@gmail.com")
@@ -9,8 +9,8 @@ me = User.objects.get(email="jthemphill@gmail.com")
 req = HttpRequest()
 req.user = me
 
-humans = Registration.objects.filter(team="H")
-zombies = Registration.objects.filter(team="Z")
+humans = Character.objects.filter(team="H")
+zombies = Character.objects.filter(team="Z")
 
 def q():
     return len(connection.queries)
@@ -35,7 +35,7 @@ def stats(request):
 	"""Test optimizations here before sticking them into production!"""
 	g = get_current_game()
 	ui = get_user_info(request)
-	all = Registration.objects.filter(game=g).select_related()
+	all = Character.objects.filter(game=g).select_related()
 	humans = all.filter(team="H")
 	zombies = all.filter(team="Z")
 
@@ -48,7 +48,7 @@ def stats(request):
 		'humans':0,
 		'zombies':0
 		}
-	    
+
 	for h in humans.select_related("player__school"):
 	    school_scores[h.player.school]['humans'] += 1
 
@@ -138,8 +138,8 @@ def stats(request):
 
         print "meals: %d" % q()
 
-	
-	hum = Registration.objects.filter(game=g).count()-10   # 10 is the number of OZs  + mod listed as starting zed + press account
+
+	hum = Character.objects.filter(game=g).count()-10   # 10 is the number of OZs  + mod listed as starting zed + press account
 	zom = 10
 
         q0 = q()
@@ -166,7 +166,7 @@ def stats(request):
 
         # Cumulative graph of kills per hour
 	upto_hour = []
-        
+
         t = t0
         for i in xrange(num_hours):
             per_hour += [{"hour": t, "meals": meals_per_hour[i]}]

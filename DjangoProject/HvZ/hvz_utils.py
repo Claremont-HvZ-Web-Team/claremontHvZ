@@ -36,10 +36,10 @@ def get_user_info(request):
 		p = p.get()
 	else:
 		return anonymous_info()
-	
+
 	g = get_current_game()
-	reg_list = Registration.objects.filter(player=p, game=g)
-	
+	reg_list = Character.objects.filter(player=p, game=g)
+
 	if reg_list.exists():
 		# player is in game
 		r = reg_list.get()

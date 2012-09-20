@@ -15,7 +15,7 @@ class School(models.Model):
 class Building(models.Model):
     """Building are locations on the 7Cs. Most important are dorms and
     landmarks where missions are"""
-    
+
     name = models.CharField(max_length=100)
     campus = models.ForeignKey(School,blank=True,null=True)
     lat = models.DecimalField(max_digits=9,decimal_places=6)
@@ -210,7 +210,7 @@ class Plot(models.Model):
     reveal_time = models.DateTimeField()
     def __unicode__(self):
 	return "%s: %s" % (self.game,self.title)
-    
+
 ################
 # Player Stuff #
 ################
@@ -222,6 +222,7 @@ class Player(models.Model):
     grad_year = models.PositiveIntegerField(blank=True,null=True)
     cell = models.DecimalField(max_digits=10,decimal_places=0,blank=True,null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
+
     def __unicode__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
 
@@ -242,7 +243,9 @@ class Player(models.Model):
 class PlayerSetting(models.Model):
     """Player settings"""
     player = models.OneToOneField(Player)
-    
+
+    can_c3 = models.BooleanField(default=False)
+    can_oz = models.BooleanField(default=False)
     #cell related settings
     cell_emergency = models.BooleanField(default=True)
     cell_send = models.BooleanField(default=False)
@@ -292,7 +295,9 @@ class Character(models.Model):
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
     team = models.CharField(max_length=1,choices=TEAMS,default="H")
+    is_c3 = models.BooleanField(default=False)
     upgrade = models.CharField(max_length=30,blank=True,null=True)
+
     hardcore = models.BooleanField(default=False)
     #Meals is now total meals to avoid a costly DB lookup when you want to know how many meals someone has
     meals = models.PositiveSmallIntegerField(default=0,blank=False)
@@ -300,7 +305,7 @@ class Character(models.Model):
     lives_in = models.ForeignKey(Dorm)
     goes_to = models.ForeignKey(School)
     year = models.CharField(max_length=1,choices=CLASS_YEAR_TT,blank=True,null=True)
-    
+
     def __unicode__(self):
         return ("%s: %s %s" %
                 (self.game,
@@ -338,7 +343,7 @@ class Meal(models.Model):
         return str(self.game)+": "+str(self.eater)+" ate "+str(self.eaten)
 
 class Classes(models.Model):
-    #A way that players can give a rough outline of where they will be when so they can better coordinate being in groups for safety. 
+    #A way that players can give a rough outline of where they will be when so they can better coordinate being in groups for safety.
     character = models.ForeignKey(Character)
     classroom = models.ForeignKey(Classroom)
     day = models.CharField(max_length=1,choices=DAYS_TT)
@@ -379,7 +384,7 @@ class SquadMember(models.Model):
     squad = models.ForeignKey(Squad)
     role = models.CharField(max_length=50)
     approve_new = models.BooleanField(default=False)
-    
+
 ###############
 # Forum Stuff #
 ###############

@@ -1146,8 +1146,12 @@ def register_view(request):
 					p.save()
 					if len(Registration.objects.filter(player=p,game=get_current_game()))==0:
 						r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc,hardcore=form.cleaned_data['hardcore'])
-						if form.cleaned_data['oz']:
+						if form.cleaned_data['oz'] and form.cleaned_data['c3']:
+							r.upgrade = "OZ Pool - C3 Pool"
+						elif form.cleaned_data['oz']:
 							r.upgrade="OZ Pool"
+						elif form.cleaned_data['c3']:
+							r.upgrade = "C3 Pool"
 						r.save()
 						preform = "Welcome to another game, "+str(u.first_name)+" "+str(u.last_name)+"!"
 					else:

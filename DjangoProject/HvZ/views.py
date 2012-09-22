@@ -557,24 +557,6 @@ def mission_json_view(request,mission_id):
 		details["rules"] = m.human_rules
 		details["goals"] = m.human_goals
 
-	# if len(details["title"])==0:
-	# 	details["title"]="Unnamed Mission"
-	# if len(details["story"])==0:
-	# 	details["story"]="This mission is just for fun."
-	# if len(details["rules"])==0:
-	# 	details["rules"]="There are no special rules for this mission."
-	# if len(details["goals"])==0:
-	# 	details["goals"]="Your only objective for this mission is to thwart "
-	# 	if team=="Z":
-	# 		details["goals"] += "Humans."
-	# 	else:
-	# 		details["goals"] += "Zombies."
-	# if len(details["reward"])==0:
-	# 	if m.result=="N":
-	# 		details["reward"] = "Your reward is that they won't get a reward."
-	# 	else:
-	# 		details["reward"] += "You stopped them from getting anything."
-
 	return render_to_response('mission.json',
 		{'json':json.dumps(details,indent=4),
 		},

@@ -1,6 +1,5 @@
 from HvZ.models import *
 from django.contrib import admin
-import HvZ.views
 
 class MissionAdmin(admin.ModelAdmin):
 	fieldsets = (

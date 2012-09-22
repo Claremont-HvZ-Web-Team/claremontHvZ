@@ -1,6 +1,6 @@
 from django import forms
 
-from models import Building, Dorm, School
+from models import Building, School
 
 import datetime
 from math import floor
@@ -78,7 +78,7 @@ class EatForm(forms.Form):
         choices=AP, initial=cur_ap, required=True,
         help_text="<div class='reminder'>Select the time of the meal; if you can't remember just type in now.</div>",
     )
-    location = forms.ModelChoiceField(queryset=Building.objects.all().order_by('name'), required=False, empty_label="Don't Remember",
+    location = forms.ModelChoiceField(queryset=Building.objects.filter(building_type='D').order_by('name'), required=False, empty_label="Don't Remember",
         help_text="<div class='reminder'>Select the name of the closest building or landmark to the meal</div>",
     )
     description = forms.CharField(label='Description',
@@ -112,7 +112,7 @@ class RegForm(forms.Form):
         empty_label="None",
         help_text="<div class='reminder'>Select which school you attend. If you do not attend one of the 7Cs, select \"None\".</div>",
     )
-    dorm = forms.ModelChoiceField(queryset=Dorm.objects.order_by('name'),
+    dorm = forms.ModelChoiceField(queryset=Building.objects.filter(building_type='D').order_by('name'),
         required=True,
         empty_label="Off Campus",
         help_text="<div class='reminder'>Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"</div>",
@@ -125,7 +125,7 @@ class RegForm(forms.Form):
     )
     c3 = forms.BooleanField(label='C3 Pool',
         required=False,
-        help_text="",
+        help_text="<div class='reminder'>Check this box if you would like to begin as a member of C3.</div>",
     )
     hardcore = forms.BooleanField(label='Legendary Mode',
         required=False,

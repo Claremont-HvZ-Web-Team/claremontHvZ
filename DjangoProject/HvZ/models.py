@@ -129,11 +129,6 @@ class Registration(models.Model):
     hardcore = models.BooleanField(default=False)
     feed = models.CharField(max_length=6)
 
-    can_oz = models.BooleanField(default=False)
-    can_c3 = models.BooleanField(default=False)
-    is_c3 = models.BooleanField(default=False)
-    is_oz = models.BooleanField(default=False)
-
     game = models.ForeignKey(Game)
     team = models.CharField(max_length=1,choices=TEAMS,default="H")
     upgrade = models.CharField(max_length=30,blank=True,null=True)

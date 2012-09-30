@@ -1,5 +1,5 @@
-from django.conf.urls.defaults import *
-from django.contrib.auth.views import login, logout
+from django.conf import settings
+from django.conf.urls.defaults import include, patterns, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -12,7 +12,7 @@ urlpatterns = patterns(
     # (r'^DjangoProject/', include('DjangoProject.foo.urls')),
 
     #(r'^tinymce/', include('tinymce.urls')),
-    
+
     (r'^$', 'DjangoProject.HvZ.views.homepage_view'),
     (r'^twilio/call/$', 'DjangoProject.HvZ.views.twilio_call_view'),
     (r'^twilio/sms/$', 'DjangoProject.HvZ.views.twilio_sms_view'),
@@ -55,6 +55,9 @@ urlpatterns = patterns(
     (r'^admin/', include(admin.site.urls)),
 )
 
-"""  
-old status
-"""
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.STATIC_ROOT,
+        }),
+   )

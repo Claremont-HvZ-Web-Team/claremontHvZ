@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.localflavor.us.models import PhoneNumberField
 
 from constants import *
 from hashlib import md5
@@ -36,7 +37,7 @@ class Building(models.Model):
             return ("Error: %s isn't a valid building character!"
                     % self.building_type)
 
-        return BUILDING_LEGEND[self.building_type]	
+        return BUILDING_LEGEND[self.building_type]
 
 class Player(models.Model):
     """extra information about users"""
@@ -44,10 +45,7 @@ class Player(models.Model):
     school = models.ForeignKey(School)
     dorm = models.ForeignKey(Building)
     grad_year = models.PositiveIntegerField(blank=True,null=True)
-    cell = models.DecimalField(max_digits=10,
-                               decimal_places=0,
-                               blank=True,
-                               null=True)
+    cell = PhoneNumberField(blank=True, null=True)
     human_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     zombie_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
@@ -66,21 +64,22 @@ class Player(models.Model):
         return self.user.is_staff
 
     def has_cell(self):
-        return self.cell > 1
+        return self.cell
 
     def hash(self):
         return md5(self.school.name+self.user.username+str(self.cell)).hexdigest()[::3]
-    
+
 class Squad(models.Model):
     """Lets players organize themselves into groups"""
     name = models.CharField(max_length=30);
     players = models.ManyToManyField(User)
     description = models.TextField(blank=False)
 #    icon = models.ImageField(upload_to="icons/squads/",height_field=100,width_field=100)
-    
+
 class PlayerSetting(models.Model):
     """Mostly contains bools of what types of updates players want to receive"""
     player = models.OneToOneField(Player)
+
     cell_emergency = models.BooleanField()
     cell_send = models.BooleanField()
     cell_mission_announce = models.BooleanField()
@@ -102,7 +101,7 @@ class PlayerSetting(models.Model):
         #self.cell_legendary_announce = False
         #self.cell_legendary_update = False
         self.save()
-    
+
 class Game(models.Model):
     """Games are the events that tie everything together"""
     SEMS = (
@@ -125,11 +124,12 @@ class Registration(models.Model):
              ("Z","Zombies")
     )
     player = models.ForeignKey(Player)
+    hardcore = models.BooleanField(default=False)
+    feed = models.CharField(max_length=6)
+
     game = models.ForeignKey(Game)
     team = models.CharField(max_length=1,choices=TEAMS,default="H")
     upgrade = models.CharField(max_length=30,blank=True,null=True)
-    feed = models.CharField(max_length=6)
-    hardcore = models.BooleanField(default=False)
     bonus = models.PositiveSmallIntegerField(default=0,blank=False)
     def __unicode__(self):
         return ("%s: %s %s" %
@@ -153,7 +153,7 @@ class Registration(models.Model):
         return self.player.dorm
     def get_meals(self,g):
         return Meal.objects.filter(game=g,eater=self.player).count()+self.bonus
-    
+
 class Meal(models.Model):
     """Meals are what happens when one player eats another"""
     eater = models.ForeignKey(Player,related_name="eater")
@@ -165,7 +165,7 @@ class Meal(models.Model):
 
     def __unicode__(self):
         return str(self.game)+": "+str(self.eater)+" ate "+str(self.eaten)
-	
+
 class Award(models.Model):
     """The awards that can be given out"""
     title = models.CharField(max_length=30)
@@ -178,7 +178,7 @@ class Achievement(models.Model):
     game = models.ForeignKey(Game)
     award = models.ForeignKey(Award)
     earned_time = models.DateTimeField(auto_now_add=True)
-    
+
 class Mission(models.Model):
     """Everything about missions"""
     DAYS = (

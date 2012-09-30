@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.localflavor.us.forms import USPhoneNumberField
 
 from models import Building, School
 
@@ -118,7 +119,7 @@ class RegForm(forms.Form):
         help_text="<div class='reminder'>Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"</div>",
     )
     grad = forms.ChoiceField(label='Graduation Year', choices=(("2011", "2011"), ("2012", "2012"), ("2013", "2013"), ("2014", "2014"), ("2015", "2015"), ("2016", "2016"), ("2017", "2017"), ("", "Not a Student")), initial="2011", required=False, help_text="<div class='reminder'>Select which year you expect to graduate. If you don't know yet, select 5 years after the fall of your first year.</div>")
-    cell = forms.DecimalField(max_digits=10, decimal_places=0, required=False, help_text="<div class='reminder'>If you want to be able to text message the game's website enter in your phone number here. Include the area code, but do not include hyphens or the leading 1. We will not use this number except in emergencies or in response to texts from you.</div>")
+    cell = USPhoneNumberField(required=False, help_text="<div class='reminder'>If you want to be able to text message the game's website enter in your phone number here. We will not use this number except in emergencies or in response to texts from you.</div>")
     oz = forms.BooleanField(label='OZ Pool',
         required=False,
         help_text="<div class='reminder'>Check this box if you would like to begin afflicted with the zombie curse.</div>",

@@ -3,13 +3,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django import forms
 from datetime import datetime,timedelta,time
-from HvZ.models import *
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from random import randint
 from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
 from django.db import connection
+
+from HvZ.models import *
+from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
+
 
 def get_current_game():
 	''' returns an instance of the most recent game
@@ -34,26 +37,26 @@ def check_eat(eater,eaten,time=datetime.today()):
 	    eater_reg = eater_reg_list.get()
 	else:
 	    errors += "You have to be playing to eat someone!\n"
-	
+
 	#is eater a zombie
 	if eater_reg.team=="Z":
 	    print "The eater is a zombie, all is well\n"
 	else:
 	    errors += "Don't be a cannibal!\n"
-	
+
 	#is eaten playing in this game
 	eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
 	if eaten_reg_list.exists():
 	    eaten_reg = eaten_reg_list.get()
 	else:
 	    errors += "You can only eat the brains of people playing this game!\n"
-	
+
 	#is eaten a human
 	if eaten_reg.team=="H":
 	    print "The eaten is a human, all is well"
 	else:
 	    errors += "Eating zombie brains doesn't help!\n"
-	
+
 	#is eater also eaten
 	if eaten_reg==eater_reg:
 	    errors += "You can't eat yourself!\n"
@@ -74,21 +77,21 @@ def eat(eater,eaten,time=datetime.today(),location=None,description=None):
         g = get_current_game()
         #double check to make sure meal is valid
         errors = check_eat(eater,eaten,time=datetime.today())
-	
+
 	if errors != "":
 		eater.bad_meals += 1
 	        eater.save()
 		return errors
 	#save the meal
 	Meal(eater=eater,eaten=eaten,game=g,time=time,location=location,description=description).save()
-	
+
 	#turn eaten into zombie
 	eaten_reg.team="Z"
-	
+
 	#change eaten's upgrade
 	#if eaten_reg is not Null and eaten_reg.upgrade.size:
 	#eaten_reg.upgrade = "Ex-"+eaten_reg.upgrade
-	
+
 	#save changes to eaten
 	eaten_reg.save()
 
@@ -121,10 +124,10 @@ def get_user_info(request):
 		p = p.get()
 	else:
 		return anonymous_info()
-	
+
 	g = get_current_game()
 	reg_list = Registration.objects.filter(player=p, game=g)
-	
+
 	if reg_list.exists():
 		# player is in game
 		r = reg_list.get()
@@ -186,113 +189,9 @@ def clean_feed_code(inputString):
 	output = inputString
 	for old, new in replacements:
 		output = output.replace(old, new)
-	output = output.upper()	
+	output = output.upper()
 	return output
 
-class EatForm(forms.Form):
-	from math import floor
-	DAYS = (
-		("0","Monday"),
-		("1","Tuesday"),
-		("2","Wednesday"),
-		("3","Thursday"),
-		("4","Friday"),
-		("5","Saturday"),
-		("6","Sunday"),
-	)
-
-	HOURS = (
-		("1","1"),
-		("2","2"),
-		("3","3"),
-		("4","4"),
-		("5","5"),
-		("6","6"),
-		("7","7"),
-		("8","8"),
-		("9","9"),
-		("10","10"),
-		("11","11"),
-		("12","12"),
-	)
-
-	MINS = (
-		("00","00"),
-		("05","05"),
-		("10","10"),
-		("15","15"),
-		("20","20"),
-		("25","25"),
-		("30","30"),
-		("35","35"),
-		("40","40"),
-		("45","45"),
-		("50","50"),
-		("55","55"),
-	)
-
-	AP = (
-		("0","AM"),
-		("1","PM")
-	)
-
-	t = datetime.now()
-	cur_hour = t.hour % 12
-	cur_min  = t.minute-t.minute % 5
-	cur_ap = int(floor(t.hour/12))
-	if cur_hour==0:
-		cur_hour=12
-		cur_ap = (cur_ap + 1) % 2
-	feed_code = forms.CharField(label='Feed Code',max_length=5, min_length=5,help_text="<div class='reminder'>Type in the 5 letter feed code of the person you ate</div>")
-	meal_day = forms.ChoiceField(choices = DAYS, initial=t.weekday(), widget=forms.RadioSelect,required=True,help_text="<div class='reminder'>Select the day that you ate them.</div>")
-	meal_hour = forms.ChoiceField(label="Meal Time",choices = HOURS, initial=cur_hour, required=True)
-	meal_mins = forms.ChoiceField(label=" ",choices = MINS, initial=cur_min, required=True)
-	meal_ap = forms.ChoiceField(label="",choices = AP,initial=cur_ap, required=True,help_text="<div class='reminder'>Select the time of the meal; if you can't remember just type in now.</div>")
-	location = forms.ModelChoiceField(queryset=Building.objects.all().order_by('name'),required=False,empty_label="Don't Remember",help_text="<div class='reminder'>Select the name of the closest building or landmark to the meal</div>")
-	description = forms.CharField(label='Description',required=False,widget=forms.Textarea,help_text="<div class='reminder'>If you got a particularly epic meal, go ahead and describe it here</div>")
-
-class RegForm(forms.Form):
-	first = forms.CharField(label='First Name',max_length=30,required=True,help_text="<div class='reminder'>Your First Name</div>")
-	last = forms.CharField(label='Last Name',max_length=30,required=True,help_text="<div class='reminder'>Your Last Name</div>")
-	email = forms.EmailField(label='Email Address',required=True,help_text="<div class='reminder'>Enter in an email address that you check regularly since you will be receiving game updates approximately 3 times per day during the week of the game. This email address will also be used to log you in to the website</div>")
-	password = forms.CharField(required=True,widget=forms.PasswordInput,help_text="<div class='reminder'>Enter a password that will be easy for you to remember but difficult for others to guess.</div>")
-	school = forms.ModelChoiceField(queryset=School.objects.all().order_by('name'),required=True,empty_label="None",help_text="<div class='reminder'>Select which school you attend. If you do not attend one of the 7Cs, select \"None\".</div>")
-	dorm = forms.ModelChoiceField(queryset=Building.objects.filter(building_type='D').order_by('name'),required=True,empty_label="Off Campus",help_text="<div class='reminder'>Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"</div>")
-	grad = forms.ChoiceField(label='Graduation Year', choices = (("2011","2011"),("2012","2012"),("2013","2013"),("2014","2014"),("2015","2015"),("2016","2016"),("2017","2017"),("","Not a Student")), initial="2011",required=False,help_text="<div class='reminder'>Select which year you expect to graduate. If you don't know yet, select 5 years after the fall of your first year.</div>")
-	cell = forms.DecimalField(max_digits=10,decimal_places=0,required=False,help_text="<div class='reminder'>If you want to be able to text message the game's website enter in your phone number here. Include the area code, but do not include hyphens or the leading 1. We will not use this number except in emergencies or in response to texts from you.</div>")
-	oz = forms.BooleanField(label='OZ Pool',required=False,help_text="<div class='reminder'>Check this box if you would like to begin afflicted with the zombie curse.</div>")
-	hardcore = forms.BooleanField(label='Legendary Mode',required=False,help_text="<div class='reminder'>Check this box if you would like to receive emails about Legendary missions. Legendary missions are available for players who want more plot and story in their game and include challenges that involve critical thinking, difficult side quests, and skills that may not arise in a typical game of HvZ.</div>")
-	feed = forms.CharField(label='Feed Code',min_length=5,max_length=5,required=True,help_text="<div class='reminder'>When you are finished entering in all of your other information, have the tabler registering you type in your feed code.<br />TABLERS: Feed codes can only contain the letters A, C, E, L, N, O, P, S, T, W, X, and Z.</div>")
-
-class LoginForm(forms.Form):
-	email = forms.CharField(label='Email Address',required=True,help_text="<div class='reminder'>The email address you used to register for the game.</div>")
-	password = forms.CharField(required=True,widget=forms.PasswordInput,help_text="<div class='reminder'>Your password for our HvZ site.</div>")
-
-class ThreadForm(forms.Form):
-	TEAMS = (
-		("B", "Both Teams"),
-		("M", "My Team"),
-	)
-	#form to create a new forum thread
-	#title, description, visibility need to be filled in
-	#game, creator, create_time are auto populated
-	title = forms.CharField(required=True,max_length=30,help_text="<div class='reminder'>Type the title of the new thread.</div>")
-	description = forms.CharField(required=False,widget=forms.Textarea,help_text="<div class='reminder'>Type the first post in the new thread.</div>")
-	visibility = forms.ChoiceField(required=True,choices=TEAMS,help_text="<div class='reminder'>Select who can see and reply to this thread.</div>")
-
-class PostForm(forms.Form):
-	#form to create a new forum post
-	#contents needs to be filled in
-	#parent, creator, create_time are auto populated
-	parent = forms.IntegerField(required=True,widget=forms.HiddenInput)
-	contents = forms.CharField(required=True,
-                                   widget=forms.Textarea,
-                                   help_text="<div class='reminder'>Type the contents of your reply.</div>")
-
-class ResetForm(forms.Form):
-	email = forms.EmailField(label='Email Address',required=True,help_text="<div class='reminder'>Enter in the email address you used to register for the game. This is the same address that you received a password reset email in.</div>")
-	password = forms.CharField(required=True,widget=forms.PasswordInput,help_text="<div class='reminder'>Enter a password that will be easy for you to remember but difficult for others to guess.</div>")
-	hash = forms.IntegerField(required=True,widget=forms.HiddenInput)	
 
 def log_user_in(request):
 	"""Logs a user in if possible and returns a string
@@ -304,7 +203,7 @@ def log_user_in(request):
 
 	if not user:
 		return "Bad username or password"
-	
+
 	if user.is_active:
 		login(request, user)
 		return "success"
@@ -343,7 +242,7 @@ def logout_view(request):
 	)
 
 def twilio_call_view(request):
-	od = get_on_duty()	
+	od = get_on_duty()
 	return render_to_response('call.xml',
 		{"name":od["name"],
 		 "cell":od["cell"]},
@@ -490,7 +389,7 @@ def player_user_search(request):
 
 	# FIXME: Humans can have meals too!
 	meals = all_meals(g, zombies)
-	
+
 	players = []
 	for r in registrations:
 		p = r.player
@@ -512,7 +411,7 @@ def player_user_search(request):
 		if r.upgrade:
 			temp["class"] = r.upgrade
 		players.append(temp)
-		
+
 	return render_to_response('user_search.html',
 				  {"user": ui,
                                "players": players,
@@ -593,7 +492,7 @@ def homepage_view(request):
 		else:
 			m["goals"] = mission.zombie_goals
 			m["rules"] = mission.zombie_rules
-		
+
 		return render_to_response('homepage.html',
 			{
 				"user": ui,
@@ -609,7 +508,7 @@ def mission_list_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	team = ui["team"]
 	if team=="H":
 		missions = Mission.objects.filter(game=get_current_game()).exclude(show_players="M").exclude(show_players="Z")
@@ -639,7 +538,7 @@ def mission_json_view(request,mission_id):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	team = ui["team"]
 
 	m = Mission.objects.get(id=mission_id)
@@ -657,24 +556,6 @@ def mission_json_view(request,mission_id):
 	else:
 		details["rules"] = m.human_rules
 		details["goals"] = m.human_goals
-
-	# if len(details["title"])==0:
-	# 	details["title"]="Unnamed Mission"
-	# if len(details["story"])==0:
-	# 	details["story"]="This mission is just for fun."
-	# if len(details["rules"])==0:
-	# 	details["rules"]="There are no special rules for this mission."
-	# if len(details["goals"])==0:
-	# 	details["goals"]="Your only objective for this mission is to thwart "
-	# 	if team=="Z":
-	# 		details["goals"] += "Humans."
-	# 	else:
-	# 		details["goals"] += "Zombies."
-	# if len(details["reward"])==0:
-	# 	if m.result=="N":
-	# 		details["reward"] = "Your reward is that they won't get a reward."
-	# 	else:
-	# 		details["reward"] += "You stopped them from getting anything."
 
 	return render_to_response('mission.json',
 		{'json':json.dumps(details,indent=4),
@@ -696,11 +577,11 @@ def old_histograms(g):
 	"""
 	per_hour = []
 	upto_hour = []
-	
+
 	start_time = datetime.combine(g.start_date,time(8))
 	end_time = datetime.combit(g.start_date,time(21))+timedelta(days=4)
 	hum = Registration.objects.filter(game=g).count()-10
-	zom = 10                                               
+	zom = 10
 	end_add = timedelta(hours=1)
 	while start_time < datetime.today() and start_time < end_time: # One query for every hour
 		meals_in_hour = Meal.objects.filter(game=g,
@@ -709,7 +590,7 @@ def old_histograms(g):
 		per_hour.append({"hour": start_time, "meals": meals_in_hour})
 		hum -= meals_in_hour
 		zom += meals_in_hour
-		upto_hour.append({"hour": start_time+end_add, "humans": hum, "zombies": zom}) 
+		upto_hour.append({"hour": start_time+end_add, "humans": hum, "zombies": zom})
 		start_time += end_add
 	return per_hour, upto_hour
 
@@ -748,7 +629,7 @@ def meal_histograms(g):
 
 	# Cumulative graph of kills per hour
 	upto_hour = []
-	
+
 	t = t0
 	for i in xrange(num_hours):
 		per_hour += [{"hour": t, "meals": meals_per_hour[i]}]
@@ -756,7 +637,7 @@ def meal_histograms(g):
 		zom += meals_per_hour[i]
 		upto_hour += [{"hour": t + dt, "humans": hum, "zombies": zom}]
 		t += dt
-		
+
 	return (per_hour, upto_hour)
 
 def get_stat(game, constraints):
@@ -830,7 +711,7 @@ def stats_home(request, template):
 
 	# FIXME: Humans can have meals too!
 	meal_counts = all_meals(g, zombies)
-	
+
 	zombie_list = []
 	for p in zombies:
 		udata = {}
@@ -1161,7 +1042,7 @@ def rules_json_view(request,rule_type,rule_id):
     if rule_type == "l":
         loc = Building.objects.get(id=rule_id)
         # Give blank defaults in case rule does not exist
-        details = {"lat":float(loc.lat), "lng":float(loc.lng), "pic":"", 
+        details = {"lat":float(loc.lat), "lng":float(loc.lng), "pic":"",
                    "youtube": "", "details": ""}
         # Search for the associated rule
         try:
@@ -1265,8 +1146,12 @@ def register_view(request):
 					p.save()
 					if len(Registration.objects.filter(player=p,game=get_current_game()))==0:
 						r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc,hardcore=form.cleaned_data['hardcore'])
-						if form.cleaned_data['oz']:
+						if form.cleaned_data['oz'] and form.cleaned_data['c3']:
+							r.upgrade = "OZ Pool - C3 Pool"
+						elif form.cleaned_data['oz']:
 							r.upgrade="OZ Pool"
+						elif form.cleaned_data['c3']:
+							r.upgrade = "C3 Pool"
 						r.save()
 						preform = "Welcome to another game, "+str(u.first_name)+" "+str(u.last_name)+"!"
 					else:
@@ -1307,7 +1192,7 @@ def plot_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	g = get_current_game()
 
 	plot = dict()
@@ -1475,7 +1360,7 @@ def forum_thread_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
 		return forbidden(request)
-			
+
 	g = get_current_game()
 	threads = ForumThread.objects.filter(game=g)
 
@@ -1516,7 +1401,7 @@ def format_slightly(text):
 
 	This will only work if the entire description has been wrapped
 	in <p> tags!
-	
+
 	"""
 	text = strip_tags(text)
 	text.replace("\n\n", "</p><p>")

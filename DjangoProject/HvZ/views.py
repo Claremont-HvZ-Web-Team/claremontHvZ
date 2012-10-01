@@ -475,11 +475,17 @@ def homepage_view(request):
 		if missions.exists():
 			mission = missions.order_by('-day','-kind')[0]
 		else:
-			# This code is all kinds of placeholder! We're
-			# returning a mission that happens to not be
-			# over yet. What we really need is a dummy
-			# mission to return.
-			mission = Mission.objects.filter(result!="N")[0]
+			# Either we haven't defined any missions or
+			# all the missions are over. Either way, we
+			# don't have a mission to display.
+                        return render_to_response(
+                                'homepage.html', {
+                                        "user": ui,
+                                        "humans":h_count,
+                                        "zombies": z_count,
+                                        "onduty":get_on_duty(),
+                                        },
+                                context_instance=RequestContext(request))
 
 		m = dict()
 		m["title"] = mission.get_title(team)

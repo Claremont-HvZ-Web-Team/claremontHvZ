@@ -111,7 +111,7 @@ class FeedCodeField(forms.CharField):
         feedCode = feedCode.upper()
         for letter in feedCode:
             if letter not in self.validLetters:
-                raise ValidationError(letter + " is not one of the valid letters!")
+                raise forms.ValidationError(letter + " is not a valid feed code letter.")
         return feedCode
 
 

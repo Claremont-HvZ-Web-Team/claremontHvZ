@@ -102,7 +102,7 @@ class FeedCodeField(forms.CharField):
     uppercase letters, chosen by the mod team.
 
     """
-    validLetters = ["A", "C", "E", "L", "N", "O", "P", "S", "T", "W", "X", "Z"]
+    validLetters = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]
 
     def list_valid_letters(self):
         return ', '.join(self.validLetters)
@@ -111,7 +111,7 @@ class FeedCodeField(forms.CharField):
         feedCode = feedCode.upper()
         for letter in feedCode:
             if letter not in self.validLetters:
-                raise ValidationError(letter + " is not one of the valid letters!")
+                raise forms.ValidationError(letter + " is not a valid feed code letter.")
         return feedCode
 
 

@@ -2,10 +2,6 @@
 
 {% block colorScheme %}/media/css/concrete-blood.css{% endblock %}
 
-{% block greeting %}
-  Welcome, {{ first_name|default:"Moderator" }}!
-{% endblock %}
-
 {% block content %}
 <h2>Humans</h2>
 {% for p in humans %}{{ p.player.user.email }}, {% endfor %}

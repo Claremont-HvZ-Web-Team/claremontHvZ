@@ -136,12 +136,12 @@ class RegForm(forms.Form):
     )
     school = forms.ModelChoiceField(queryset=School.objects.all().order_by('name'),
         required=True,
-        empty_label="None",
+        empty_label="Select a school",
         help_text="Select which school you attend. If you do not attend one of the 7Cs, select \"None\".",
     )
     dorm = forms.ModelChoiceField(queryset=Building.objects.filter(building_type='D').order_by('name'),
         required=True,
-        empty_label="Off Campus",
+        empty_label="Select a dorm",
         help_text="Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"",
     )
     grad = forms.ChoiceField(label='Graduation Year', choices=(("2011", "2011"), ("2012", "2012"), ("2013", "2013"), ("2014", "2014"), ("2015", "2015"), ("2016", "2016"), ("2017", "2017"), ("", "Not a Student")), initial="2011", required=False, help_text="Select which year you expect to graduate. If you don't know yet, select 5 years after the fall of your first year.")

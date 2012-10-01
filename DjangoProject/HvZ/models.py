@@ -65,7 +65,7 @@ class Player(models.Model):
         return self.user.is_staff
 
     def has_cell(self):
-        return self.cell
+        return self.cell != ""
 
     def hash(self):
         return md5(self.school.name+self.user.username+str(self.cell)).hexdigest()[::3]

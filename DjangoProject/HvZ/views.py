@@ -1140,8 +1140,17 @@ class RegFormView(FormView):
 
         def get_context_data(self, **kwargs):
                 context = super(RegFormView, self).get_context_data(**kwargs)
-                context['fn'] = self.request.GET['fn']
-                context['ln'] = self.request.GET['ln']
+                
+                # Get the first and last name of the user that
+                # successfully registered before us.
+                try:
+                        context['fn'] = self.request.GET['fn']
+                        context['ln'] = self.request.GET['ln']
+                except KeyError:
+                        # Happens if no one did register before
+                        # us. Not actually a problem.
+                        pass
+
                 return context
 
         def get_success_url(self):
@@ -1162,6 +1171,7 @@ class RegFormView(FormView):
 
                 u.first_name = grab('first')
                 u.last_name = grab('last')
+                u.save()
 
                 p = Player(user=u,
                            school=grab('school'),

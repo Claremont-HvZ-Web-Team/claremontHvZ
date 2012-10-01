@@ -1162,6 +1162,7 @@ class RegFormView(FormView):
 
                 u.first_name = grab('first')
                 u.last_name = grab('last')
+                u.save()
 
                 p = Player(user=u,
                            school=grab('school'),

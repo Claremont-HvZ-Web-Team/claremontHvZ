@@ -42,6 +42,7 @@
 	<table width="100%">
 		<tr>
 {% if user.team != "N" %}
+  {% if mission %}
 			<td style="vertical-align: top">
 				<h1>Next Mission</h1>
 				<h2 id="m_title" class="fademe">{{ mission.title }}</h2>
@@ -58,6 +59,7 @@
 				<h3 id="h_reward">Reward</h3>
 				<div id="m_reward" class="fademe">{{ mission.reward|safe }}</div>
 			</td>
+  {% endif %}
 {% else %}
 			<td style="vertical-align: top">
 				<h1>Register for HvZ</h1>

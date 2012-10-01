@@ -138,8 +138,8 @@ class Registration(models.Model):
     def __unicode__(self):
         return ("%s: %s %s" %
                 (self.game,
-                 self.player.first_name(),
-                 self.player.last_name()
+                 self.first_name(),
+                 self.last_name()
                  )
                 )
 

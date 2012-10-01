@@ -4,10 +4,6 @@
 
 {% block morehead %} {% endblock %}
 
-{% block greeting %}
-  Welcome, {{ first_name|default:"Player" }}!
-{% endblock %}
-
 {% block content %}
 {% if not_found %}<div id="not_found"> Player information not found. </div>
 {% else %}

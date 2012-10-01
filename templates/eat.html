@@ -26,11 +26,6 @@
 </script>
 {% endblock %}
 
-{% block greeting %}
-  Welcome, {{ first_name|default:"Zombie" }}!
-{% endblock %}
-
-
 {% block content %}
 <ul style="font-weight:bold">{{ preform|unordered_list }}</ul>
 <form method="POST" action="/player/eat/" target="_self">

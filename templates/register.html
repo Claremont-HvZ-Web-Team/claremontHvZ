@@ -1,47 +1,39 @@
 <html>
-	<head>
-		<title>Claremont HvZ Registration</title>
-		<style type="text/css">
-			body{
-				background-color: black;
-				color: white;
-			}
-			.reminder{
-				color: #AAA;
-				font-style: italic;
-				font-size: .85em;
-				margin-bottom: 2em;
-			}
-		</style>
-		<script type="text/javascript" src="/media/js/jquery-1.7.1.min.js" ></script>
-		<script type="text/javascript">
-
-		function clean_cell(){
-			var clean_num = $("#id_cell").val()
-			clean_num = clean_num.replace(/[^0-9]/g,"");
-			if(clean_num.charAt(0)==1){
-				clean_num = clean_num.substr(1)
-			}
-			$("#id_cell").val(clean_num);
-		}
-
-		$(document).ready(function(){
-			$("#id_cell").keypress(function(){ 
-				clean_cell()
- 			});
-		});
-		</script>
-	</head>
-	<body>
-		<div style="width:100%;margin-left:auto;margin-right:auto;" align="center">
-			<img src="/media/img/logo.png" width="344px" height="200px" />
-			<h1>Registration</h1>
-		</div>
-		<p style="font-size:2em; font-weight:bold;">{{ preform|safe }}</p>
-		<form method="POST" action="/register/" target="_self">
-			{% csrf_token %}
-			{{ form }}
-			<button type="submit">Sign Up</button>
-		</form>
-	</body>
+        <head>
+                <title>Claremont HvZ Registration</title>
+                <style type="text/css">
+                        body{
+                                background-color: black;
+                                color: white;
+                        }
+                        .reminder{
+                                color: #AAA;
+                                font-style: italic;
+                                font-size: .85em;
+                                margin-bottom: 2em;
+                        }
+                </style>
+        </head>
+        <body>
+                <div style="width:100%;margin-left:auto;margin-right:auto;" align="center">
+                        <img src="/media/img/logo.png" width="344px" height="200px" />
+                        <h1>Registration</h1>
+                </div>
+                {% if fn %}
+                        <p id="greetLastSuccess" style="font-size:2em; font-weight:bold;">
+                                Welcome to the game, {{ fn }} {{ ln }}.
+                        </p>
+                {% endif %}
+                <form method="POST" action="/register/" target="_self">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="fieldWrapper">
+                              {{ field.errors }}
+                              {{ field }}
+                              <div class="reminder">{{ field.help_text }}</div>
+                            </div>
+                        {% endfor %}
+                        <button type="submit">Sign Up</button>
+                </form>
+        </body>
 </html>

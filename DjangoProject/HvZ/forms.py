@@ -6,6 +6,13 @@ from models import Building, School
 import datetime
 from math import floor
 
+def oldest_class_year():
+    """Return the year of the oldest class in school right now."""
+    return datetime.datetime.now().year
+
+def youngest_class_year():
+    """Return the year of the youngest class in school right now."""
+    return datetime.datetime.now().year + 4
 
 class EatForm(forms.Form):
     DAYS = (
@@ -88,17 +95,36 @@ class EatForm(forms.Form):
         help_text="If you got a particularly epic meal, go ahead and describe it here",
     )
 
+class FeedCodeField(forms.CharField):
+    """Used to hold feed codes.
+
+    Feed Codes are strings consisting of a restricted subset of
+    uppercase letters, chosen by the mod team.
+
+    """
+    validLetters = ["A", "C", "E", "L", "N", "O", "P", "S", "T", "W", "X", "Z"]
+
+    def list_valid_letters(self):
+        return ', '.join(self.validLetters)
+
+    def validate(self, feedCode):
+        feedCode = feedCode.upper()
+        for letter in feedCode:
+            if letter not in self.validLetters:
+                raise ValidationError(letter + " is not one of the valid letters!")
+        return feedCode
+
 
 class RegForm(forms.Form):
     first = forms.CharField(label='First Name',
         required=True,
         max_length=30,
-        help_text="Your First Name",
+        help_text="Your first name",
     )
     last = forms.CharField(label='Last Name',
         required=True,
         max_length=30,
-        help_text="Your Last Name",
+        help_text="Your last name",
     )
     email = forms.EmailField(label='Email Address',
         required=True,
@@ -130,12 +156,13 @@ class RegForm(forms.Form):
     )
     hardcore = forms.BooleanField(label='Legendary Mode',
         required=False,
-        help_text="Check this box if you would like to receive emails about Legendary missions. Legendary missions are available for players who want more plot and story in their game and include challenges that involve critical thinking, difficult side quests, and skills that may not arise in a typical game of HvZ.",
+        help_text="Check this box if you would like to receive emails about Legendary missions. Legendary missions are available for players who want more plot and story in their game and include challenges that involve critical thinking, difficult side quests, and skills that may not arise in a typical game of HvZ."
     )
-    feed = forms.CharField(label='Feed Code',
-        min_length=5, max_length=5,
+    feed = FeedCodeField(label='Feed Code',
+        min_length=5,
+        max_length=5,
         required=True,
-        help_text="When you are finished entering in all of your other information, have the tabler registering you type in your feed code.<br />TABLERS: Feed codes can only contain the letters A, C, E, L, N, O, P, S, T, W, X, and Z.",
+        help_text="When you are finished entering in all of your other information, have the tabler registering you type in your feed code. TABLERS: Feed codes can only contain the letters {0}.".format(FeedCodeField.list_valid_letters(FeedCodeField()))
     )
 
 

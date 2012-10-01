@@ -49,6 +49,7 @@ class Player(models.Model):
     human_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     zombie_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
+
     def __unicode__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
 
@@ -77,7 +78,7 @@ class Squad(models.Model):
 #    icon = models.ImageField(upload_to="icons/squads/",height_field=100,width_field=100)
 
 class PlayerSetting(models.Model):
-    """Mostly contains bools of what types of updates players want to receive"""
+    """Mostly contains Player preferences."""
     player = models.OneToOneField(Player)
 
     cell_emergency = models.BooleanField()
@@ -129,8 +130,11 @@ class Registration(models.Model):
 
     game = models.ForeignKey(Game)
     team = models.CharField(max_length=1,choices=TEAMS,default="H")
-    upgrade = models.CharField(max_length=30,blank=True,null=True)
+    can_oz = models.BooleanField(default=False)
+    can_c3 = models.BooleanField(default=False)
+    upgrade = models.CharField(max_length=30, blank=True, null=True)
     bonus = models.PositiveSmallIntegerField(default=0,blank=False)
+
     def __unicode__(self):
         return ("%s: %s %s" %
                 (self.game,

@@ -1132,6 +1132,17 @@ class RegFormView(FormView):
         # we don't succeed or fail silently.
         success_url = "/register/"
 
+        def get_context_data(self, **kwargs):
+                context = super(RegFormView, self).get_context_data(**kwargs)
+                context['fn'] = self.request.GET['fn']
+                context['ln'] = self.request.GET['ln']
+                return context
+
+        def get_success_url(self):
+                return "%s?fn=%s&ln=%s" % (self.success_url,
+				           self.request.POST['first'],
+					   self.request.POST['last'])
+
         def form_valid(self, form):
                 def grab(s):
                         """Get the item corresponding to s from the form."""

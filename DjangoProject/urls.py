@@ -35,18 +35,21 @@ urlpatterns = patterns(
     url('^forum/thread/$', 'DjangoProject.HvZ.views.forum_new_thread_view'),
     url('^forum/(?P<Parent>[\d]+)/$', 'DjangoProject.HvZ.views.forum_post_view'),
     url('^mobile/eat/$', 'DjangoProject.HvZ.views.mobile_eat_view'),
-    url('^mobile/eat/(?P<FeedCode>[A-Z]{5})/$','DjangoProject.HvZ.views.mobile_eat_view'),
+    url('^mobile/eat/(?P<FeedCode>[A-Z]{5})/$', 'DjangoProject.HvZ.views.mobile_eat_view'),
     url('^attendance/$', 'DjangoProject.HvZ.views.attendance_view'),
     url('^email/$', 'DjangoProject.HvZ.views.email_view'),
     url('^dups/$', 'DjangoProject.HvZ.views.duplicate_view'),
     url('^forgot/$', 'DjangoProject.HvZ.views.not_registered_view'),
-    url('^player/passwordreset/$', 'DjangoProject.HvZ.views.password_reset_view'),
-    url('^player/passwordreset/(?P<hash>[\w]+)/$', 'DjangoProject.HvZ.views.password_reset_view'),
 
-    url('^status/$','DjangoProject.HvZ.views.stats_home_view'),
-    url('^status/boss$','DjangoProject.HvZ.views.stats_home_fast'),
-    url('^status/(?P<category>[\w]+)/$','DjangoProject.HvZ.views.stats_category_view'),
-    url('^status/(?P<category>[\w]+)/(?P<specific>[\w]+)/$','DjangoProject.HvZ.views.stats_detail_view'),
+    url(r'^player/passwordreset/$', 'django.contrib.auth.views.password_reset', name='password_reset'),
+    url(r'^passwordreset/done/$', 'django.contrib.auth.views.password_reset_done'),
+    url(r'^reset/(?P<uidb36>[-\w]+)/(?P<token>[-\w]+)/$', 'django.contrib.auth.views.password_reset_confirm'),
+    url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete'),
+
+    url('^status/$', 'DjangoProject.HvZ.views.stats_home_view'),
+    url('^status/boss$', 'DjangoProject.HvZ.views.stats_home_fast'),
+    url('^status/(?P<category>[\w]+)/$', 'DjangoProject.HvZ.views.stats_category_view'),
+    url('^status/(?P<category>[\w]+)/(?P<specific>[\w]+)/$', 'DjangoProject.HvZ.views.stats_detail_view'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url('^admin/doc/', include('django.contrib.admindocs.urls')),

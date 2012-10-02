@@ -1140,7 +1140,7 @@ class RegFormView(FormView):
 
         def get_context_data(self, **kwargs):
                 context = super(RegFormView, self).get_context_data(**kwargs)
-                
+
                 # Get the first and last name of the user that
                 # successfully registered before us.
                 try:
@@ -1184,14 +1184,13 @@ class RegFormView(FormView):
                                  game=get_current_game(),
                                  team="H",
                                  feed=grab('feed'),
-                                 hardcore=grab('hardcore'),
                                  can_oz= grab('oz'),
                                  can_c3 = grab('c3'))
 
                 r.save()
                 preform = "Welcome to the game, {0}!".format(u)
                 return super(RegFormView, self).form_valid(form)
-                
+
 
 @cache_page(60*5)
 def plot_view(request):

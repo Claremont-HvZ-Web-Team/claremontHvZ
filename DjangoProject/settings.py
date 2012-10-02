@@ -98,7 +98,7 @@ LANGUAGE_CODE = local_settings.LANGUAGE_CODE
 
 ### We're done here! ###
 
-CACHE_BACKEND = "file://" + absolute_path('cache')
+CACHES = local_settings.CACHES
 
 MANAGERS = ADMINS
 

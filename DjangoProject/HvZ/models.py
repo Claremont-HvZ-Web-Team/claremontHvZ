@@ -49,7 +49,6 @@ class Player(models.Model):
     human_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     zombie_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
-
     def __unicode__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
 
@@ -65,7 +64,7 @@ class Player(models.Model):
         return self.user.is_staff
 
     def has_cell(self):
-        return self.cell != ""
+        return self.cell
 
     def hash(self):
         return md5(self.school.name+self.user.username+str(self.cell)).hexdigest()[::3]
@@ -78,7 +77,7 @@ class Squad(models.Model):
 #    icon = models.ImageField(upload_to="icons/squads/",height_field=100,width_field=100)
 
 class PlayerSetting(models.Model):
-    """Mostly contains Player preferences."""
+    """Mostly contains bools of what types of updates players want to receive"""
     player = models.OneToOneField(Player)
 
     cell_emergency = models.BooleanField()
@@ -125,20 +124,18 @@ class Registration(models.Model):
              ("Z","Zombies")
     )
     player = models.ForeignKey(Player)
+    hardcore = models.BooleanField(default=False)
     feed = models.CharField(max_length=6)
 
     game = models.ForeignKey(Game)
     team = models.CharField(max_length=1,choices=TEAMS,default="H")
-    can_oz = models.BooleanField(default=False)
-    can_c3 = models.BooleanField(default=False)
-    upgrade = models.CharField(max_length=30, blank=True, null=True)
+    upgrade = models.CharField(max_length=30,blank=True,null=True)
     bonus = models.PositiveSmallIntegerField(default=0,blank=False)
-
     def __unicode__(self):
         return ("%s: %s %s" %
                 (self.game,
-                 self.first_name(),
-                 self.last_name()
+                 self.player.first_name(),
+                 self.player.last_name()
                  )
                 )
 

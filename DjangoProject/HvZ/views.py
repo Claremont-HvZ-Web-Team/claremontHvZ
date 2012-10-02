@@ -9,6 +9,7 @@ from random import randint
 from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
 from django.db import connection
+from django.views.generic import FormView
 
 from HvZ.models import *
 from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
@@ -469,11 +470,17 @@ def homepage_view(request):
 		if missions.exists():
 			mission = missions.order_by('-day','-kind')[0]
 		else:
-			# This code is all kinds of placeholder! We're
-			# returning a mission that happens to not be
-			# over yet. What we really need is a dummy
-			# mission to return.
-			mission = Mission.objects.filter(result!="N")[0]
+			# Either we haven't defined any missions or
+			# all the missions are over. Either way, we
+			# don't have a mission to display.
+                        return render_to_response(
+                                'homepage.html', {
+                                        "user": ui,
+                                        "humans":h_count,
+                                        "zombies": z_count,
+                                        "onduty":get_on_duty(),
+                                        },
+                                context_instance=RequestContext(request))
 
 		m = dict()
 		m["title"] = mission.get_title(team)
@@ -1112,69 +1119,70 @@ def eat_view(request):
 		context_instance=RequestContext(request),
 	)
 
-def register_view(request):
-	if request.method == 'POST':
-		form = RegForm(request.POST)
-		if form.is_valid():
-			clean_fc = clean_feed_code(form.cleaned_data['feed'])
-			if User.objects.filter(email__iexact=form.cleaned_data['email']).exists():
-				u = User.objects.filter(email__iexact=form.cleaned_data['email'])[0]
-				u2 = User.objects.filter(first_name=form.cleaned_data['first'], last_name=form.cleaned_data['last'], password="potato")
-				if u.password=="potato" or u2.exists():
-					if u2.exists():
-						u = u2.get()
-						u.email=form.cleaned_data['email']
-						u.username=form.cleaned_data['email']
-					u.first_name=form.cleaned_data['first']
-					u.last_name=form.cleaned_data['last']
-					u.set_password(form.cleaned_data['password'])
-					u.save()
-					p = Player.objects.get(user=u)
-					p.school=form.cleaned_data['school']
-					p.dorm=form.cleaned_data['dorm']
-					p.grad_year=form.cleaned_data['grad']
-					p.cell=form.cleaned_data['cell']
-					p.save()
-					if len(Registration.objects.filter(player=p,game=get_current_game()))==0:
-						r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc)
-						if form.cleaned_data['oz'] and form.cleaned_data['c3']:
-							r.upgrade = "OZ Pool - C3 Pool"
-						elif form.cleaned_data['oz']:
-							r.upgrade="OZ Pool"
-						elif form.cleaned_data['c3']:
-							r.upgrade = "C3 Pool"
-						r.save()
-						preform = "Welcome to another game, "+str(u.first_name)+" "+str(u.last_name)+"!"
-					else:
-						preform = "You are already registered for this game"
-					form=RegForm()
-				else:
-					preform = "Someone with that email address already exists"
-			else:
-					u = User.objects.create_user(form.cleaned_data['email'],form.cleaned_data['email'],form.cleaned_data['password'])
-					u.first_name=form.cleaned_data['first']
-					u.last_name=form.cleaned_data['last']
-					u.save()
-					p = Player(user=u,school=form.cleaned_data['school'],dorm=form.cleaned_data['dorm'],grad_year=form.cleaned_data['grad'],cell=form.cleaned_data['cell'])
-					p.save()
-					r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc)
-					if form.cleaned_data['oz']:
-						r.upgrade="OZ Pool"
-					r.save()
-					preform = "Welcome to the game, "+str(u.first_name)+" "+str(u.last_name)+"!"
-					form = RegForm()
-		else:
-			preform= "Something went wrong in your registration."
-	else:
-		form = RegForm()
-		preform = ""
-	return render_to_response('register.html',
-		{
-			"preform": preform,
-			"form":form,
-		},
-		context_instance=RequestContext(request),
-	)
+class RegFormView(FormView):
+        """Used to register during tabling."""
+
+        template_name = "register.html"
+        form_class = RegForm
+
+        # TODO: Add a success page (which links back to /register) so
+        # we don't succeed or fail silently.
+        success_url = "/register/"
+
+        def get_context_data(self, **kwargs):
+                context = super(RegFormView, self).get_context_data(**kwargs)
+                
+                # Get the first and last name of the user that
+                # successfully registered before us.
+                try:
+                        context['fn'] = self.request.GET['fn']
+                        context['ln'] = self.request.GET['ln']
+                except KeyError:
+                        # Happens if no one did register before
+                        # us. Not actually a problem.
+                        pass
+
+                return context
+
+        def get_success_url(self):
+                return "%s?fn=%s&ln=%s" % (self.success_url,
+				           self.request.POST['first'],
+					   self.request.POST['last'])
+
+        def form_valid(self, form):
+                def grab(s):
+                        """Get the item corresponding to s from the form."""
+                        return form.cleaned_data[s]
+
+                email = grab('email')
+
+                u = User.objects.create_user(email,
+                                             email,
+                                             grab('password'))
+
+                u.first_name = grab('first')
+                u.last_name = grab('last')
+                u.save()
+
+                p = Player(user=u,
+                           school=grab('school'),
+                           dorm=grab('dorm'),
+                           grad_year=grab('grad'),
+                           cell=grab('cell'))
+                p.save()
+
+                r = Registration(player=p,
+                                 game=get_current_game(),
+                                 team="H",
+                                 feed=grab('feed'),
+                                 hardcore=grab('hardcore'),
+                                 can_oz= grab('oz'),
+                                 can_c3 = grab('c3'))
+
+                r.save()
+                preform = "Welcome to the game, {0}!".format(u)
+                return super(RegFormView, self).form_valid(form)
+                
 
 @cache_page(60*5)
 def plot_view(request):

@@ -6,6 +6,13 @@ from models import Building, School
 import datetime
 from math import floor
 
+def oldest_class_year():
+    """Return the year of the oldest class in school right now."""
+    return datetime.datetime.now().year
+
+def youngest_class_year():
+    """Return the year of the youngest class in school right now."""
+    return datetime.datetime.now().year + 4
 
 class EatForm(forms.Form):
     DAYS = (
@@ -88,17 +95,36 @@ class EatForm(forms.Form):
         help_text="If you got a particularly epic meal, go ahead and describe it here",
     )
 
+class FeedCodeField(forms.CharField):
+    """Used to hold feed codes.
+
+    Feed Codes are strings consisting of a restricted subset of
+    uppercase letters, chosen by the mod team.
+
+    """
+    validLetters = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]
+
+    def list_valid_letters(self):
+        return ', '.join(self.validLetters)
+
+    def validate(self, feedCode):
+        feedCode = feedCode.upper()
+        for letter in feedCode:
+            if letter not in self.validLetters:
+                raise forms.ValidationError(letter + " is not a valid feed code letter.")
+        return feedCode
+
 
 class RegForm(forms.Form):
     first = forms.CharField(label='First Name',
         required=True,
         max_length=30,
-        help_text="Your First Name",
+        help_text="Your first name",
     )
     last = forms.CharField(label='Last Name',
         required=True,
         max_length=30,
-        help_text="Your Last Name",
+        help_text="Your last name",
     )
     email = forms.EmailField(label='Email Address',
         required=True,
@@ -110,12 +136,12 @@ class RegForm(forms.Form):
     )
     school = forms.ModelChoiceField(queryset=School.objects.all().order_by('name'),
         required=True,
-        empty_label="None",
+        empty_label="Select a school",
         help_text="Select which school you attend. If you do not attend one of the 7Cs, select \"None\".",
     )
     dorm = forms.ModelChoiceField(queryset=Building.objects.filter(building_type='D').order_by('name'),
         required=True,
-        empty_label="Off Campus",
+        empty_label="Select a dorm",
         help_text="Select which dorm you expect to sleep in on most nights during the game. If you do not live on campus, select \"Off Campus\"",
     )
     grad = forms.ChoiceField(label='Graduation Year', choices=(("2011", "2011"), ("2012", "2012"), ("2013", "2013"), ("2014", "2014"), ("2015", "2015"), ("2016", "2016"), ("2017", "2017"), ("", "Not a Student")), initial="2011", required=False, help_text="Select which year you expect to graduate. If you don't know yet, select 5 years after the fall of your first year.")
@@ -128,10 +154,11 @@ class RegForm(forms.Form):
         required=False,
         help_text="Check this box if you would like to begin as a member of C3.",
     )
-    feed = forms.CharField(label='Feed Code',
-        min_length=5, max_length=5,
+    feed = FeedCodeField(label='Feed Code',
+        min_length=5,
+        max_length=5,
         required=True,
-        help_text="When you are finished entering in all of your other information, have the tabler registering you type in your feed code.<br />TABLERS: Feed codes can only contain the letters A, C, E, L, N, O, P, S, T, W, X, and Z.",
+        help_text="When you are finished entering in all of your other information, have the tabler registering you type in your feed code. TABLERS: Feed codes can only contain the letters {0}.".format(FeedCodeField.list_valid_letters(FeedCodeField()))
     )
 
 

@@ -154,10 +154,6 @@ class RegForm(forms.Form):
         required=False,
         help_text="Check this box if you would like to begin as a member of C3.",
     )
-    hardcore = forms.BooleanField(label='Legendary Mode',
-        required=False,
-        help_text="Check this box if you would like to receive emails about Legendary missions. Legendary missions are available for players who want more plot and story in their game and include challenges that involve critical thinking, difficult side quests, and skills that may not arise in a typical game of HvZ."
-    )
     feed = FeedCodeField(label='Feed Code',
         min_length=5,
         max_length=5,

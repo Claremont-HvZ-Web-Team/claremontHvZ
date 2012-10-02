@@ -124,7 +124,6 @@ class Registration(models.Model):
              ("Z","Zombies")
     )
     player = models.ForeignKey(Player)
-    hardcore = models.BooleanField(default=False)
     feed = models.CharField(max_length=6)
 
     game = models.ForeignKey(Game)

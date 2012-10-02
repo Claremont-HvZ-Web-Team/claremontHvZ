@@ -103,14 +103,13 @@ def anonymous_info():
 		"firstname": "Player",
 		"team": "N",
 		"isMod": False,
-		"hardcore": False}
+		}
 
 def get_user_info(request):
 	""" returns a dictionary with the following items:
 	    user username
 	    user first name
 	    user's team
-            whether user is hardcore
             whether user is a mod
 	    -add more here when needed
         """
@@ -135,7 +134,6 @@ def get_user_info(request):
                         "firstname": u.first_name,
                         "team": r.team,
                         "isMod": p.is_mod(),
-                        "hardcore": r.hardcore,
                         "player": p,
                      }
 
@@ -144,7 +142,6 @@ def get_user_info(request):
                 "firstname": u.first_name,
                 "team": "N",
                 "isMod": False,
-                "hardcore": False,
               }
 
 def login_user(request):
@@ -401,7 +398,6 @@ def player_user_search(request):
 		temp["school"] = str(p.school)
 		temp["year"] = str(p.grad_year)
 		temp["past"] = 0 #len(Registration.objects.filter(game__id__lt=g.id,player=p))
-		temp["hardcore"] = r.hardcore
 		if r.team=="H":
 			temp["team"] = "Human"
 			temp["meals"] = ""
@@ -438,7 +434,6 @@ def player_user_profile(request, user_name):
 					"school":player.school,
 					"grad_year":player.grad_year,
 					"team": reg.team,
-					"hardcore": reg.hardcore,
 					"meals": reg.get_meals(g),
 					"class": reg.upgrade,
 					"feed": reg.feed,
@@ -514,8 +509,6 @@ def mission_list_view(request):
 		missions = Mission.objects.filter(game=get_current_game()).exclude(show_players="M").exclude(show_players="Z")
 	else:
 		missions = Mission.objects.filter(game=get_current_game()).exclude(show_players="M").exclude(show_players="H")
-	if ui["hardcore"] == False:
-		missions = missions.exclude(kind="Y")
 
 	ml = []
 	for m in missions:
@@ -845,8 +838,6 @@ def stats_category_view(request,category):
 			pdata['class'] = r.upgrade
 			if category=="zombie":
 				pdata["meals"] = r.get_meals(g)
-			else:
-				pdata["hardcore"] = r.hardcore
 			player_list.append(pdata)
 
 	if category in ["school","dorm","year"]:
@@ -1145,7 +1136,7 @@ def register_view(request):
 					p.cell=form.cleaned_data['cell']
 					p.save()
 					if len(Registration.objects.filter(player=p,game=get_current_game()))==0:
-						r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc,hardcore=form.cleaned_data['hardcore'])
+						r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc)
 						if form.cleaned_data['oz'] and form.cleaned_data['c3']:
 							r.upgrade = "OZ Pool - C3 Pool"
 						elif form.cleaned_data['oz']:
@@ -1166,7 +1157,7 @@ def register_view(request):
 					u.save()
 					p = Player(user=u,school=form.cleaned_data['school'],dorm=form.cleaned_data['dorm'],grad_year=form.cleaned_data['grad'],cell=form.cleaned_data['cell'])
 					p.save()
-					r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc,hardcore=form.cleaned_data['hardcore'])
+					r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc)
 					if form.cleaned_data['oz']:
 						r.upgrade="OZ Pool"
 					r.save()

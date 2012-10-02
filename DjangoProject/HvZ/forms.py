@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
 
 from models import Building, School
@@ -95,6 +96,13 @@ class EatForm(forms.Form):
         help_text="If you got a particularly epic meal, go ahead and describe it here",
     )
 
+class UserEmailField(forms.EmailField):
+    """Checks that no user has its email address."""
+    def validate(self, email):
+        super(UserEmailField, self).validate(email)
+        if User.objects.filter(username=email).exists():
+            raise forms.ValidationError("An account with that email already exists.")
+
 class FeedCodeField(forms.CharField):
     """Used to hold feed codes.
 
@@ -126,7 +134,7 @@ class RegForm(forms.Form):
         max_length=30,
         help_text="Your last name",
     )
-    email = forms.EmailField(label='Email Address',
+    email = UserEmailField(label='Email Address',
         required=True,
         help_text="Enter in an email address that you check regularly since you will be receiving game updates approximately 3 times per day during the week of the game. This email address will also be used to log you in to the website",
     )

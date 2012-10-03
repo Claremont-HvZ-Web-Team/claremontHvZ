@@ -186,7 +186,13 @@ def get_on_duty():
 		return {"name": "apparently no one", "cell": "N/A"}
 
 def clean_feed_code(inputString):
-	replacements = [("B", "A"), ("H", "A"), ("G","C"), ("F","E"), ("I","L"), ("M","N"), ("D","O"), ("Q","O"), ("R","P"), ("J","T"), ("U","W"), ("V","W"), ("K","X"), ("Y","X")]
+	replacements = [
+		("B", "A"), ("H", "A"), ("G", "C"), ("F", "E"),
+		("I", "L"), ("X", "K"), ("Y", "K"), ("M", "N"),
+		("R", "P"), ("D", "Q"), ("O", "Q"), ("J", "T"),
+		("U", "W"), ("V", "W")
+	]
+
 	output = inputString
 	for old, new in replacements:
 		output = output.replace(old, new)

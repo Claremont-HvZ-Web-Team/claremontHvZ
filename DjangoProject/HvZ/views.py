@@ -1140,7 +1140,7 @@ class RegFormView(FormView):
 
         def get_context_data(self, **kwargs):
                 context = super(RegFormView, self).get_context_data(**kwargs)
-                
+
                 # Get the first and last name of the user that
                 # successfully registered before us.
                 try:
@@ -1184,14 +1184,13 @@ class RegFormView(FormView):
                                  game=get_current_game(),
                                  team="H",
                                  feed=grab('feed'),
-                                 hardcore=grab('hardcore'),
                                  can_oz= grab('oz'),
                                  can_c3 = grab('c3'))
 
                 r.save()
                 preform = "Welcome to the game, {0}!".format(u)
                 return super(RegFormView, self).form_valid(form)
-                
+
 
 @cache_page(60*5)
 def plot_view(request):
@@ -1589,56 +1588,6 @@ def not_registered_view(request):
 		context_instance=RequestContext(request),
 	)
 
-def password_reset_view(request,hash=""):
-	g = get_current_game()
-	ui = get_user_info(request)
-	rf = "";
-	if request.method == "POST":
-		target = User.objects.filter(username__iexact=request.POST['email'])
-		if target.exists():
-			fix = target.get()
-			if "password" in request.POST:
-				#they've typed in a new password
-				err = "new password"
-				if fix.password==request.POST['hash']:
-					#the form the filled out is valid
-					fix.set_password(request.POST['password'])
-					fix.save()
-					err = "Your password has been successfully reset to "+request.POST['password']
-				else:
-					err = "You are trying to hack into someone's account"
-			else:
-				#they are resetting their password
-				temp = randint(100000,999999)
-				fix.password = str(temp)
-				fix.save()
-				send_mail("Password Reset", "Your Password for Claremont HvZ has been erased. Please go to http://claremonthvz.org/player/passwordreset/"+str(temp)+"/ to enter a new password.", "web@claremonthvz.org", [fix.email], False)
-				err = "success"
-		else:
-			err = "No one with that username exists."
-		return render_to_response("logout.html",{
-				"worked": err,
-			},
-			context_instance=RequestContext(request),
-		)
-	else:
-		if hash!="":
-			#Give them form for their email address and new password
-			target = User.objects.filter(password=hash)
-			if target.exists():
-				err = "Fill out this form to reset your password."
-				rf = ResetForm(initial={"hash":hash})
-			else:
-				err = "No one has that password reset code."
-		else:
-			err = "This is the password reset page"
-	return render_to_response("password_reset.html",{
-				"user":ui,
-				"err": err,
-				"rf": rf,
-			},
-			context_instance=RequestContext(request),
-		)
 
 def stats_down_view(request):
 	ui = get_user_info(request)

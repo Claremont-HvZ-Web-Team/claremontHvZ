@@ -108,11 +108,11 @@ class FeedCodeField(forms.CharField):
         return ', '.join(self.validLetters)
 
     def validate(self, feedCode):
-        feedCode = feedCode.upper()
+        """Feed Codes can only contain the given subset of letters."""
+        super(FeedCodeField, self).validate(feedCode)
         for letter in feedCode:
             if letter not in self.validLetters:
                 raise forms.ValidationError(letter + " is not a valid feed code letter.")
-        return feedCode
 
 
 class RegForm(forms.Form):

@@ -186,12 +186,7 @@ def get_on_duty():
 		return {"name": "apparently no one", "cell": "N/A"}
 
 def clean_feed_code(inputString):
-	replacements = [("B", "A"), ("H", "A"), ("G","C"), ("F","E"), ("I","L"), ("M","N"), ("D","O"), ("Q","O"), ("R","P"), ("J","T"), ("U","W"), ("V","W"), ("K","X"), ("Y","X")]
-	output = inputString
-	for old, new in replacements:
-		output = output.replace(old, new)
-	output = output.upper()
-	return output
+	return inputString.upper()
 
 
 def log_user_in(request):

@@ -68,10 +68,6 @@ def check_eat(eater,eaten,time=datetime.today()):
 	if time > datetime.today():
 	    errors += "That time is in the future!\n"
 
-        #does eater have too many bad attempts
-        if eater.bad_meals > 9:
-            errors = "You have attempted too many bad meals. Please see a moderator immediately."
-
 	return errors
 
 def eat(eater,eaten,time=datetime.today(),location=None,description=None):
@@ -80,8 +76,6 @@ def eat(eater,eaten,time=datetime.today(),location=None,description=None):
         errors = check_eat(eater,eaten,time=datetime.today())
 
 	if errors != "":
-		eater.bad_meals += 1
-	        eater.save()
 		return errors
 	#save the meal
 	Meal(eater=eater,eaten=eaten,game=g,time=time,location=location,description=description).save()
@@ -1107,8 +1101,6 @@ def eat_view(request):
 				)
 			else:
 				eater = Player.objects.get(user=request.user)
-				eater.bad_meals += 1
-				eater.save()
 				return render_to_response('eat.html',
 					{
 						"user": ui,

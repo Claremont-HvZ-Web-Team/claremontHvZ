@@ -194,9 +194,9 @@ def clean_feed_code(inputString):
 	]
 
 	output = inputString
+	output = output.upper()
 	for old, new in replacements:
 		output = output.replace(old, new)
-	output = output.upper()
 	return output
 
 

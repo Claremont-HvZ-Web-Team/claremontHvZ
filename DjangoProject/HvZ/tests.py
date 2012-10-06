@@ -32,17 +32,10 @@ class ConfirmEatingWorks(TestCase):
                             "meal_mins": 20,
                             "meal_ap": 1,
                             "description": "Not long for this world..."
-                            },
-                           follow=True)
-
-         self.assertRedirects(response,
-                              '/player/eat/',
-                              status_code=301,
-                              target_status_code=200)
+                            })
 
          self.assertEqual(response.status_code, 200)
-         print response.context['preform']
-         self.assertEqual(response.context['preform'], "You have eaten Poor Sod!")
+         self.assertEqual(response.context['preform'], ["You have eaten Poor Sod!"])
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):

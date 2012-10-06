@@ -4,26 +4,45 @@ unittest). These will both pass when you run "manage.py test".
 
 Replace these with more appropriate tests for your application.
 """
+import urllib
 
-from django.test import TestCase
 from django.http import HttpRequest
+from django.test import TestCase
+from django.test.client import Client
+
 import HvZ.views
+import HvZ.models
 
-class ConfirmPagesRender(TestCase):
-    anonymous = HvZ.views.anonymous_info()
-    me = HvZ.views.User.objects.get(email="jthemphill@gmail.com")
+class ConfirmEatingWorks(TestCase):
+     fixtures = ['eat_test.json']
 
-    def req(self, user):
-        """Returns an HttpRequest corresponding to the given user"""
-        req = HttpRequest()
-        req.user = user
-        return req
+     anonymous = HvZ.views.anonymous_info()
 
-    def render_views(self):
-        req = self.req(self.me)
-        
-        for f in [player_user_search]:
-            f(req)
+     def test_Simple_Eating_Case(self):
+         fc = "EATEN"
+
+         c = self.client
+         c.login(username='rzed@hmc.edu', password='asdf')
+
+         c.get('/player/eat')
+         response = c.post('/player/eat/',
+                           {"feed_code": fc,
+                            "meal_day":  1,
+                            "meal_hour": 12,
+                            "meal_mins": 20,
+                            "meal_ap": 1,
+                            "description": "Not long for this world..."
+                            },
+                           follow=True)
+
+         self.assertRedirects(response,
+                              '/player/eat/',
+                              status_code=301,
+                              target_status_code=200)
+
+         self.assertEqual(response.status_code, 200)
+         print response.context['preform']
+         self.assertEqual(response.context['preform'], "You have eaten Poor Sod!")
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):

@@ -28,29 +28,15 @@ def get_team(p):
 	else:
 		return "N"
 
-def check_eat(eater,eaten,time=datetime.today()):
+def check_eat(eater_reg,eaten_reg,time=datetime.today()):
 	g = get_current_game()
         errors = ""
-
-	#is eater playing in this game
-	eater_reg_list = Registration.objects.filter(player=eater,game=g)
-	if eater_reg_list.exists():
-	    eater_reg = eater_reg_list.get()
-	else:
-	    errors += "You have to be playing to eat someone!\n"
 
 	#is eater a zombie
 	if eater_reg.team=="Z":
 	    print "The eater is a zombie, all is well\n"
 	else:
 	    errors += "Don't be a cannibal!\n"
-
-	#is eaten playing in this game
-	eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
-	if eaten_reg_list.exists():
-	    eaten_reg = eaten_reg_list.get()
-	else:
-	    errors += "You can only eat the brains of people playing this game!\n"
 
 	#is eaten a human
 	if eaten_reg.team=="H":
@@ -69,15 +55,19 @@ def check_eat(eater,eaten,time=datetime.today()):
 	    errors += "That time is in the future!\n"
 
         #does eater have too many bad attempts
-        if eater.bad_meals > 9:
+        if eater_reg.player.bad_meals > 9:
             errors = "You have attempted too many bad meals. Please see a moderator immediately."
 
 	return errors
 
 def eat(eater,eaten,time=datetime.today(),location=None,description=None):
         g = get_current_game()
+
+	eater_reg = Registration.objects.filter(player=eater).get()
+	eaten_reg = Registration.objects.filter(player=eaten).get()
+
         #double check to make sure meal is valid
-        errors = check_eat(eater,eaten,time=datetime.today())
+        errors = check_eat(eater_reg,eaten_reg,time=datetime.today())
 
 	if errors != "":
 		eater.bad_meals += 1

@@ -9,6 +9,8 @@ from random import randint
 from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
 from django.db import connection
+from django.views.generic import FormView
+from django.contrib.localflavor.us.forms import USPhoneNumberField
 
 from HvZ.models import *
 from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
@@ -27,29 +29,15 @@ def get_team(p):
 	else:
 		return "N"
 
-def check_eat(eater,eaten,time=datetime.today()):
+def check_eat(eater_reg,eaten_reg,time=datetime.today()):
 	g = get_current_game()
         errors = ""
-
-	#is eater playing in this game
-	eater_reg_list = Registration.objects.filter(player=eater,game=g)
-	if eater_reg_list.exists():
-	    eater_reg = eater_reg_list.get()
-	else:
-	    errors += "You have to be playing to eat someone!\n"
 
 	#is eater a zombie
 	if eater_reg.team=="Z":
 	    print "The eater is a zombie, all is well\n"
 	else:
 	    errors += "Don't be a cannibal!\n"
-
-	#is eaten playing in this game
-	eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
-	if eaten_reg_list.exists():
-	    eaten_reg = eaten_reg_list.get()
-	else:
-	    errors += "You can only eat the brains of people playing this game!\n"
 
 	#is eaten a human
 	if eaten_reg.team=="H":
@@ -68,15 +56,19 @@ def check_eat(eater,eaten,time=datetime.today()):
 	    errors += "That time is in the future!\n"
 
         #does eater have too many bad attempts
-        if eater.bad_meals > 9:
+        if eater_reg.player.bad_meals > 9:
             errors = "You have attempted too many bad meals. Please see a moderator immediately."
 
 	return errors
 
 def eat(eater,eaten,time=datetime.today(),location=None,description=None):
         g = get_current_game()
+
+	eater_reg = Registration.objects.filter(player=eater).get()
+	eaten_reg = Registration.objects.filter(player=eaten).get()
+
         #double check to make sure meal is valid
-        errors = check_eat(eater,eaten,time=datetime.today())
+        errors = check_eat(eater_reg,eaten_reg,time=datetime.today())
 
 	if errors != "":
 		eater.bad_meals += 1
@@ -185,11 +177,17 @@ def get_on_duty():
 		return {"name": "apparently no one", "cell": "N/A"}
 
 def clean_feed_code(inputString):
-	replacements = [("B", "A"), ("H", "A"), ("G","C"), ("F","E"), ("I","L"), ("M","N"), ("D","O"), ("Q","O"), ("R","P"), ("J","T"), ("U","W"), ("V","W"), ("K","X"), ("Y","X")]
+	replacements = [
+		("B", "A"), ("H", "A"), ("G", "C"), ("F", "E"),
+		("I", "L"), ("X", "K"), ("Y", "K"), ("M", "N"),
+		("R", "P"), ("D", "Q"), ("O", "Q"), ("J", "T"),
+		("U", "W"), ("V", "W")
+	]
+
 	output = inputString
+	output = output.upper()
 	for old, new in replacements:
 		output = output.replace(old, new)
-	output = output.upper()
 	return output
 
 
@@ -241,6 +239,10 @@ def logout_view(request):
 		context_instance=RequestContext(request),
 	)
 
+def twilio_to_django(number):
+	"""Convert a phone number from Twilio format to Django's format."""
+	return USPhoneNumberField().clean(number[1:])
+
 def twilio_call_view(request):
 	od = get_on_duty()
 	return render_to_response('call.xml',
@@ -257,7 +259,8 @@ def twilio_sms_view(request):
 		msg = request.GET.get("Body","Help")
 		cmd = msg.partition(" ")[0].lower()
 		arg = msg.partition(" ")[2].lower()
-		sender_pots = Player.objects.filter(cell=str(request.GET.get("From","+10"))[2:])
+		senderNumber = twilio_to_django(request.GET.get("From","+10"))
+		sender_pots = Player.objects.filter(cell=senderNumber)
 		if sender_pots.exists():
 			sender_player = sender_pots.get()
 			sender_team = get_team(sender_player)
@@ -332,7 +335,7 @@ def twilio_sms_view(request):
 			sender = User.objects.filter(email__iexact=cmd)
 			if sender.exists():
 				player = Player.objects.get(user=sender.get())
-				player.cell = str(request.GET.get("From","+10"))[2:]
+				player.cell = senderNumber
 				player.save()
 				resp = "You have been added to ZOMCOM and TacNet."
 			else:
@@ -474,11 +477,17 @@ def homepage_view(request):
 		if missions.exists():
 			mission = missions.order_by('-day','-kind')[0]
 		else:
-			# This code is all kinds of placeholder! We're
-			# returning a mission that happens to not be
-			# over yet. What we really need is a dummy
-			# mission to return.
-			mission = Mission.objects.filter(result!="N")[0]
+			# Either we haven't defined any missions or
+			# all the missions are over. Either way, we
+			# don't have a mission to display.
+                        return render_to_response(
+                                'homepage.html', {
+                                        "user": ui,
+                                        "humans":h_count,
+                                        "zombies": z_count,
+                                        "onduty":get_on_duty(),
+                                        },
+                                context_instance=RequestContext(request))
 
 		m = dict()
 		m["title"] = mission.get_title(team)
@@ -1121,69 +1130,69 @@ def eat_view(request):
 		context_instance=RequestContext(request),
 	)
 
-def register_view(request):
-	if request.method == 'POST':
-		form = RegForm(request.POST)
-		if form.is_valid():
-			clean_fc = clean_feed_code(form.cleaned_data['feed'])
-			if User.objects.filter(email__iexact=form.cleaned_data['email']).exists():
-				u = User.objects.filter(email__iexact=form.cleaned_data['email'])[0]
-				u2 = User.objects.filter(first_name=form.cleaned_data['first'], last_name=form.cleaned_data['last'], password="potato")
-				if u.password=="potato" or u2.exists():
-					if u2.exists():
-						u = u2.get()
-						u.email=form.cleaned_data['email']
-						u.username=form.cleaned_data['email']
-					u.first_name=form.cleaned_data['first']
-					u.last_name=form.cleaned_data['last']
-					u.set_password(form.cleaned_data['password'])
-					u.save()
-					p = Player.objects.get(user=u)
-					p.school=form.cleaned_data['school']
-					p.dorm=form.cleaned_data['dorm']
-					p.grad_year=form.cleaned_data['grad']
-					p.cell=form.cleaned_data['cell']
-					p.save()
-					if len(Registration.objects.filter(player=p,game=get_current_game()))==0:
-						r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc,hardcore=form.cleaned_data['hardcore'])
-						if form.cleaned_data['oz'] and form.cleaned_data['c3']:
-							r.upgrade = "OZ Pool - C3 Pool"
-						elif form.cleaned_data['oz']:
-							r.upgrade="OZ Pool"
-						elif form.cleaned_data['c3']:
-							r.upgrade = "C3 Pool"
-						r.save()
-						preform = "Welcome to another game, "+str(u.first_name)+" "+str(u.last_name)+"!"
-					else:
-						preform = "You are already registered for this game"
-					form=RegForm()
-				else:
-					preform = "Someone with that email address already exists"
-			else:
-					u = User.objects.create_user(form.cleaned_data['email'],form.cleaned_data['email'],form.cleaned_data['password'])
-					u.first_name=form.cleaned_data['first']
-					u.last_name=form.cleaned_data['last']
-					u.save()
-					p = Player(user=u,school=form.cleaned_data['school'],dorm=form.cleaned_data['dorm'],grad_year=form.cleaned_data['grad'],cell=form.cleaned_data['cell'])
-					p.save()
-					r = Registration(player=p,game=get_current_game(),team="H",feed=clean_fc,hardcore=form.cleaned_data['hardcore'])
-					if form.cleaned_data['oz']:
-						r.upgrade="OZ Pool"
-					r.save()
-					preform = "Welcome to the game, "+str(u.first_name)+" "+str(u.last_name)+"!"
-					form = RegForm()
-		else:
-			preform= "Something went wrong in your registration."
-	else:
-		form = RegForm()
-		preform = ""
-	return render_to_response('register.html',
-		{
-			"preform": preform,
-			"form":form,
-		},
-		context_instance=RequestContext(request),
-	)
+class RegFormView(FormView):
+        """Used to register during tabling."""
+
+        template_name = "register.html"
+        form_class = RegForm
+
+        # TODO: Add a success page (which links back to /register) so
+        # we don't succeed or fail silently.
+        success_url = "/register/"
+
+        def get_context_data(self, **kwargs):
+                context = super(RegFormView, self).get_context_data(**kwargs)
+
+                # Get the first and last name of the user that
+                # successfully registered before us.
+                try:
+                        context['fn'] = self.request.GET['fn']
+                        context['ln'] = self.request.GET['ln']
+                except KeyError:
+                        # Happens if no one did register before
+                        # us. Not actually a problem.
+                        pass
+
+                return context
+
+        def get_success_url(self):
+                return "%s?fn=%s&ln=%s" % (self.success_url,
+				           self.request.POST['first'],
+					   self.request.POST['last'])
+
+        def form_valid(self, form):
+                def grab(s):
+                        """Get the item corresponding to s from the form."""
+                        return form.cleaned_data[s]
+
+                email = grab('email')
+
+                u = User.objects.create_user(email,
+                                             email,
+                                             grab('password'))
+
+                u.first_name = grab('first')
+                u.last_name = grab('last')
+                u.save()
+
+                p = Player(user=u,
+                           school=grab('school'),
+                           dorm=grab('dorm'),
+                           grad_year=grab('grad'),
+                           cell=grab('cell'))
+                p.save()
+
+                r = Registration(player=p,
+                                 game=get_current_game(),
+                                 team="H",
+                                 feed=grab('feed'),
+                                 can_oz= grab('oz'),
+                                 can_c3 = grab('c3'))
+
+                r.save()
+                preform = "Welcome to the game, {0}!".format(u)
+                return super(RegFormView, self).form_valid(form)
+
 
 @cache_page(60*5)
 def plot_view(request):
@@ -1581,56 +1590,6 @@ def not_registered_view(request):
 		context_instance=RequestContext(request),
 	)
 
-def password_reset_view(request,hash=""):
-	g = get_current_game()
-	ui = get_user_info(request)
-	rf = "";
-	if request.method == "POST":
-		target = User.objects.filter(username__iexact=request.POST['email'])
-		if target.exists():
-			fix = target.get()
-			if "password" in request.POST:
-				#they've typed in a new password
-				err = "new password"
-				if fix.password==request.POST['hash']:
-					#the form the filled out is valid
-					fix.set_password(request.POST['password'])
-					fix.save()
-					err = "Your password has been successfully reset to "+request.POST['password']
-				else:
-					err = "You are trying to hack into someone's account"
-			else:
-				#they are resetting their password
-				temp = randint(100000,999999)
-				fix.password = str(temp)
-				fix.save()
-				send_mail("Password Reset", "Your Password for Claremont HvZ has been erased. Please go to http://claremonthvz.org/player/passwordreset/"+str(temp)+"/ to enter a new password.", "web@claremonthvz.org", [fix.email], False)
-				err = "success"
-		else:
-			err = "No one with that username exists."
-		return render_to_response("logout.html",{
-				"worked": err,
-			},
-			context_instance=RequestContext(request),
-		)
-	else:
-		if hash!="":
-			#Give them form for their email address and new password
-			target = User.objects.filter(password=hash)
-			if target.exists():
-				err = "Fill out this form to reset your password."
-				rf = ResetForm(initial={"hash":hash})
-			else:
-				err = "No one has that password reset code."
-		else:
-			err = "This is the password reset page"
-	return render_to_response("password_reset.html",{
-				"user":ui,
-				"err": err,
-				"rf": rf,
-			},
-			context_instance=RequestContext(request),
-		)
 
 def stats_down_view(request):
 	ui = get_user_info(request)

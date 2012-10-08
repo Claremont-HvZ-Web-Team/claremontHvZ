@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.localflavor.us.models import PhoneNumberField
 
 from constants import *
 from hashlib import md5
@@ -46,6 +47,7 @@ class Player(models.Model):
     user = models.OneToOneField(User)
     school = models.ForeignKey(School)
     dorm = models.ForeignKey(Building)
+<<<<<<< HEAD
     grad_year = models.PositiveIntegerField(blank=True, null=True)
     cell = models.DecimalField(max_digits=10,
                                decimal_places=0,
@@ -54,6 +56,13 @@ class Player(models.Model):
     human_pic = models.ImageField(upload_to="img/profile/", blank=True, null=True)
     zombie_pic = models.ImageField(upload_to="img/profile/", blank=True, null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0, blank=False)
+=======
+    grad_year = models.PositiveIntegerField(blank=True,null=True)
+    cell = PhoneNumberField(blank=True, null=True)
+    human_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
+    zombie_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
+    bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
+>>>>>>> develop
 
     def __unicode__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
@@ -70,7 +79,7 @@ class Player(models.Model):
         return self.user.is_staff
 
     def has_cell(self):
-        return self.cell > 1
+        return self.cell != ""
 
     def hash(self):
         return md5(self.school.name+self.user.username+str(self.cell)).hexdigest()[::3]
@@ -85,7 +94,7 @@ class Squad(models.Model):
 
 
 class PlayerSetting(models.Model):
-    """Mostly contains bools of what types of updates players want to receive"""
+    """Mostly contains Player preferences."""
     player = models.OneToOneField(Player)
 
     cell_emergency = models.BooleanField()
@@ -144,16 +153,18 @@ class Registration(models.Model):
     feed = models.CharField(max_length=6)
 
     game = models.ForeignKey(Game)
-    team = models.CharField(max_length=1, choices=TEAMS, default="H")
+    team = models.CharField(max_length=1,choices=TEAMS,default="H")
+    can_oz = models.BooleanField(default=False)
+    can_c3 = models.BooleanField(default=False)
     upgrade = models.CharField(max_length=30, blank=True, null=True)
     hidden_upgrade = models.CharField(max_length=1, choices=HIDDEN_UPGRADES, blank=True, null=True)
-    bonus = models.PositiveSmallIntegerField(default=0, blank=False)
+    bonus = models.PositiveSmallIntegerField(default=0,blank=False)
 
     def __unicode__(self):
         return ("%s: %s %s" %
                 (self.game,
-                 self.player.first_name(),
-                 self.player.last_name()
+                 self.first_name(),
+                 self.last_name()
                  )
                 )
 

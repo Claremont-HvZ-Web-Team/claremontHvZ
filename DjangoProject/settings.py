@@ -10,6 +10,7 @@ import local_settings
 # "/home/claremontHvZ/claremonthvz.org/"
 PROJECT_PATH = local_settings.PROJECT_PATH
 
+
 def absolute_path(path):
     return os.path.join(PROJECT_PATH, path)
 
@@ -98,7 +99,7 @@ LANGUAGE_CODE = local_settings.LANGUAGE_CODE
 
 ### We're done here! ###
 
-CACHE_BACKEND = "file://" + absolute_path('cache')
+CACHES = local_settings.CACHES
 
 MANAGERS = ADMINS
 

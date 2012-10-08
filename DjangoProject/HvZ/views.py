@@ -10,6 +10,7 @@ from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
 from django.db import connection
 from django.views.generic import FormView
+from django.contrib.localflavor.us.forms import USPhoneNumberField
 
 from HvZ.models import *
 from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
@@ -238,6 +239,10 @@ def logout_view(request):
 		context_instance=RequestContext(request),
 	)
 
+def twilio_to_django(number):
+	"""Convert a phone number from Twilio format to Django's format."""
+	return USPhoneNumberField().clean(number[1:])
+
 def twilio_call_view(request):
 	od = get_on_duty()
 	return render_to_response('call.xml',
@@ -254,7 +259,8 @@ def twilio_sms_view(request):
 		msg = request.GET.get("Body","Help")
 		cmd = msg.partition(" ")[0].lower()
 		arg = msg.partition(" ")[2].lower()
-		sender_pots = Player.objects.filter(cell=str(request.GET.get("From","+10"))[2:])
+		senderNumber = twilio_to_django(request.GET.get("From","+10"))
+		sender_pots = Player.objects.filter(cell=senderNumber)
 		if sender_pots.exists():
 			sender_player = sender_pots.get()
 			sender_team = get_team(sender_player)
@@ -329,7 +335,7 @@ def twilio_sms_view(request):
 			sender = User.objects.filter(email__iexact=cmd)
 			if sender.exists():
 				player = Player.objects.get(user=sender.get())
-				player.cell = str(request.GET.get("From","+10"))[2:]
+				player.cell = senderNumber
 				player.save()
 				resp = "You have been added to ZOMCOM and TacNet."
 			else:

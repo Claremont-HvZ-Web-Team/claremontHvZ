@@ -24,30 +24,20 @@ def arduino_view(request):
 
 	admin = mono.admin
 	forcefield = mono.forcefield
-	try:
-		h2d = int((float(Registration.objects.filter(team="H").count())/float(Registration.objects.filter(team="Z", hidden_upgrade=None).count()))*100)
-	except ZeroDivisionError:
-		h2d = 100
-	try:
-		d2r = int((float(Registration.objects.filter(team="Z", hidden_upgrade="R").count())/float(Registration.objects.filter(team="Z", hidden_upgrade=None).count()))*100)
-	except ZeroDivisionError:
-		d2r = 100
-	try:
-		z2h = int((float(Registration.objects.filter(team="Z").count())/float(Registration.objects.filter(team="H").count()))*100)
-	except ZeroDivisionError:
-		z2h = 100
 
-	string = "{:d},{:d},{:03d},{:03d},{:03d}".format(
+	humans = Registration.objects.filter(team="H").count()
+	drones = Registration.objects.filter(team="Z",hidden_upgrade=None).count()
+	unbound = Registration.objects.filter(team="Z", hidden_upgrade="R").count()
+
+	string = "{:d},{:d},{:d},{:d},{:d}".format(
 		admin,
 		forcefield,
-		h2d,
-		d2r,
-		z2h,
+		humans,
+		drones,
+		unbound,
 	)
 
-	return render_to_response('arduino.html',
-		{'string': string}
-	)
+	return HttpResponse(string, content_type="text/plain")
 
 
 def get_current_game():

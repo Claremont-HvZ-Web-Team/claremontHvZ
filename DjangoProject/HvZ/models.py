@@ -135,6 +135,10 @@ class Registration(models.Model):
              ("Z", "Zombies")
     )
 
+    HIDDEN_UPGRADES = (
+        ("R", "Rebel Zombie"),
+    )
+
     player = models.ForeignKey(Player)
     hardcore = models.BooleanField(default=False)
     feed = models.CharField(max_length=6)
@@ -142,7 +146,7 @@ class Registration(models.Model):
     game = models.ForeignKey(Game)
     team = models.CharField(max_length=1, choices=TEAMS, default="H")
     upgrade = models.CharField(max_length=30, blank=True, null=True)
-    hidden_upgrade = models.CharField(max_length=30, blank=True, null=True)
+    hidden_upgrade = models.CharField(max_length=1, choices=HIDDEN_UPGRADES, blank=True, null=True)
     bonus = models.PositiveSmallIntegerField(default=0, blank=False)
 
     def __unicode__(self):

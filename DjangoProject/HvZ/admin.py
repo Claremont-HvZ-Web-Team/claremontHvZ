@@ -54,10 +54,10 @@ class PlayerAdmin(admin.ModelAdmin):
 
 
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'school', 'dorm', 'team', 'upgrade', 'feed', 'bonus')
+    list_display = ('first_name', 'last_name', 'school', 'dorm', 'team', 'hidden_upgrade', 'upgrade', 'feed', 'bonus')
     list_display_links = ('first_name', 'last_name')
     list_editable = ('upgrade', 'team', 'feed', 'bonus')
-    list_filter = ('game', 'team', 'upgrade', 'can_oz', 'can_c3')
+    list_filter = ('game', 'team', 'upgrade', 'hidden_upgrade', 'can_oz', 'can_c3')
     search_fields = ['player__user__first_name', 'player__user__last_name', 'player__user__email', 'player__cell', 'feed']
 
     def changelist_view(self, request, extra_context=None):

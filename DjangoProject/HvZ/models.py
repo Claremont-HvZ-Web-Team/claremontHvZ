@@ -47,22 +47,11 @@ class Player(models.Model):
     user = models.OneToOneField(User)
     school = models.ForeignKey(School)
     dorm = models.ForeignKey(Building)
-<<<<<<< HEAD
-    grad_year = models.PositiveIntegerField(blank=True, null=True)
-    cell = models.DecimalField(max_digits=10,
-                               decimal_places=0,
-                               blank=True,
-                               null=True)
-    human_pic = models.ImageField(upload_to="img/profile/", blank=True, null=True)
-    zombie_pic = models.ImageField(upload_to="img/profile/", blank=True, null=True)
-    bad_meals = models.PositiveSmallIntegerField(default=0, blank=False)
-=======
     grad_year = models.PositiveIntegerField(blank=True,null=True)
     cell = PhoneNumberField(blank=True, null=True)
     human_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     zombie_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
     bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
->>>>>>> develop
 
     def __unicode__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)

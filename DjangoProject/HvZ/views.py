@@ -16,6 +16,30 @@ from HvZ.models import *
 from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
 
 
+def arduino_view(request):
+	"""No idea why, but this is apparently very necessary for life"""
+
+	# get the controller. There should be at most one.
+	mono, _ = MonolithController.objects.get_or_create(pk=1)
+
+	admin = mono.admin
+	forcefield = mono.forcefield
+
+	humans = Registration.objects.filter(team="H").count()
+	drones = Registration.objects.filter(team="Z",hidden_upgrade=None).count()
+	unbound = Registration.objects.filter(team="Z", hidden_upgrade="R").count()
+
+	string = "{:d},{:d},{:d},{:d},{:d}".format(
+		admin,
+		forcefield,
+		humans,
+		drones,
+		unbound,
+	)
+
+	return HttpResponse(string, content_type="text/plain")
+
+
 def get_current_game():
 	''' returns an instance of the most recent game
 	'''

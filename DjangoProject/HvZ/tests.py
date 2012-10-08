@@ -58,7 +58,8 @@ class ConfirmTextingWorks(TestCase):
                             })
 
           self.assertEqual(response.status_code, 200)
-     
+          self.assertEqual(response.context['response'],
+                           "Valid commands are status, mod, mission, feed, stop, and help.")
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):

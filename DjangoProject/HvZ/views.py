@@ -241,7 +241,7 @@ def logout_view(request):
 
 def twilio_to_django(number):
 	"""Convert a phone number from Twilio format to Django's format."""
-	return USPhoneNumberField().clean(number[2:])
+	return USPhoneNumberField().clean(number[1:])
 
 def twilio_call_view(request):
 	od = get_on_duty()

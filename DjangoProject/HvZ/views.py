@@ -9,7 +9,9 @@ from random import randint
 from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
 from django.db import connection
-from django.views.generic import FormView
+from django.views.generic import View, FormView
+
+import django.utils.simplejson as json
 
 from HvZ.models import *
 from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
@@ -1592,3 +1594,27 @@ def stats_down_view(request):
 		},
 		context_instance=RequestContext(request)
 	)
+
+class JSONView(View):
+	"""Responds to GET and POST requests by dumping its context as JSON."""
+
+	def get_context_data(self, **kwargs):
+		return {}
+
+	def get(self, request, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		return HttpResponse(json.dumps(context), content_type='application/json')
+
+	def post(self, request, *args, **kwargs):
+		return self.get(request, *args, **kwargs)
+
+class PlayerCountView(JSONView):
+	def get_context_data(self, **kwargs):
+		context = super(PlayerCountView, self).get_context_data(**kwargs)
+		 
+		regs = Registration.objects
+		
+		context['H'] = regs.filter(team='H').count()
+		context['Z'] = regs.filter(team='Z').count()
+
+		return context

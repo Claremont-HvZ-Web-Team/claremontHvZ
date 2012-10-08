@@ -50,6 +50,7 @@ urlpatterns = patterns(
     url('^status/boss$', 'DjangoProject.HvZ.views.stats_home_fast'),
     url('^status/(?P<category>[\w]+)/$', 'DjangoProject.HvZ.views.stats_category_view'),
     url('^status/(?P<category>[\w]+)/(?P<specific>[\w]+)/$', 'DjangoProject.HvZ.views.stats_detail_view'),
+    url('^json/playercounts', DjangoProject.HvZ.views.PlayerCountView.as_view()),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url('^admin/doc/', include('django.contrib.admindocs.urls')),

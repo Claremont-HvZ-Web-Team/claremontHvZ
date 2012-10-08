@@ -508,8 +508,8 @@ class ForumThread(models.Model):
 
 
 class MonolithController(models.Model):
-    admin = models.BooleanField(default=1)
-    forcefield = models.BooleanField(default=0)
+    admin = models.BooleanField(default=False)
+    forcefield = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         # prevent additional models
@@ -518,6 +518,7 @@ class MonolithController(models.Model):
 
     def __unicode__(self):
         return "Monolith Controller"
+
 
 class ForumPost(models.Model):
     parent = models.ForeignKey('ForumThread', blank=False)

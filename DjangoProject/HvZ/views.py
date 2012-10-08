@@ -19,8 +19,11 @@ from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginFo
 def arduino_view(request):
 	"""No idea why, but this is apparently very necessary for life"""
 
-	admin = 0
-	forcefield = 1
+	# get the controller. There should be at most one.
+	mono, _ = MonolithController.objects.get_or_create(pk=1)
+
+	admin = mono.admin
+	forcefield = mono.forcefield
 	try:
 		h2d = int((float(Registration.objects.filter(team="H").count())/float(Registration.objects.filter(team="Z", hidden_upgrade=None).count()))*100)
 	except ZeroDivisionError:

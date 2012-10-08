@@ -13,6 +13,9 @@ from django.test.client import Client
 import HvZ.views
 import HvZ.models
 
+UNAME = "rzed@hmc.edu"
+PW = "asdf"
+
 class ConfirmEatingWorks(TestCase):
      fixtures = ['eat_test.json']
 
@@ -22,7 +25,7 @@ class ConfirmEatingWorks(TestCase):
          fc = "EATEN"
 
          c = self.client
-         c.login(username='rzed@hmc.edu', password='asdf')
+         c.login(username=UNAME, password=PW)
 
          c.get('/player/eat')
          response = c.post('/player/eat/',

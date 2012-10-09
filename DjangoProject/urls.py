@@ -56,6 +56,7 @@ urlpatterns = patterns(
 
     # Uncomment the next line to enable the admin:
     url('^admin/', include(admin.site.urls)),
+    url('^secret/arduino', 'DjangoProject.HvZ.views.arduino_view'),
 )
 
 if settings.DEBUG:

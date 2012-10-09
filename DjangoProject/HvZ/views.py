@@ -10,9 +10,34 @@ from django.views.decorators.cache import cache_page
 from django.utils.html import strip_tags
 from django.db import connection
 from django.views.generic import FormView
+from django.contrib.localflavor.us.forms import USPhoneNumberField
 
 from HvZ.models import *
 from HvZ.forms import EatForm, RegForm, PostForm, ResetForm, ThreadForm, LoginForm
+
+
+def arduino_view(request):
+	"""No idea why, but this is apparently very necessary for life"""
+
+	# get the controller. There should be at most one.
+	mono, _ = MonolithController.objects.get_or_create(pk=1)
+
+	admin = mono.admin
+	forcefield = mono.forcefield
+
+	humans = Registration.objects.filter(team="H").count()
+	drones = Registration.objects.filter(team="Z",hidden_upgrade=None).count()
+	unbound = Registration.objects.filter(team="Z", hidden_upgrade="R").count()
+
+	string = "{:d},{:d},{:d},{:d},{:d}".format(
+		admin,
+		forcefield,
+		humans,
+		drones,
+		unbound,
+	)
+
+	return HttpResponse(string, content_type="text/plain")
 
 
 def get_current_game():
@@ -28,29 +53,15 @@ def get_team(p):
 	else:
 		return "N"
 
-def check_eat(eater,eaten,time=datetime.today()):
+def check_eat(eater_reg,eaten_reg,time=datetime.today()):
 	g = get_current_game()
         errors = ""
-
-	#is eater playing in this game
-	eater_reg_list = Registration.objects.filter(player=eater,game=g)
-	if eater_reg_list.exists():
-	    eater_reg = eater_reg_list.get()
-	else:
-	    errors += "You have to be playing to eat someone!\n"
 
 	#is eater a zombie
 	if eater_reg.team=="Z":
 	    print "The eater is a zombie, all is well\n"
 	else:
 	    errors += "Don't be a cannibal!\n"
-
-	#is eaten playing in this game
-	eaten_reg_list = Registration.objects.filter(player=eaten,game=g)
-	if eaten_reg_list.exists():
-	    eaten_reg = eaten_reg_list.get()
-	else:
-	    errors += "You can only eat the brains of people playing this game!\n"
 
 	#is eaten a human
 	if eaten_reg.team=="H":
@@ -69,15 +80,19 @@ def check_eat(eater,eaten,time=datetime.today()):
 	    errors += "That time is in the future!\n"
 
         #does eater have too many bad attempts
-        if eater.bad_meals > 9:
+        if eater_reg.player.bad_meals > 9:
             errors = "You have attempted too many bad meals. Please see a moderator immediately."
 
 	return errors
 
 def eat(eater,eaten,time=datetime.today(),location=None,description=None):
         g = get_current_game()
+
+	eater_reg = Registration.objects.filter(player=eater).get()
+	eaten_reg = Registration.objects.filter(player=eaten).get()
+
         #double check to make sure meal is valid
-        errors = check_eat(eater,eaten,time=datetime.today())
+        errors = check_eat(eater_reg,eaten_reg,time=datetime.today())
 
 	if errors != "":
 		eater.bad_meals += 1
@@ -186,11 +201,17 @@ def get_on_duty():
 		return {"name": "apparently no one", "cell": "N/A"}
 
 def clean_feed_code(inputString):
-	replacements = [("B", "A"), ("H", "A"), ("G","C"), ("F","E"), ("I","L"), ("M","N"), ("D","O"), ("Q","O"), ("R","P"), ("J","T"), ("U","W"), ("V","W"), ("K","X"), ("Y","X")]
+	replacements = [
+		("B", "A"), ("H", "A"), ("G", "C"), ("F", "E"),
+		("I", "L"), ("X", "K"), ("Y", "K"), ("M", "N"),
+		("R", "P"), ("D", "Q"), ("O", "Q"), ("J", "T"),
+		("U", "W"), ("V", "W")
+	]
+
 	output = inputString
+	output = output.upper()
 	for old, new in replacements:
 		output = output.replace(old, new)
-	output = output.upper()
 	return output
 
 
@@ -242,6 +263,10 @@ def logout_view(request):
 		context_instance=RequestContext(request),
 	)
 
+def twilio_to_django(number):
+	"""Convert a phone number from Twilio format to Django's format."""
+	return USPhoneNumberField().clean(number[1:])
+
 def twilio_call_view(request):
 	od = get_on_duty()
 	return render_to_response('call.xml',
@@ -258,7 +283,8 @@ def twilio_sms_view(request):
 		msg = request.GET.get("Body","Help")
 		cmd = msg.partition(" ")[0].lower()
 		arg = msg.partition(" ")[2].lower()
-		sender_pots = Player.objects.filter(cell=str(request.GET.get("From","+10"))[2:])
+		senderNumber = twilio_to_django(request.GET.get("From","+10"))
+		sender_pots = Player.objects.filter(cell=senderNumber)
 		if sender_pots.exists():
 			sender_player = sender_pots.get()
 			sender_team = get_team(sender_player)
@@ -333,7 +359,7 @@ def twilio_sms_view(request):
 			sender = User.objects.filter(email__iexact=cmd)
 			if sender.exists():
 				player = Player.objects.get(user=sender.get())
-				player.cell = str(request.GET.get("From","+10"))[2:]
+				player.cell = senderNumber
 				player.save()
 				resp = "You have been added to ZOMCOM and TacNet."
 			else:

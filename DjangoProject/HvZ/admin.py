@@ -54,10 +54,10 @@ class PlayerAdmin(admin.ModelAdmin):
 
 
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'school', 'dorm', 'team', 'upgrade', 'feed', 'bonus')
+    list_display = ('first_name', 'last_name', 'school', 'dorm', 'team', 'hidden_upgrade', 'upgrade', 'feed', 'bonus')
     list_display_links = ('first_name', 'last_name')
     list_editable = ('upgrade', 'team', 'feed', 'bonus')
-    list_filter = ('game', 'team', 'upgrade', 'can_oz', 'can_c3')
+    list_filter = ('game', 'team', 'upgrade', 'hidden_upgrade', 'can_oz', 'can_c3')
     search_fields = ['player__user__first_name', 'player__user__last_name', 'player__user__email', 'player__cell', 'feed']
 
     def changelist_view(self, request, extra_context=None):
@@ -95,6 +95,15 @@ class RuleAdmin(admin.ModelAdmin):
     list_editable = ('priority', )
     list_filter = ('category', )
 
+
+class MonolithControllerAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__','admin', 'forcefield')
+    list_editable = ('admin', 'forcefield')
+
+    def has_add_permission(self, request):
+        # Singleton!
+        return False
+
 admin.site.register(School)
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Player, PlayerAdmin)
@@ -103,6 +112,7 @@ admin.site.register(PlayerSetting)
 admin.site.register(Game)
 admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(Meal, MealAdmin)
+admin.site.register(MonolithController, MonolithControllerAdmin)
 #admin.site.register(Award)
 #admin.site.register(Achievement)
 admin.site.register(Mission, MissionAdmin)

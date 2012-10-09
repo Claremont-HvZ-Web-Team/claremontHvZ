@@ -507,6 +507,19 @@ class ForumThread(models.Model):
             return None
 
 
+class MonolithController(models.Model):
+    admin = models.BooleanField(default=False)
+    forcefield = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        # prevent additional models
+        self.id = 1
+        super(MonolithController, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return "Monolith Controller"
+
+
 class ForumPost(models.Model):
     parent = models.ForeignKey('ForumThread', blank=False)
     contents = models.TextField(blank=False)

@@ -95,6 +95,15 @@ class RuleAdmin(admin.ModelAdmin):
     list_editable = ('priority', )
     list_filter = ('category', )
 
+
+class MonolithControllerAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__','admin', 'forcefield')
+    list_editable = ('admin', 'forcefield')
+
+    def has_add_permission(self, request):
+        # Singleton!
+        return False
+
 admin.site.register(School)
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Player, PlayerAdmin)
@@ -103,6 +112,7 @@ admin.site.register(PlayerSetting)
 admin.site.register(Game)
 admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(Meal, MealAdmin)
+admin.site.register(MonolithController, MonolithControllerAdmin)
 #admin.site.register(Award)
 #admin.site.register(Achievement)
 admin.site.register(Mission, MissionAdmin)

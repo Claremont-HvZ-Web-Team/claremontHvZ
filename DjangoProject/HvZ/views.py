@@ -651,7 +651,7 @@ def meal_histograms(g):
 
 	# Make one query to the database, then drop each meal in its
 	# appropriate bucket.
-	meal_query = Meal.objects.all()
+	meal_query = Meal.objects.exclude(time__gt=datetime.now())
 	for m in meal_query:
 		t = m.time
 		i = elapsed_hours(t, t0)

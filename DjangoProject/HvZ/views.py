@@ -443,7 +443,6 @@ def player_user_profile(request, user_name):
 				},
 				  context_instance=RequestContext(request))
 
-@cache_page(60*5)
 def homepage_view(request):
 	ui = get_user_info(request)
 	g = get_current_game()
@@ -506,7 +505,6 @@ def homepage_view(request):
 			},
 			context_instance=RequestContext(request))
 
-@cache_page(60*5)
 def mission_list_view(request):
 	ui = get_user_info(request)
 	if ui["team"] == 'N':
@@ -535,7 +533,6 @@ def mission_list_view(request):
 		},
 		context_instance=RequestContext(request))
 
-@cache_page(60*5)
 def mission_json_view(request,mission_id):
 	import json
 	ui = get_user_info(request)
@@ -1014,7 +1011,6 @@ def stats_detail_view(request,category,specific):
 		context_instance=RequestContext(request),
 	)
 
-@cache_page(60*5)
 def rules_list_view(request):
 	rule_list = Rule.objects
 	ui = get_user_info(request)

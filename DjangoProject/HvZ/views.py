@@ -29,7 +29,7 @@ def arduino_view(request):
 	drones = Registration.objects.filter(team="Z",hidden_upgrade=None).count()
 	unbound = Registration.objects.filter(team="Z", hidden_upgrade="R").count()
 
-	string = "{:d},{:d},{:d},{:d},{:d}".format(
+	string = "<{:d},{:d},{:d},{:d},{:d}>".format(
 		admin,
 		forcefield,
 		humans,
@@ -651,7 +651,7 @@ def meal_histograms(g):
 
 	# Make one query to the database, then drop each meal in its
 	# appropriate bucket.
-	meal_query = Meal.objects.all()
+	meal_query = Meal.objects.exclude(time__gt=datetime.now())
 	for m in meal_query:
 		t = m.time
 		i = elapsed_hours(t, t0)

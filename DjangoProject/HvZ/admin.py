@@ -75,7 +75,7 @@ class MealAdmin(admin.ModelAdmin):
     list_filter = ('game', )
 
     def changelist_view(self, request, extra_context=None):
-        if not game__id__exact in request.GET:
+        if not 'game__id__exact' in request.GET:
             q = request.GET.copy()
             q['game__id__exact'] = 2
             request.GET = q

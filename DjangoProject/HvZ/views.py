@@ -29,7 +29,7 @@ def arduino_view(request):
 	drones = Registration.objects.filter(team="Z",hidden_upgrade=None).count()
 	unbound = Registration.objects.filter(team="Z", hidden_upgrade="R").count()
 
-	string = "{:d},{:d},{:d},{:d},{:d}".format(
+	string = "<{:d},{:d},{:d},{:d},{:d}>".format(
 		admin,
 		forcefield,
 		humans,

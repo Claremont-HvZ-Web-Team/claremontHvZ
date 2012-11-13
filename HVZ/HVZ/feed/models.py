@@ -5,6 +5,7 @@ from main.models import Building, Game, Player
 
 
 class Meal(models.Model):
+    """Models a successful zombie attack."""
 
     eater = models.ForeignKey(Player, related_name="meal_set")
     eaten = models.ForeignKey(Player, related_name="eaten_set")

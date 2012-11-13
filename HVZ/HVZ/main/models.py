@@ -153,7 +153,7 @@ class Achievement(models.Model):
     earned_time = models.DateTimeField()
 
 
-class OnDuty(models.Model):
+class ModSchedule(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     mod = models.ForeignKey(

@@ -12,5 +12,5 @@ class Rule(models.Model):
 
     category = models.CharField(
         max_length=1,
-        choices=[(x, CATEGORIES[x]) for x in CATEGORIES],
+        choices=CATEGORIES.items()
     )

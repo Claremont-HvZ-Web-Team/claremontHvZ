@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
 
+from HVZ.feed.fields import FeedCodeField
+
 # Create your models here.
 
 
@@ -113,7 +115,7 @@ class Registration(models.Model):
 
     player = models.ForeignKey(Player)
     hardcore = models.BooleanField(default=False)
-    feed = models.CharField(max_length=6)
+    feed = FeedCodeField()
 
     game = models.ForeignKey(Game)
     team = models.CharField(

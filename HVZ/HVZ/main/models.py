@@ -46,41 +46,6 @@ class Building(models.Model):
         except KeyError:
             return None
 
-
-class Player(models.Model):
-    """Game-related data about a user"""
-    user = models.OneToOneField(User)
-    school = models.ForeignKey(School)
-    dorm = models.ForeignKey(Building)
-
-    grad_year = models.PositiveIntegerField(blank=True, null=True)
-
-    cell = PhoneNumberField(blank=True, null=True)
-
-    human_pic = models.ImageField()
-    zombie_pic = models.ImageField()
-
-    bad_meals = models.PositiveIntegerField(default=0, blank=False)
-
-    def __unicode__(self):
-        return u"Player: {}".format(self.user)
-
-
-class PlayerSetting(models.Model):
-    """A User's settings"""
-    player = models.OneToOneField(Player)
-
-    cell_emergency = models.BooleanField()
-    cell_send = models.BooleanField()
-    cell_mission_announce = models.BooleanField()
-    cell_mission_update = models.BooleanField()
-    cell_npc_announce = models.BooleanField()
-    cell_npc_update = models.BooleanField()
-
-    def __unicode__(self):
-        return u"Settings: {}".format(self.player)
-
-
 class Game(models.Model):
     """Um. A Game."""
     SEMESTERS = {
@@ -101,46 +66,65 @@ class Game(models.Model):
             self.year,
         )
 
+class Player(models.Model):
+    """Game-related data about a user"""
 
-class Registration(models.Model):
-    """An instance of a player in a certain game."""
     TEAMS = {
         "H": "Humans",
         "Z": "Zombies",
     }
 
-    HIDDEN_UPGRADES = {
-        "R": "Rebel Zombie",
-    }
+    UPGRADES = {}
+    FEED_SZ = 6
 
-    player = models.ForeignKey(Player)
-    hardcore = models.BooleanField(default=False)
-    feed = FeedCodeField()
+    user = models.ForeignKey(User)
+    cell = PhoneNumberField(blank=True, null=True)
 
     game = models.ForeignKey(Game)
-    team = models.CharField(
-        max_length=1,
-        choices=[(x, TEAMS[x]) for x in TEAMS],
-        default="H",
-    )
+
+    school = models.ForeignKey(School)
+    dorm = models.ForeignKey(Building)
+    grad_year = models.PositiveIntegerField(blank=True, null=True)
+
     can_oz = models.BooleanField(default=False)
     can_c3 = models.BooleanField(default=False)
+    hardcore = models.BooleanField(default=False)
+
+    feed = models.CharField(max_length=FEED_SZ)
+
+    team = models.CharField(
+        max_length=1,
+        choices=TEAMS.items(),
+        default="H",
+    )
 
     upgrade = models.CharField(
         max_length=1,
-        choices=[(x, HIDDEN_UPGRADES[x]) for x in HIDDEN_UPGRADES],
+        choices=UPGRADES.items(),
         blank=True,
         null=True,
     )
 
-    bonus = models.PositiveIntegerField(default=0, blank=False)
+    human_pic = models.ImageField()
+    zombie_pic = models.ImageField()
 
     def __unicode__(self):
-        return u"{}: {} {}".format(
-            self.game,
-            self.player.first_name(),
-            self.player.last_name(),
-        )
+        return u"Player: {}".format(self.user)
+
+
+class PlayerSetting(models.Model):
+    """A User's settings"""
+    player = models.OneToOneField(Player)
+
+    cell_emergency = models.BooleanField()
+    cell_send = models.BooleanField()
+    cell_mission_announce = models.BooleanField()
+    cell_mission_update = models.BooleanField()
+    cell_npc_announce = models.BooleanField()
+    cell_npc_update = models.BooleanField()
+
+    def __unicode__(self):
+        return u"Settings: {}".format(self.player)
 
 
 class Award(models.Model):

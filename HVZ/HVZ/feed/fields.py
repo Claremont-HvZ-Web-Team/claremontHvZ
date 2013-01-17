@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 
 class FeedCodeField(models.CharField):
 
@@ -23,7 +23,7 @@ class FeedCodeField(models.CharField):
 
     def __init__(self, *args, **kwargs):
         kwargs["max_length"] = self.FEED_LEN
-        super(FeedCodeField, self).__init__(*args, **kwargs)
+        return super(FeedCodeField, self).__init__(*args, **kwargs)
 
     default_validators = (models.CharField.default_validators +
                           [validate_length, validate_letters])

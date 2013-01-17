@@ -1,9 +1,24 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
+from django.conf import settings
 
 from HVZ.main import utils
 from HVZ.main.models import Player, School, Building
-from HVZ.feed.fields import FeedCodeField
+
+from validators import validate_chars, feedcode_human
+
+
+class FeedCodeField(forms.CharField):
+
+    def __init__(self, *args, **kwargs):
+        kwargs["min_length"] = settings.FEED_LEN
+        kwargs["max_length"] = settings.FEED_LEN
+        return super(FeedCodeField, self).__init__(*args, **kwargs)
+
+    default_validators = (forms.CharField.default_validators +
+                          [validate_chars])
+
 
 # Help text for the widgets in the Player creation form.
 
@@ -18,10 +33,11 @@ Check this box if you would like to begin afflicted with the zombie curse."""
 FEED_TEXT = """\
 When you are finished entering in all of your other information, have the \
 tabler registering you type in your feed code. Feed codes can only contain \
-the letters {}.""".format(FeedCodeField.VALID_CHARS)
+the letters {}.""".format(settings.VALID_CHARS)
 
 C3_TEXT = """\
 Check this box if you would like to begin as a member of C3."""
+
 
 class RegisterForm(forms.ModelForm):
     class Meta:
@@ -72,7 +88,7 @@ class RegisterForm(forms.ModelForm):
         help_text=FEED_TEXT
     )
 
-class SignupForm(ModelForm):
+class SignupForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("first_name", "last_name", "email", "password")

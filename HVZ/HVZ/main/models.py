@@ -3,30 +3,7 @@ from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
 from django.conf import settings
 
-from validators import validate_chars
-
-class FeedCodeField(models.CharField):
-
-    # The length of a feed code.
-    FEED_LEN = 6
-
-    # The characters we allow in a feed code.
-    VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]
-
-    def __init__(self, *args, **kwargs):
-        kwargs["max_length"] = self.FEED_LEN
-        return super(FeedCodeField, self).__init__(*args, **kwargs)
-
-    default_validators = (models.CharField.default_validators +
-                          [validate_chars])
-
-    def formfield(self, **kwargs):
-        defaults = {"min_length": self.FEED_LEN,
-                    "max_length": self.FEED_LEN,
-                    "validators": (models.CharField.default_validators +
-                                   [validate_chars, feedcode_human])}
-        defaults.update(kwargs)
-        return super(HandField, self).formfield(**defaults)
+from validators import validate_chars, feedcode_human
 
 
 class School(models.Model):
@@ -113,7 +90,8 @@ class Player(models.Model):
     can_oz = models.BooleanField(default=False)
     can_c3 = models.BooleanField(default=False)
 
-    feed = FeedCodeField()
+    feed = models.CharField(max_length=settings.FEED_LEN,
+                            validators=[validate_chars])
 
     team = models.CharField(
         max_length=1,

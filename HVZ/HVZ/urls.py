@@ -15,7 +15,7 @@ urlpatterns = patterns(
     # url(r'^HVZ/', include('HVZ.foo.urls')),
 
     url(r'^eat/', HVZ.feed.views.MealCreate.as_view()),
-    url(r'^register/', HVZ.main.views.UserCreate.as_view()),
+    url(r'^register/', HVZ.main.views.Signup.as_view()),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

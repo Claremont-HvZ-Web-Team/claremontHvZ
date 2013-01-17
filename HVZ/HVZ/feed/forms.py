@@ -1,14 +1,14 @@
-from django.forms import CharField, ModelForm
+from django import forms
 from django.conf import settings
 
-import models
-from validators import feedcode_human, validate_chars
+from HVZ.main.forms import FeedCodeField
+from HVZ.feed.models import Meal
 
-class MealForm(ModelForm):
+class MealForm(forms.ModelForm):
     class Meta:
-        model = models.Meal
+        model = Meal
         fields = ["time", "location", "description"]
 
-    feedcode = models.FeedCodeField.formfield(
+    feedcode = FeedCodeField(
         help_text="Type in the feed code of the person you ate"
     )

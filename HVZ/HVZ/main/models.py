@@ -112,21 +112,6 @@ class Player(models.Model):
         return u"Player: {}".format(self.user)
 
 
-class PlayerSetting(models.Model):
-    """A User's settings"""
-    player = models.OneToOneField(Player)
-
-    cell_emergency = models.BooleanField()
-    cell_send = models.BooleanField()
-    cell_mission_announce = models.BooleanField()
-    cell_mission_update = models.BooleanField()
-    cell_npc_announce = models.BooleanField()
-    cell_npc_update = models.BooleanField()
-
-    def __unicode__(self):
-        return u"Settings: {}".format(self.player)
-
-
 class Award(models.Model):
     title = models.CharField(max_length=80)
     description = models.CharField(max_length=255)

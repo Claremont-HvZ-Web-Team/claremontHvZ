@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 
 from HVZ.main.models import Player
-from HVZ.utils import current_players
+from HVZ.main.utils import current_players
 
 def ensure_human(player):
     if player.team != "H":
@@ -17,4 +17,4 @@ def feedcode_human(feedcode):
     """Ensure the feedcode corresponds to a currently-playing Human."""
     if not current_players().filter(feed=feedcode).exists():
         raise ValidationError(
-            "{} does not correspond to a player in this game.".format(feedcode)
+            "{} does not correspond to a player in this game.".format(feedcode))

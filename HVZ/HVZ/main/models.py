@@ -3,7 +3,30 @@ from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
 from django.conf import settings
 
-from HVZ.feed.fields import FeedCodeField
+from validators import validate_chars
+
+class FeedCodeField(models.CharField):
+
+    # The length of a feed code.
+    FEED_LEN = 6
+
+    # The characters we allow in a feed code.
+    VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]
+
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = self.FEED_LEN
+        return super(FeedCodeField, self).__init__(*args, **kwargs)
+
+    default_validators = (models.CharField.default_validators +
+                          [validate_chars])
+
+    def formfield(self, **kwargs):
+        defaults = {"min_length": self.FEED_LEN,
+                    "max_length": self.FEED_LEN,
+                    "validators": (models.CharField.default_validators +
+                                   [validate_chars, feedcode_human])}
+        defaults.update(kwargs)
+        return super(HandField, self).formfield(**defaults)
 
 
 class School(models.Model):

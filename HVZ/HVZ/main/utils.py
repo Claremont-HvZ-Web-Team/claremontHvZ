@@ -1,10 +1,13 @@
-from models import Game, Player
+import models
 
 def current_game():
-    return Game.objects.latest()
+    return models.Game.objects.latest()
 
 def current_players():
-    return Player.objects.filter(game=current_game())
+    return models.Player.objects.filter(game=current_game())
 
 def logged_in_player(request):
     return current_players().get(user=request.user)
+
+def dorms():
+    return models.Building.objects.filter(building_type="D")

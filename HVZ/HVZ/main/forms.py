@@ -1,7 +1,9 @@
 from django import forms
+from django.contrib.localflavor.us.forms import USPhoneNumberField
 
+from HVZ.main import utils
+from HVZ.main.models import Player, School, Building
 from HVZ.feed.fields import FeedCodeField
-
 
 # Help text for the widgets in the Player creation form.
 
@@ -16,12 +18,12 @@ Check this box if you would like to begin afflicted with the zombie curse."""
 FEED_TEXT = """\
 When you are finished entering in all of your other information, have the \
 tabler registering you type in your feed code. Feed codes can only contain \
-the letters {}.""".format(FeedCodeField.VALID_LETTERS))
+the letters {}.""".format(FeedCodeField.VALID_CHARS)
 
 C3_TEXT = """\
 Check this box if you would like to begin as a member of C3."""
 
-class PlayerCreate(forms.ModelForm):
+class RegisterForm(forms.ModelForm):
     class Meta:
         model = Player
         fields = ["school",
@@ -33,19 +35,21 @@ class PlayerCreate(forms.ModelForm):
                   "feed"]
 
     school = forms.ModelChoiceField(
+        queryset=School.objects,
         required=True,
         empty_label="Select a school",
     )
 
     dorm = forms.ModelChoiceField(
+        queryset=utils.dorms(),
         required=True,
         empty_label="Select a dorm",
     )
 
-    grad_year = forms.PositiveIntegerField(required=True)
+    grad_year = forms.IntegerField(required=True)
 
     cell = USPhoneNumberField(
-        label="Cell Number"
+        label="Cell Number",
         required=False,
         help_text=CELL_TEXT
     )
@@ -68,4 +72,7 @@ class PlayerCreate(forms.ModelForm):
         help_text=FEED_TEXT
     )
 
-
+class SignupForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email", "password")

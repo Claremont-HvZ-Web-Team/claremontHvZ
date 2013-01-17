@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.db import models
 
-from HVZ.main.models import Building, Game, Player
-from HVZ.main.validators import TimeValidator
+from HVZ.main.models import Player, Building
+from HVZ.main.validators import TimeValidator, validate_chars
 
 class Meal(models.Model):
     """Models a successful zombie attack."""

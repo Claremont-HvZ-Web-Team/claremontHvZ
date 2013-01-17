@@ -13,7 +13,7 @@ class Meal(models.Model):
     time = models.DateTimeField(null=True, blank=True)
     location = models.ForeignKey(Building, null=True, blank=True)
 
-    description = models.TextField(blank=True)
+    description = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return u"{}: {} -> {}".format(eater.game, eater, eaten)

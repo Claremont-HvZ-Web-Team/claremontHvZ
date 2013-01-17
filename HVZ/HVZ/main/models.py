@@ -1,14 +1,13 @@
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
+from django.conf import settings
 
 from HVZ.feed.fields import FeedCodeField
 
-# Create your models here.
-
 
 class School(models.Model):
-    """Representation of a campus"""
+    """Represents a campus"""
     name = models.CharField(max_length=7)
 
     def __unicode__(self):
@@ -31,7 +30,7 @@ class Building(models.Model):
     campus = models.ForeignKey(School, blank=True, null=True)
     building_type = models.CharField(
         max_length=1,
-        choices=[(x, KINDS[x]) for x in KINDS],
+        choices=KINDS.items(),
     )
 
     def __unicode__(self):
@@ -48,23 +47,26 @@ class Building(models.Model):
 
 class Game(models.Model):
     """Um. A Game."""
-    SEMESTERS = {
-        "S": "Spring",
-        "F": "Fall",
-    }
 
-    semester = models.CharField(
-        max_length=1,
-        choices=[(x, SEMESTERS[x]) for x in SEMESTERS]
-    )
-    year = models.PositiveIntegerField()
     start_date = models.DateField()
 
     def __unicode__(self):
         return u"{} {}".format(
-            self.SEMESTERS[self.semester],
-            self.year,
+            self.semester(),
+            self.start_date.year,
         )
+
+    def semester(self):
+        """Return 'Spring', 'Summer', or 'Fall', based on academic fiat."""
+        if 1 <= self.start_date < 6:
+            return "Spring"
+        elif 6 <= self.start_date < 9:
+            return "Summer"
+        else:
+            return "Fall"
+
+    class Meta:
+        get_latest_by = "start_date"
 
 class Player(models.Model):
     """Game-related data about a user"""
@@ -75,7 +77,6 @@ class Player(models.Model):
     }
 
     UPGRADES = {}
-    FEED_SZ = 6
 
     user = models.ForeignKey(User)
     cell = PhoneNumberField(blank=True, null=True)
@@ -88,9 +89,8 @@ class Player(models.Model):
 
     can_oz = models.BooleanField(default=False)
     can_c3 = models.BooleanField(default=False)
-    hardcore = models.BooleanField(default=False)
 
-    feed = models.CharField(max_length=FEED_SZ)
+    feed = FeedCodeField()
 
     team = models.CharField(
         max_length=1,
@@ -105,8 +105,8 @@ class Player(models.Model):
         null=True,
     )
 
-    human_pic = models.ImageField()
-    zombie_pic = models.ImageField()
+    human_pic = models.ImageField(upload_to=settings.HUMAN_PICS)
+    zombie_pic = models.ImageField(upload_to=settings.ZOMBIE_PICS)
 
     def __unicode__(self):
         return u"Player: {}".format(self.user)
@@ -145,7 +145,6 @@ class ModSchedule(models.Model):
     mod = models.ForeignKey(
         Player,
         limit_choices_to={
-            'cell__gte': '1',
             'user__is_staff': 'True',
         }
     )

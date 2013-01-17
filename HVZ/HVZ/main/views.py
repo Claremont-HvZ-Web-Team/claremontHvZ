@@ -1,1 +1,4 @@
-# Create your views here.
+from django.views.generic.edit import CreateView
+
+class PlayerCreate(CreateView):
+    

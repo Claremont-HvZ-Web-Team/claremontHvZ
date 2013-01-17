@@ -115,7 +115,10 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = absolute_path('public/media/')
+MEDIA_ROOT = absolute_path(os.path.join('public','media'))
+
+HUMAN_PICS = os.path.join(MEDIA_ROOT, 'human_pics')
+ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -155,7 +158,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-ROOT_URLCONF = 'DjangoProject.urls'
+ROOT_URLCONF = 'HVZ.urls'
 
 TEMPLATE_DIRS = (
     absolute_path('templates'),
@@ -172,10 +175,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    # 'tinymce',
-    'HVZ',
+    'HVZ.main',
+    'HVZ.feed'
 )

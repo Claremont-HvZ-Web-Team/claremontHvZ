@@ -4,9 +4,11 @@ from django.views.generic.edit import CreateView
 
 from HVZ.main.utils import current_players
 
+from models import Meal
 from forms import MealForm
 
 class MealCreate(CreateView):
+    model = Meal
     form_class = MealForm
 
     @method_decorator(login_required)

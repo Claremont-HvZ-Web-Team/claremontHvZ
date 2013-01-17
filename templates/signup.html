@@ -10,9 +10,9 @@
       {% for field in form %}
       <div class="fieldWrapper">
         {{ field.errors }}
-        {{ field.name }}
+        {{ field.label }}
         {{ field }}
-        <div class="reminder">{{ field.help_text }}</div>
+        {{ field.help_text }}
       </div>
       {% endfor %}
       <button type="submit">Sign Up</button>

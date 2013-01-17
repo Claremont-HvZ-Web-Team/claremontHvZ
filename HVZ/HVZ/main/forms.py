@@ -91,4 +91,7 @@ class RegisterForm(forms.ModelForm):
 class SignupForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email", "password")
+        fields = ("username", "first_name", "last_name", "email", "password")
+
+    password = forms.CharField(widget=forms.PasswordInput(render_value=False),
+                               label="Password.")

@@ -21,11 +21,6 @@ the letters {}.""".format(FeedCodeField.VALID_LETTERS))
 C3_TEXT = """\
 Check this box if you would like to begin as a member of C3."""
 
-
-class UserCreate(forms.ModelForm):
-    class Meta:
-        model = User
-
 class PlayerCreate(forms.ModelForm):
     class Meta:
         model = Player

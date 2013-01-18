@@ -17,6 +17,9 @@ class FeedCodeField(forms.CharField):
         kwargs["max_length"] = settings.FEED_LEN
         return super(FeedCodeField, self).__init__(*args, **kwargs)
 
+    def clean(self, value):
+        return super(FeedCodeField, self).clean(value.upper())
+
     default_validators = (forms.CharField.default_validators +
                           [validate_chars])
 

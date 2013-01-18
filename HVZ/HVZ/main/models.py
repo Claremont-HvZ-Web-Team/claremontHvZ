@@ -49,21 +49,36 @@ class Game(models.Model):
     """Um. A Game."""
 
     start_date = models.DateField()
+    active = models.BooleanField(default=False, unique=True)
 
     def __unicode__(self):
-        return u"{} {}".format(
+        if self.active:
+            s = u"{} {} (active)"
+        else:
+            s = u"{} {}"
+        return s.format(
             self.semester(),
             self.start_date.year,
         )
 
     def semester(self):
         """Return 'Spring', 'Summer', or 'Fall', based on academic fiat."""
-        if 1 <= self.start_date < 6:
+        if 1 <= self.start_date.month < 6:
             return "Spring"
-        elif 6 <= self.start_date < 9:
+        elif 6 <= self.start_date.month < 9:
             return "Summer"
         else:
             return "Fall"
+
+    def clean(self):
+        """Deactivate any older Games when validating."""
+
+        for g in Game.objects.filter(start_date__lt=self.start_date,
+                                     active=True):
+            g.active = False
+            g.save()
+
+        return super(Game, self).clean()
 
     class Meta:
         get_latest_by = "start_date"

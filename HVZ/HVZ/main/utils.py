@@ -1,7 +1,7 @@
 import models
 
 def current_game():
-    return models.Game.objects.latest()
+    return models.Game.objects.filter(active=True).get()
 
 def current_players():
     return models.Player.objects.filter(game=current_game())

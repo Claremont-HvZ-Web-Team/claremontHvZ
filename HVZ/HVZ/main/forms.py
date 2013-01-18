@@ -24,19 +24,22 @@ class FeedCodeField(forms.CharField):
                           [validate_chars])
 
 
+class RegisterForm(forms.Form):
 
+    email = forms.EmailField(required=True)
 
+    password1 = forms.CharField(
+        label=_("Password"),
+        widget=forms.PasswordInput,
+        required=True
+    )
 
-class RegisterForm(forms.ModelForm):
-    class Meta:
-        model = Player
-        fields = ["school",
-                  "dorm",
-                  "grad_year",
-                  "cell",
-                  "oz",
-                  "c3",
-                  "feed"]
+    password2 = forms.CharField(
+        label=_("Password confirmation"),
+        widget=forms.PasswordInput,
+        required=True,
+        help_text=_("Enter the same password as above, for verification."),
+    )
 
     school = forms.ModelChoiceField(
         queryset=School.objects,
@@ -83,10 +86,4 @@ class RegisterForm(forms.ModelForm):
                     ).format(settings.VALID_CHARS)
     )
 
-class SignupForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ("username", "first_name", "last_name", "email", "password")
 
-    password = forms.CharField(widget=forms.PasswordInput(render_value=False),
-                               label="Password.")

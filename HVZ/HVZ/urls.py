@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 
 import HVZ.feed.views
 import HVZ.main.views
@@ -14,8 +16,20 @@ urlpatterns = patterns(
     # url(r'^$', 'HVZ.views.home', name='home'),
     # url(r'^HVZ/', include('HVZ.foo.urls')),
 
-    url(r'^eat/', HVZ.feed.views.MealCreate.as_view()),
-    url(r'^register/', HVZ.main.views.Signup.as_view()),
+    url(r'^register/',
+        permission_required("main.add_player")(
+            HVZ.main.views.Register.as_view()
+        ),
+        name="register"),
+
+    #  url(r'^login/', HVZ.main.views.Login.as_view()),
+    url(r'^login/', 'django.contrib.auth.views.login', name="login"),
+
+    url(r'^eat/',
+        login_required(
+            HVZ.feed.views.MealCreate.as_view()
+        ),
+        name="eat"),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

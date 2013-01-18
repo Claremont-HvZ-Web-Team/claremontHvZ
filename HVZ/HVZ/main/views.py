@@ -1,21 +1,42 @@
-from django.views.generic.edit import CreateView
-from django.utils.decorators import method_decorator
+from django.views.generic.edit import FormView
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from models import Player
-from forms import SignupForm, RegisterForm
+from forms import RegisterForm
+from utils import current_game
 
-class Signup(CreateView):
-    model = User
-    form_class = SignupForm
-    template_name = "signup.html"
-    success_url = "/"
-
-class Register(CreateView):
-    model = Player
+class Register(FormView):
     form_class = RegisterForm
+    template_name = "register.html"
 
-    @method_decorator(login_required)
-    def dispatch(self):
-        return super(MealFormView, self).dispatch(*args, **kwargs)
+    def get_success_url(self):
+        return reverse("register")
+
+    def form_valid(self, form):
+        def grab(s):
+            return form.cleaned_data[s]
+
+        try:
+            u = User.objects.get(email=grab("email"))
+            u.set_password(grab("password1"))
+        except User.DoesNotExist:
+            u = User.objects.create_user(email=grab("email"),
+                                         username=grab("email"),
+                                         password=grab("password1"))
+        finally:
+            u.save()
+
+        p = Player(user=u,
+                   game=current_game(),
+                   school=grab("school"),
+                   dorm=grab("dorm"),
+                   grad_year=grab("grad_year"),
+                   cell=grab("cell"),
+                   feed=grab("feed"),
+                   can_oz=grab("can_oz"),
+                   can_c3=grab("can_c3"),
+                   team="H")
+        p.save()
+
+        return super(Register, self).form_valid(form)

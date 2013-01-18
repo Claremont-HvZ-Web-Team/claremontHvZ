@@ -1,3 +1,6 @@
+from datetime import date
+
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
@@ -55,12 +58,12 @@ class Building(models.Model):
 class Game(models.Model):
     """Um. A Game."""
 
-    start_date = models.DateField()
-    active = models.BooleanField(default=False, unique=True)
+    start_date = models.DateField(unique=True)
+    end_date = models.DateField(unique=True)
 
     def __unicode__(self):
-        if self.active:
-            s = u"{} {} (active)"
+        if self.start_date <= date.today() <= self.end_date:
+            s = u"{} {} (ongoing)"
         else:
             s = u"{} {}"
         return s.format(
@@ -78,14 +81,11 @@ class Game(models.Model):
             return "Fall"
 
     def clean(self):
-        """Deactivate any older Games when validating."""
-
-        for g in Game.objects.filter(start_date__lt=self.start_date,
-                                     active=True):
-            g.active = False
-            g.save()
-
-        return super(Game, self).clean()
+        # Two date ranges A and B overlap if:
+        # (A.start <= B.end) and (A.end >= B.start)
+        if Game.objects.filter(start_date__lte=self.end_date,
+                               end_date__gte=self.start_date).exists():
+            raise ValidationError("This Game overlaps with another!")
 
     class Meta:
         get_latest_by = "start_date"

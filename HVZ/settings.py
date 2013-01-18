@@ -114,6 +114,9 @@ USE_I18N = False
 # calendars according to the current locale
 USE_L10N = True
 
+# Used by Django's auth decorators to log a user in.
+LOGIN_URL = '/login'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = absolute_path(os.path.join('public','media'))

@@ -88,7 +88,7 @@ class RegisterForm(forms.Form):
     )
 
     def clean(self):
-        if not Game.objects.filter(active=True).exists():
-            raise ValidationError("There are no active Games in progress!")
+        if not utils.game_in_progress():
+            raise ValidationError("There are no ongoing Games in progress!")
 
         return super(RegisterForm, self).clean()

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
-from utils import current_game
+from utils import nearest_game
 
 def feedcode_human(feedcode):
     """Ensure the feedcode corresponds to a currently-playing Human."""
@@ -18,7 +18,7 @@ def validate_chars(feedcode):
 class TimeValidator:
     def __init__(self, game=None):
         if game is None:
-            game = current_game()
+            game = nearest_game()
 
         self.game = game
 

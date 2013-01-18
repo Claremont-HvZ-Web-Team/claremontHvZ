@@ -1,14 +1,22 @@
-from django.views.generic.edit import FormView
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User
+from django.views.generic.edit import FormView
 
-from models import Player
-from forms import RegisterForm
-from utils import current_game
+from HVZ.main.models import Player
+from HVZ.main.forms import RegisterForm
+from HVZ.main.decorators import require_unfinished_game
+from HVZ.main.utils import nearest_game
 
 class Register(FormView):
     form_class = RegisterForm
     template_name = "register.html"
+
+    @method_decorator(permission_required("main.add_player"))
+    @method_decorator(require_unfinished_game)
+    def dispatch(self, *args, **kwargs):
+        return super(Register, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse("register")
@@ -28,7 +36,7 @@ class Register(FormView):
             u.save()
 
         p = Player(user=u,
-                   game=current_game(),
+                   game=nearest_game(),
                    school=grab("school"),
                    dorm=grab("dorm"),
                    grad_year=grab("grad_year"),

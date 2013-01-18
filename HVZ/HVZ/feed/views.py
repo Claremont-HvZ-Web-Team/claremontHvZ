@@ -1,5 +1,8 @@
 from django.views.generic.edit import CreateView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
+from HVZ.main.decorators import zombie_required
 from HVZ.main.utils import current_players
 
 from models import Meal
@@ -9,6 +12,8 @@ class MealCreate(CreateView):
     model = Meal
     form_class = MealForm
 
+    @method_decorator(login_required)
+    @method_decorator(zombie_required)
     def dispatch(self, *args, **kwargs):
         return super(MealFormView, self).dispatch(*args, **kwargs)
 

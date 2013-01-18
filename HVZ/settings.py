@@ -1,6 +1,7 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
 import os
+
 import local_settings
 
 ### The following settings should all be defined in a file called
@@ -26,7 +27,7 @@ TEMPLATE_DEBUG = local_settings.TEMPLATE_DEBUG
 # addresses. It should look something like the following:
 
 # ADMINS = (
-#     # ('Your Name', 'your_email@domain.com'),
+#     ('Your Name', 'your_email@domain.com'),
 # )
 
 ADMINS = local_settings.ADMINS
@@ -179,7 +180,7 @@ INSTALLED_APPS = (
 # App-specific settings below:
 
 # The length of a feed code.
-FEED_LEN = 6
+FEED_LEN = 5
 
 # The characters we allow in a feed code.
 VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]

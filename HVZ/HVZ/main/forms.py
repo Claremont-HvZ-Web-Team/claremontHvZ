@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
 from django.conf import settings
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from HVZ.main import utils
 from HVZ.main.models import Player, School, Building
@@ -20,23 +21,7 @@ class FeedCodeField(forms.CharField):
                           [validate_chars])
 
 
-# Help text for the widgets in the Player creation form.
 
-CELL_TEXT = """\
-If you want to be able to text message the game's website enter in your \
-phone number here. We will not use this number except in emergencies or \
-in response to texts from you."""
-
-OZ_TEXT = """\
-Check this box if you would like to begin afflicted with the zombie curse."""
-
-FEED_TEXT = """\
-When you are finished entering in all of your other information, have the \
-tabler registering you type in your feed code. Feed codes can only contain \
-the letters {}.""".format(settings.VALID_CHARS)
-
-C3_TEXT = """\
-Check this box if you would like to begin as a member of C3."""
 
 
 class RegisterForm(forms.ModelForm):
@@ -53,39 +38,46 @@ class RegisterForm(forms.ModelForm):
     school = forms.ModelChoiceField(
         queryset=School.objects,
         required=True,
-        empty_label="Select a school",
+        empty_label=_("Select a school"),
     )
 
     dorm = forms.ModelChoiceField(
         queryset=utils.dorms(),
         required=True,
-        empty_label="Select a dorm",
+        empty_label=_("Select a dorm"),
     )
 
     grad_year = forms.IntegerField(required=True)
 
     cell = USPhoneNumberField(
-        label="Cell Number",
+        label=_("Cell Number"),
         required=False,
-        help_text=CELL_TEXT
+        help_text=_("If you want to be able to text message the game's website "
+                    "enter in your phone number here. We will not use this "
+                    "number except in response to texts from you.")
     )
 
-    oz = forms.BooleanField(
-        label="OZ Pool",
+    can_oz = forms.BooleanField(
+        label=_("OZ Pool"),
         required=False,
-        help_text=OZ_TEXT,
+        help_text=_("Check this box if you would like to begin afflicted with "
+                    "the zombie curse.")
     )
 
-    c3 = forms.BooleanField(
-        label="C3 Pool",
+    can_c3 = forms.BooleanField(
+        label=_("C3 Pool"),
         required=False,
-        help_text=C3_TEXT,
+        help_text=_("Check this box if you would like to begin as a member of "
+                    "C3.")
     )
 
     feed = FeedCodeField(
         label="Feed Code",
         required=True,
-        help_text=FEED_TEXT
+        help_text=_("When you are finished entering in all of your other "
+                    "information, have the tabler registering you type in your "
+                    "feed code. Feed codes can only contain the letters {}."
+                    ).format(settings.VALID_CHARS)
     )
 
 class SignupForm(forms.ModelForm):

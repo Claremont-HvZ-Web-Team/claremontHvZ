@@ -106,7 +106,8 @@ class Player(models.Model):
     can_c3 = models.BooleanField(default=False)
 
     feed = models.CharField(max_length=settings.FEED_LEN,
-                            validators=[validate_chars])
+                            validators=[validate_chars]
+    )
 
     team = models.CharField(
         max_length=1,
@@ -165,7 +166,7 @@ class MonolithController(models.Model):
     def save(self, *args, **kwargs):
         # prevent additional models
         self.id = 1
-        super(MonolithController, self).save(*args, **kwargs)
+        return super(MonolithController, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return "Monolith Controller"

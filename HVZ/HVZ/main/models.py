@@ -3,8 +3,15 @@ from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
 from django.conf import settings
 
-from validators import validate_chars, feedcode_human
+from validators import validate_chars
 
+
+class FeedCodeField(models.CharField):
+    default_validators = [validate_chars]
+
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = settings.FEED_LEN
+        return super(FeedCodeField, self).__init__(*args, **kwargs)
 
 class School(models.Model):
     """Represents a campus"""
@@ -105,9 +112,7 @@ class Player(models.Model):
     can_oz = models.BooleanField(default=False)
     can_c3 = models.BooleanField(default=False)
 
-    feed = models.CharField(max_length=settings.FEED_LEN,
-                            validators=[validate_chars]
-    )
+    feed = FeedCodeField()
 
     team = models.CharField(
         max_length=1,

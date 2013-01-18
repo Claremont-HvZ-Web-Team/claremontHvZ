@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from HVZ.main import utils
-from HVZ.main.models import Player, School, Building
+from HVZ.main.models import Player, School, Building, Game
 
 from validators import validate_chars, feedcode_human
 
@@ -86,4 +86,8 @@ class RegisterForm(forms.Form):
                     ).format(settings.VALID_CHARS)
     )
 
+    def clean(self):
+        if not Game.objects.filter(active=True).exists():
+            raise ValidationError("There are no active Games in progress!")
 
+        return super(RegisterForm, self).clean()

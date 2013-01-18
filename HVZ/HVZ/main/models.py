@@ -128,6 +128,9 @@ class Player(models.Model):
     def __unicode__(self):
         return u"Player: {}".format(self.user)
 
+    class Meta:
+        # A User can only have one Player per Game.
+        unique_together = (("user", "game"),)
 
 class Award(models.Model):
     title = models.CharField(max_length=80)

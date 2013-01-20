@@ -16,13 +16,15 @@ class FeedCodeField(models.CharField):
         kwargs["max_length"] = settings.FEED_LEN
         return super(FeedCodeField, self).__init__(*args, **kwargs)
 
+    def clean(self, value):
+        return super(FeedCodeField, self).clean(value.upper())
+
 class School(models.Model):
     """Represents a campus"""
     name = models.CharField(max_length=7)
 
     def __unicode__(self):
         return u"{}".format(self.name)
-
 
 class Building(models.Model):
     """A building on a campus."""

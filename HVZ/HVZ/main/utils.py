@@ -32,7 +32,7 @@ def logged_in_player(request):
 
 def user_to_player(u):
     """Return the most current Player corresponding to the given User."""
-    return Player.objects.filter(game=nearest_game(), user=u).get()
+    return models.Player.objects.filter(game=nearest_game(), user=u).get()
 
 # Building retrieval functions.
 

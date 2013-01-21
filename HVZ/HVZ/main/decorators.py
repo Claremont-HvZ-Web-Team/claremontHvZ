@@ -31,7 +31,7 @@ def require_unfinished_game(view_func):
 def zombie_required(*args, **kwargs):
     """Raise an exception if the current user is not a zombie."""
     def check_zombie(u):
-        if user_to_player(u).team != "Z":
+        if utils.user_to_player(u).team != "Z":
             raise WrongTeamException
         return True
 
@@ -39,7 +39,7 @@ def zombie_required(*args, **kwargs):
 
 def human_required(*args, **kwargs):
     def check_human(u):
-        if user_to_player(u).team != "H":
+        if utils.user_to_player(u).team != "H":
             raise WrongTeamException
         return True
 

@@ -5,12 +5,6 @@ import models
 
 from utils import nearest_game
 
-def feedcode_human(feedcode):
-    """Ensure the feedcode corresponds to a currently-playing Human."""
-    if not utils.current_players().filter(feed=feedcode).exists():
-        raise ValidationError(
-            "{} does not correspond to a player in this game.".format(feedcode))
-
 def validate_chars(feedcode):
     """Raise an exception if we contain unapproved characters."""
     for c in feedcode:

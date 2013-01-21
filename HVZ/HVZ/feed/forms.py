@@ -3,6 +3,7 @@ from django.conf import settings
 
 from HVZ.main.forms import FeedCodeField
 from HVZ.feed.models import Meal
+from HVZ.feed.validators import human_with_code
 
 class MealForm(forms.ModelForm):
     class Meta:
@@ -10,5 +11,6 @@ class MealForm(forms.ModelForm):
         fields = ["time", "location", "description"]
 
     feedcode = FeedCodeField(
-        help_text="Type in the feed code of the person you ate"
+        help_text="Type in the feed code of the person you ate",
+        validators=[human_with_code]
     )

@@ -12,3 +12,9 @@ def ensure_human(player):
 def ensure_zombie(player):
     if player.team != "Z":
         raise ValidationError("{} is not a zombie!".format(player))
+
+def human_with_code(feedcode):
+    """Ensure the feedcode corresponds to a currently-playing Human."""
+    if not utils.current_players().filter(feed=feedcode).exists():
+        raise ValidationError(
+            "{} does not correspond to a player in this game.".format(feedcode))

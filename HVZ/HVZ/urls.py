@@ -1,3 +1,4 @@
+import django.views.generic
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 
@@ -11,8 +12,10 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     # Examples:
-    # url(r'^$', 'HVZ.views.home', name='home'),
-    # url(r'^HVZ/', include('HVZ.foo.urls')),
+    url(r'^$',
+        "django.views.generic.simple.direct_to_template",
+        {'template':'home.html'},
+        name="home"),
 
     url(r'^register/', HVZ.main.views.Register.as_view(), name="register"),
 

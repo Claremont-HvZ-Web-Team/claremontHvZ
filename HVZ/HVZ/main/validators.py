@@ -9,7 +9,7 @@ def validate_chars(feedcode):
     """Raise an exception if we contain unapproved characters."""
     for c in feedcode:
         if c not in settings.VALID_CHARS:
-            raise ValidationError(u"{} is not a valid character!".format(c))
+            raise ValidationError(u"{} is not a valid character.".format(c))
 
 def ensure_unregistered(uname):
     """Ensure the given User has not already registered for this Game."""
@@ -30,7 +30,7 @@ class TimeValidator:
 
         if time.date < self.game.start_date:
             raise ValidationError(
-                u"Game {} started on {}. This field is {}").format(
+                u"The {} game started on {}. This field is {}.").format(
                 self.game,
                 self.game.start_date,
                 time)

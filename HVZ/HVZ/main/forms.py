@@ -27,6 +27,16 @@ class FeedCodeField(forms.CharField):
 
 class RegisterForm(forms.Form):
 
+    first_name = forms.CharField(
+        label=_("First name"),
+        required=True
+    )
+
+    last_name = forms.CharField(
+        label=_("Last name"),
+        required=True
+    )
+
     email = forms.EmailField(required=True, validators=[ensure_unregistered])
 
     password1 = forms.CharField(

@@ -33,6 +33,8 @@ class Register(FormView):
                                          username=grab("email"),
                                          password=grab("password1"))
         finally:
+            u.first_name=grab("first_name")
+            u.last_name=grab("last_name")
             u.save()
 
         p = Player(user=u,

@@ -2,13 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import PhoneNumberField
 
-from constants import *
+from constants import BUILDING_LEGEND, DAYS
 from hashlib import md5
 
 
 class School(models.Model):
     """The 7Cs"""
     name = models.CharField(max_length=7)
+
     def __unicode__(self):
         return self.name
 
@@ -17,12 +18,12 @@ class Building(models.Model):
     """Building are locations on the 7Cs. Most important are dorms and
     landmarks where missions are"""
     KINDS = (
-             ("C", "Academic"),
-             ("T", "Athletics"),
-             ("D", "Dorm"),
-             ("I", "Dining Hall"),
-             ("L", "Landmark"),
-             ("O", "Other")
+        ("C", "Academic"),
+        ("T", "Athletics"),
+        ("D", "Dorm"),
+        ("I", "Dining Hall"),
+        ("L", "Landmark"),
+        ("O", "Other"),
     )
     name = models.CharField(max_length=100)
     campus = models.ForeignKey(School, blank=True, null=True)
@@ -36,8 +37,10 @@ class Building(models.Model):
     def get_kind(self):
         # BUILDING_LEGEND is found in constants.py
         if self.building_type not in BUILDING_LEGEND:
-            return ("Error: %s isn't a valid building character!"
-                    % self.building_type)
+            return (
+                "Error: %s isn't a valid building character!"
+                    % self.building_type
+            )
 
         return BUILDING_LEGEND[self.building_type]
 
@@ -47,11 +50,11 @@ class Player(models.Model):
     user = models.OneToOneField(User)
     school = models.ForeignKey(School)
     dorm = models.ForeignKey(Building)
-    grad_year = models.PositiveIntegerField(blank=True,null=True)
+    grad_year = models.PositiveIntegerField(blank=True, null=True)
     cell = PhoneNumberField(blank=True, null=True)
-    human_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
-    zombie_pic = models.ImageField(upload_to="img/profile/",blank=True,null=True)
-    bad_meals = models.PositiveSmallIntegerField(default=0,blank=False)
+    human_pic = models.ImageField(upload_to="img/profile/", blank=True, null=True)
+    zombie_pic = models.ImageField(upload_to="img/profile/", blank=True, null=True)
+    bad_meals = models.PositiveSmallIntegerField(default=0, blank=False)
 
     def __unicode__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
@@ -71,7 +74,7 @@ class Player(models.Model):
         return self.cell != ""
 
     def hash(self):
-        return md5(self.school.name+self.user.username+str(self.cell)).hexdigest()[::3]
+        return md5(self.school.name + self.user.username + str(self.cell)).hexdigest()[::3]
 
 
 class Squad(models.Model):
@@ -113,7 +116,7 @@ class Game(models.Model):
     """Games are the events that tie everything together"""
     SEMS = (
             ("S", "Spring"),
-            ("F", "Fall")
+            ("F", "Fall"),
         )
     semester = models.CharField(max_length=1, choices=SEMS)
     year = models.PositiveIntegerField()
@@ -130,7 +133,7 @@ class Registration(models.Model):
     """Registration is when a player joins a game"""
     TEAMS = (
              ("H", "Humans"),
-             ("Z", "Zombies")
+             ("Z", "Zombies"),
     )
 
     HIDDEN_UPGRADES = (
@@ -142,18 +145,23 @@ class Registration(models.Model):
     feed = models.CharField(max_length=6)
 
     game = models.ForeignKey(Game)
-    team = models.CharField(max_length=1,choices=TEAMS,default="H")
+    team = models.CharField(max_length=1, choices=TEAMS, default="H")
     can_oz = models.BooleanField(default=False)
     can_c3 = models.BooleanField(default=False)
     upgrade = models.CharField(max_length=30, blank=True, null=True)
-    hidden_upgrade = models.CharField(max_length=1, choices=HIDDEN_UPGRADES, blank=True, null=True)
-    bonus = models.PositiveSmallIntegerField(default=0,blank=False)
+    hidden_upgrade = models.CharField(
+        max_length=1,
+        choices=HIDDEN_UPGRADES,
+        blank=True,
+        null=True,
+    )
+    bonus = models.PositiveSmallIntegerField(default=0, blank=False)
 
     def __unicode__(self):
         return ("%s: %s %s" %
                 (self.game,
                  self.first_name(),
-                 self.last_name()
+                 self.last_name(),
                  )
                 )
 
@@ -176,7 +184,7 @@ class Registration(models.Model):
         return self.player.dorm
 
     def get_meals(self, g):
-        return Meal.objects.filter(game=g, eater=self.player).count()+self.bonus
+        return Meal.objects.filter(game=g, eater=self.player).count() + self.bonus
 
 
 class Meal(models.Model):
@@ -189,7 +197,7 @@ class Meal(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
-        return str(self.game)+": "+str(self.eater)+" ate "+str(self.eaten)
+        return str(self.game) + ": " + str(self.eater) + " ate " + str(self.eaten)
 
 
 class Award(models.Model):
@@ -215,13 +223,13 @@ class Mission(models.Model):
             ("2", "Wednesday"),
             ("3", "Thursday"),
             ("4", "Friday"),
-            ("5", "Saturday")
+            ("5", "Saturday"),
     )
     KINDS = (
              ("D", "Day"),
              ("T", "Night"),
              ("X", "NPC"),
-             ("Y", "Legendary")
+             ("Y", "Legendary"),
     )
     STATUS = (
               ("N", "Not Over"),
@@ -229,13 +237,13 @@ class Mission(models.Model):
               ("HP", "Human Partial"),
               ("D", "Draw"),
               ("ZP", "Zombie Partial"),
-              ("ZF", "Zombie Full")
+              ("ZF", "Zombie Full"),
     )
     VISIBILITY = (
                   ("H", "Humans Only"),
                   ("Z", "Zombies Only"),
                   ("B", "Both Teams"),
-                  ("M", "Moderators Only")
+                  ("M", "Moderators Only"),
     )
 
     #Basic info
@@ -285,116 +293,121 @@ class Mission(models.Model):
     human_SMS = models.CharField(max_length=140, blank=True, null=True)
     zombie_SMS = models.CharField(max_length=140, blank=True, null=True)
 
-    human_image = models.ImageField(upload_to="img/mission/",
-                                    blank=True,
-                                    null=True)
-    zombie_image = models.ImageField(upload_to="img/mission/",
-                                     blank=True,
-                                     null=True)
-
+    human_image = models.ImageField(
+        upload_to="img/mission/",
+        blank=True,
+        null=True,
+    )
+    zombie_image = models.ImageField(
+        upload_to="img/mission/",
+        blank=True,
+        null=True,
+    )
 
     def __unicode__(self):
-        return "%s: %s/%s" % (self.game,
-                              self.human_title,
-                              self.zombie_title)
+        return "%s: %s/%s" % (
+            self.game,
+            self.human_title,
+            self.zombie_title,
+        )
 
     def get_day(self):
         return DAYS[int(self.day)]
 
     def get_kind(self):
-        if self.kind=="D":
+        if self.kind == "D":
             return "Day"
-        elif self.kind=="T":
+        elif self.kind == "T":
             return "Night"
-        elif self.kind=="X":
+        elif self.kind == "X":
             return "NPC"
-        elif self.kind=="Y":
+        elif self.kind == "Y":
             return "Legendary"
 
     def get_result(self):
-        if self.result=="N":
+        if self.result == "N":
             return "Not Over"
-        elif self.result=="HF":
+        elif self.result == "HF":
             return "Human Full Victory"
-        elif self.result=="HP":
+        elif self.result == "HP":
             return "Human Partial Victory"
-        elif self.result=="D":
+        elif self.result == "D":
             return "Draw"
-        elif self.result=="ZP":
+        elif self.result == "ZP":
             return "Zombie Partial Victory"
-        elif self.result=="ZF":
+        elif self.result == "ZF":
             return "Zombie Full Victory"
 
     def get_result_order(self):
-        if self.result=="N":
+        if self.result == "N":
             return "1"
-        elif self.result=="HF":
+        elif self.result == "HF":
             return "2"
-        elif self.result=="HP":
+        elif self.result == "HP":
             return "3"
-        elif self.result=="D":
+        elif self.result == "D":
             return "4"
-        elif self.result=="ZP":
+        elif self.result == "ZP":
             return "5"
-        elif self.result=="ZF":
+        elif self.result == "ZF":
             return "6"
 
     def get_title(self, team):
-        if team=="H":
+        if team == "H":
             return self.human_title
         else:
             return self.zombie_title
 
     def get_story(self, team):
-        if self.show_players=="B" or self.show_players==team:
+        if self.show_players == "B" or self.show_players == team:
             ret = ""
             # if everyone can see it or if the team we're
             # requesting for can see it
-            if team=="H":
-                ret+=self.human_pre_story
+            if team == "H":
+                ret += self.human_pre_story
             else:
-                ret+=self.zombie_pre_story
+                ret += self.zombie_pre_story
 
-            if self.result=="HF" or self.result=="HP":
-                if team=="H":
-                    ret+="\n"+self.human_win_story
+            if self.result == "HF" or self.result == "HP":
+                if team == "H":
+                    ret += "\n" + self.human_win_story
                 else:
-                    ret+="\n"+self.zombie_lose_story
-            elif self.result=="D":
-                if team=="H":
-                    ret+="\n"+self.human_draw_story
+                    ret += "\n" + self.zombie_lose_story
+            elif self.result == "D":
+                if team == "H":
+                    ret += "\n" + self.human_draw_story
                 else:
-                    ret+=self.zombie_draw_story
-            elif self.result=="ZF" or self.result=="ZP":
-                if team=="H":
-                    ret+="\n"+self.human_lose_story
+                    ret += self.zombie_draw_story
+            elif self.result == "ZF" or self.result == "ZP":
+                if team == "H":
+                    ret += "\n" + self.human_lose_story
                 else:
-                    ret+="\n"+self.zombie_win_story
+                    ret += "\n" + self.zombie_win_story
         else:
-            ret =  None
+            ret = None
         return ret
 
     def get_reward(self, team):
-        if self.show_players=="B" or self.show_players==team:
+        if self.show_players == "B" or self.show_players == team:
             # if everyone can see it or if the team we're
             # requesting for can see it
-            if self.result=="N":
-                if team=="H":
+            if self.result == "N":
+                if team == "H":
                     return self.human_pre_reward
                 else:
                     return self.zombie_pre_reward
-            elif self.result=="HF" or self.result=="HP":
-                if team=="H":
+            elif self.result == "HF" or self.result == "HP":
+                if team == "H":
                     return self.human_win_reward
                 else:
                     return self.zombie_lose_reward
-            elif self.result=="D":
-                if team=="H":
+            elif self.result == "D":
+                if team == "H":
                     return self.human_draw_reward
                 else:
                     return self.zombie_draw_reward
-            elif self.result=="ZF" or self.result=="ZP":
-                if team=="H":
+            elif self.result == "ZF" or self.result == "ZP":
+                if team == "H":
                     return self.human_lose_reward
                 else:
                     return self.zombie_win_reward
@@ -433,12 +446,13 @@ class Rule(models.Model):
     )
     title = models.CharField(max_length=30)
     description = models.TextField(blank=False)
-    category= models.CharField(max_length=1, choices=CATS)
+    category = models.CharField(max_length=1, choices=CATS)
     examples = models.TextField(blank=True, null=True)
     youtube = models.URLField(verify_exists=True, blank=True, null=True)
     image = models.ImageField(upload_to="img/rule/", blank=True, null=True)
     location = models.ForeignKey(Building, blank=True, null=True)
     priority = models.PositiveSmallIntegerField(blank=False, default=0, help_text="Rules with a higher priority appear earlier in the list.")
+
     def __unicode__(self):
         return str(self.title)
 
@@ -456,6 +470,7 @@ class Plot(models.Model):
     show_side = models.CharField(max_length=1, choices=TEAMS)
     story = models.TextField(blank=False)
     reveal_time = models.DateTimeField()
+
     def __unicode__(self):
         return "%s: %s" % (self.game,
                            self.title)
@@ -464,12 +479,14 @@ class Plot(models.Model):
 class OnDuty(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    mod = models.ForeignKey(Player,
-                            limit_choices_to = {
-            'cell__gte':'1',
-            'user__is_staff':'True'
-            }
-                            )
+    mod = models.ForeignKey(
+        Player,
+        limit_choices_to={
+            'cell__gte': '1',
+            'user__is_staff': 'True',
+        }
+    )
+
     def __unicode__(self):
         return (
             "%s: %s until %s" % (self.mod.user.first_name,
@@ -527,11 +544,14 @@ class ForumPost(models.Model):
     creator = models.ForeignKey('Player', blank=False)
 
     def __unicode__(self):
-        return ("%s - %s on %s" %
-                (str(self.parent),
-                 str(self.creator),
-                 self.create_time.strftime("%a %I:%M %p")
-                 ))
+        return (
+            "%s - %s on %s" %
+                (
+                    str(self.parent),
+                     str(self.creator),
+                     self.create_time.strftime("%a %I:%M %p")
+                )
+        )
 
 
 class MealsPerHour(models.Model):

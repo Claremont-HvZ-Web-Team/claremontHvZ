@@ -27,7 +27,7 @@ class SignupTest(BaseTest):
         return c.post(reverse("login"), {"username": "tabler", "password": "a"})
 
 
-    def test_admin_required(self):
+    def test_tabler_required(self):
         """Ensure the registration page requires a logged-in tabler."""
         c = Client()
         response = c.get(reverse("register"), follow=True)
@@ -107,13 +107,17 @@ class SignupTest(BaseTest):
         self.assertTrue(models.Player.objects.filter(game__start_date=today).exists())
 
     def test_user_update(self):
-        """Ensure that a user can register once for each game, updating their name and password."""
+        """Ensure that a user can register once for each game.
+
+        The user's name and password should update with the new info.
+
+        """
 
         # Register our user
         c = Client()
         self.login_table(c)
-        c.post(reverse("register"), HUGH_MANN)
-        
+        response = c.post(reverse("register"), HUGH_MANN)
+
         # Move our Game into the past
         g = models.Game.objects.get()
         g.start_date, g.end_date = self.last_semester()
@@ -130,7 +134,8 @@ class SignupTest(BaseTest):
         d["password2"] = "swordfish"
 
         # Save the old password
-        old_password = models.User.objects.filter(username=d["email"]).get().password
+        u = models.User.objects.filter(username=d["email"]).get()
+        old_password = u.password
 
         # And register with the new settings
         c.post(reverse("register"), d)

@@ -124,6 +124,29 @@ class EatingTest(BaseTest):
                              "{} does not correspond to a player in this game."
                              .format(VICTIM["feed"]))
 
+    def test_resurrected_eating(self):
+        """A zombie can eat the same victim twice with resurrection."""
+        c = Client()
+        c.post(reverse("login"), ROB_ZOMBIE)
+        
+        c.post(reverse("eat"), MEAL)
+        response = c.post(reverse("eat"), MEAL)
+
+        self.assertEqual(Meal.objects.count(), 1)
+
+        get_victim = Player.objects.filter(user__email=VICTIM["email"]).get
+
+        # Resurrect the victim
+        p = get_victim()
+        p.team = "H"
+        p.save()
+
+        c.post(reverse("eat"), MEAL)
+
+        # We should have eaten the victim twice.
+        self.assertEqual(Meal.objects.count(), 2)
+        self.assertEqual(get_victim().team, "Z")
+
 class MultiGame(BaseTest):
     def setUp(self):
         super(MultiGame, self).setUp()

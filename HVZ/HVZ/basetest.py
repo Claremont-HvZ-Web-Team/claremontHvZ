@@ -34,7 +34,7 @@ class BaseTest(TestCase):
 
     def login_table(self, c):
         """Convenience function to login as a tabler."""
-        return c.post(reverse("login"), {"username": "tabler", "password": "a"})
+        return c.login(username="tabler", password="a")
 
     def last_semester(self):
         """Return a pair of values corresponding to a fake previous game."""

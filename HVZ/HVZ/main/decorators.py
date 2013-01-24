@@ -2,6 +2,7 @@ from functools import wraps
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth import decorators as auth
+from django.core.exceptions import PermissionDenied
 
 from HVZ.main.exceptions import NoActiveGame, NoUnfinishedGames
 from HVZ.main import utils
@@ -32,7 +33,7 @@ def zombie_required(*args, **kwargs):
     """Raise an exception if the current user is not a zombie."""
     def check_zombie(u):
         if utils.user_to_player(u).team != "Z":
-            raise WrongTeamException
+            raise PermissionDenied("You must be a zombie to view this page.")
         return True
 
     return auth.user_passes_test(check_zombie)(*args, **kwargs)
@@ -40,7 +41,7 @@ def zombie_required(*args, **kwargs):
 def human_required(*args, **kwargs):
     def check_human(u):
         if utils.user_to_player(u).team != "H":
-            raise WrongTeamException
+            raise PermissionDenied("You must be a human to view this page.")
         return True
 
     return auth.user_passes_test(check_human)(*args, **kwargs)

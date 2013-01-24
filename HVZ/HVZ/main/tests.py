@@ -3,43 +3,29 @@ from datetime import date, timedelta
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
-from django.test import TestCase
 from django.test.client import Client
 
-import models
+from HVZ.basetest import BaseTest, define_user
+from HVZ.main import models
 
-HUGH_MANN = {
-    "first_name": "Hugh",
-    "last_name": "Mann",
-    "email": "hmann@hmc.edu",
-    "password1": "hunter2",
-    "password2": "hunter2",
-    "school": "4",
-    "dorm": "208",
-    "grad_year": "2013",
-    "cell": "1234567890",
-    "can_c3": "on",
-    "feed": "PLANS"
-}
+HUGH_MANN = define_user({
+        "first_name": "Hugh",
+        "last_name": "Mann",
+        "email": "hmann@hmc.edu",
+        "password": "hunter2",
+        "school": "4",
+        "dorm": "208",
+        "grad_year": "2013",
+        "cell": "1234567890",
+        "can_c3": "on",
+        "feed": "PLANS"
+        })
 
-class SignupTest(TestCase):
+class SignupTest(BaseTest):
     def login_table(self, c):
         """Convenience function to login as a tabler."""
         return c.post(reverse("login"), {"username": "tabler", "password": "a"})
 
-    def setUp(self):
-        # Create a current Game.
-        today = date.today()
-        g = models.Game(start_date=today,
-                        end_date=today+timedelta(7))
-        g.save()
-
-        tabler = User.objects.create_user(username="tabler", password="a")
-        tabler.save()
-
-        ts = Group.objects.get(name="Tablers")
-        ts.user_set.add(tabler)
-        ts.save()
 
     def test_admin_required(self):
         """Ensure the registration page requires a logged-in tabler."""
@@ -129,18 +115,12 @@ class SignupTest(TestCase):
         c.post(reverse("register"), HUGH_MANN)
         
         # Move our Game into the past
-        today = date.today()
-        t0 = today - timedelta(weeks=26)
-        tf = t0 + timedelta(7)
         g = models.Game.objects.get()
-        g.start_date = t0
-        g.end_date = tf
+        g.start_date, g.end_date = self.last_semester()
         g.save()
 
         # Create a new current Game
-        new_game = models.Game(start_date=today,
-                               end_date=today+timedelta(7))
-        new_game.save()
+        self.new_game()
 
         # Modify our user settings slightly
         d = HUGH_MANN.copy()

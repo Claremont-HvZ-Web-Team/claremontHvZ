@@ -28,7 +28,7 @@ def current_players():
 
 def logged_in_player(request):
     """Return the currently logged in Player."""
-    return models.current_players().get(user=request.user)
+    return current_players().get(user=request.user)
 
 def user_to_player(u):
     """Return the most current Player corresponding to the given User."""

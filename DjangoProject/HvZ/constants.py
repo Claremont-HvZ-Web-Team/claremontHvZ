@@ -5,13 +5,15 @@ All constants should be in ALL_CAPS, since they'll probably be
 
 """
 
-DAYS = ["Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"]
+DAYS = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+]
 
 BUILDING_LEGEND = {
     "C": "Academic building",
@@ -19,5 +21,5 @@ BUILDING_LEGEND = {
     "D": "Dormitory",
     "I": "Dining hall",
     "L": "Landmark or notable feature",
-    "O": "Other building"
-    }
+    "O": "Other building",
+}

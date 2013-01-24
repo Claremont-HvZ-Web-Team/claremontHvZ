@@ -1,0 +1,12 @@
+{% load url from future %}
+<html>
+  <body>
+    <h1>Homepage</h1>
+    <ul>
+    <li><a href="{% url 'login' %}">Log in</a></li>
+    <li><a href="{% url 'register' %}">Register</a></li>
+    <li><a href="{% url 'eat' %}">Eat</a></li>
+    <li><a href="{% url 'admin:index' %}">Admin</a></li>
+    </ul>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 @import "reset";
 @import "constants";
+@import "functions";
 @import "classes";
-@import "logo_styling";
 
 
 body {
@@ -13,16 +13,26 @@ a {
     color: $link_color;
 }
 
+html,
+button,
+input,
+select,
+textarea {
+    color: $text_color;
+}
+
 .supercontainer {
     margin: 0 auto;
     width: 1100px;
 }
 
+$container_width: 1000px;
 .container {
     margin: 0 auto;
-    width: 1000px;
+    width: $container_width;
 
     background-color: white;
+    @include box-shadow(0, 10px, 10px, rgba(0, 0, 0, 0.075));
 }
 
 #contentContainer {
@@ -36,3 +46,4 @@ footer {
     color: white;
     background-color: $dark_color;
 }
+@import "logo_styling";

@@ -1,24 +1,83 @@
-# Django settings for HVZ project.
+# Django settings for the Claremont Humans versus Zombies project.
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+import os
+import local_settings
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+### The following settings should all be defined in a file called
+### "local_settings.py".
 
+# The absolute root of your app's home directory, something like
+# "/home/claremontHvZ/claremonthvz.org/"
+PROJECT_PATH = local_settings.PROJECT_PATH
+
+
+def absolute_path(*paths):
+    return os.path.join(PROJECT_PATH, *paths)
+
+# Do you want the site to display a bunch of information when
+# something goes wrong? Either True or False.
+DEBUG = local_settings.DEBUG
+
+# Similar to DEBUG, but for template errors. Also either True or
+# False.
+TEMPLATE_DEBUG = local_settings.TEMPLATE_DEBUG
+
+# A list of the people with admin access, along with their email
+# addresses. It should look something like the following:
+
+# ADMINS = (
+#     # ('Your Name', 'your_email@domain.com'),
+# )
+
+ADMINS = local_settings.ADMINS
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
+# Does your email service use TLS? True or False.
+EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
+
+# What host does your email service use? We use "smtp.gmail.com"
+EMAIL_HOST = local_settings.EMAIL_HOST
+
+# Your email username and password. We're not telling you ours ;)
+EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+
+# Your email service's port number. Ours is 587.
+EMAIL_PORT = local_settings.EMAIL_PORT
+
+# Make this unique, and don't share it with anybody. Any string will
+# do, but this tool works well:
+# http://www.miniwebtool.com/django-secret-key-generator/
+SECRET_KEY = local_settings.SECRET_KEY
+
+# List your databases here!
+
+# DATABASES = {
+#     'default': {
+#
+#         'ENGINE': 'django.db.backends.mysql', # Add
+#                                               # 'postgresql_psycopg2',
+#                                               # 'postgresql', 'mysql',
+#                                               # 'sqlite3' or 'oracle'.
+#
+#         'NAME': 'claremontHvZ_django',        # Or path to database
+#                                               # file if using sqlite3.
+#
+#         'USER': 'me',                         # Not used with sqlite3.
+#
+#         'PASSWORD': 'secret',                 # Not used with sqlite3.
+#
+#         'HOST': '127.0.0.1',                  # Set to empty string
+#                                               # for localhost. Not
+#                                               # used with sqlite3.
+#
+#         'PORT': '',                           # Set to empty string
+#                                               # for default. Not used
+#                                               # with sqlite3.
+#     }
+# }
+DATABASES = local_settings.DATABASES
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -27,91 +86,89 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+
+# We live in Claremont, so ours is "America/Los_Angeles".
+TIME_ZONE = local_settings.TIME_ZONE
+
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+
+# Ours is "en-us"
+LANGUAGE_CODE = local_settings.LANGUAGE_CODE
+
+### We're done here! ###
+
+CACHES = local_settings.CACHES
+
+MANAGERS = ADMINS
 
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
+# calendars according to the current locale
 USE_L10N = True
 
-# If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = absolute_path('upload-media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
+MEDIA_URL = '/upload-media/'
+
+STATIC_ROOT = local_settings.STATIC_ROOT
+STATIC_URL = local_settings.STATIC_URL
+
+# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 't7i83o6tq@w1ou1p#7l@7-52@%0$+revv8=ydn&amp;5+lea$-s(#_'
+# Examples: "http://foo.com/media/", "/media/".
+ADMIN_MEDIA_PREFIX = '/admin-media/'
 
 # List of callables that know how to import templates from various sources.
+
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    (
+        'django.template.loaders.cached.Loader',
+        (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+        ),
+    ),
 )
 
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
+
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'HVZ.urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'HVZ.wsgi.application'
-
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    # Put strings here, like "/home/html/django_templates" or
+    # "C:/www/django/templates".  Always use forward slashes, even on
+    # Windows.  Don't forget to use absolute paths, not relative
+    # paths.
 )
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -119,36 +176,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+    # 'tinymce',
+    'HVZ.main',
 )
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}

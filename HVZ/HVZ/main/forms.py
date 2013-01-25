@@ -8,7 +8,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from HVZ.main import utils
 from HVZ.main.models import Player, School, Building, Game
 
-from validators import validate_chars, feedcode_human
+from validators import validate_chars, ensure_unregistered
 
 
 class FeedCodeField(forms.CharField):
@@ -27,7 +27,17 @@ class FeedCodeField(forms.CharField):
 
 class RegisterForm(forms.Form):
 
-    email = forms.EmailField(required=True)
+    first_name = forms.CharField(
+        label=_("First name"),
+        required=True
+    )
+
+    last_name = forms.CharField(
+        label=_("Last name"),
+        required=True
+    )
+
+    email = forms.EmailField(required=True, validators=[ensure_unregistered])
 
     password1 = forms.CharField(
         label=_("Password"),

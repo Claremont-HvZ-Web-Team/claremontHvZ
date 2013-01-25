@@ -115,7 +115,9 @@ USE_I18N = False
 USE_L10N = True
 
 # Used by Django's auth decorators to log a user in.
+# These can become named url patterns once we upgrade to Django 1.5.
 LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -160,6 +162,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'HVZ.urls'
 
 TEMPLATE_DIRS = (
+    absolute_path('prototype-templates'),
     absolute_path('templates'),
     # Put strings here, like "/home/html/django_templates" or
     # "C:/www/django/templates".  Always use forward slashes, even on

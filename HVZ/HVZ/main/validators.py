@@ -1,19 +1,20 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
-from utils import nearest_game
+import models
 
-def feedcode_human(feedcode):
-    """Ensure the feedcode corresponds to a currently-playing Human."""
-    if not utils.current_players().filter(feed=feedcode).exists():
-        raise ValidationError(
-            "{} does not correspond to a player in this game.".format(feedcode))
+from utils import nearest_game
 
 def validate_chars(feedcode):
     """Raise an exception if we contain unapproved characters."""
     for c in feedcode:
         if c not in settings.VALID_CHARS:
-            raise ValidationError(u"{} is not a valid character!".format(c))
+            raise ValidationError(u"{} is not a valid character.".format(c))
+
+def ensure_unregistered(uname):
+    """Ensure the given User has not already registered for this Game."""
+    if models.Player.objects.filter(user__username=uname, game=nearest_game()).exists():
+        raise ValidationError(u"{} has already registered for this Game.".format(uname))
 
 class TimeValidator:
     def __init__(self, game=None):
@@ -29,7 +30,7 @@ class TimeValidator:
 
         if time.date < self.game.start_date:
             raise ValidationError(
-                u"Game {} started on {}. This field is {}").format(
+                u"The {} game started on {}. This field is {}.").format(
                 self.game,
                 self.game.start_date,
                 time)

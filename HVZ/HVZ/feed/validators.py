@@ -1,7 +1,4 @@
-from datetime import datetime
-
 from django.core.exceptions import ValidationError
-from django.conf import settings
 
 from HVZ.main import utils
 

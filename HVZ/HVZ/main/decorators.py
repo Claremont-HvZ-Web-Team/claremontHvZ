@@ -1,6 +1,5 @@
 from functools import wraps
 
-from django.core.urlresolvers import reverse
 from django.contrib.auth import decorators as auth
 from django.core.exceptions import PermissionDenied
 

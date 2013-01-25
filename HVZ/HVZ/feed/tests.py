@@ -102,7 +102,7 @@ class EatingTest(BaseTest):
         c.post(reverse("login"), ROB_ZOMBIE)
 
         self.assertEqual(Meal.objects.count(), 0)
-        response = c.post(reverse("eat"), MEAL)
+        c.post(reverse("eat"), MEAL)
 
         # Check that a meal was created
         self.assertEqual(Meal.objects.count(), 1)
@@ -130,7 +130,7 @@ class EatingTest(BaseTest):
         c.post(reverse("login"), ROB_ZOMBIE)
         
         c.post(reverse("eat"), MEAL)
-        response = c.post(reverse("eat"), MEAL)
+        c.post(reverse("eat"), MEAL)
 
         self.assertEqual(Meal.objects.count(), 1)
 

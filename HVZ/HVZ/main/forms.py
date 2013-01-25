@@ -1,12 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
 from django.conf import settings
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from HVZ.main import utils
-from HVZ.main.models import Player, School, Building, Game
+from HVZ.main.models import School
 
 from validators import validate_chars, ensure_unregistered
 

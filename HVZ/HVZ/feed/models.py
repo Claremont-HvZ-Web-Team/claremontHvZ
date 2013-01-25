@@ -1,8 +1,8 @@
-from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from HVZ.main.models import Player, Building
-from HVZ.main.validators import TimeValidator, validate_chars
+from HVZ.main.validators import TimeValidator
 
 class Meal(models.Model):
     """Models a successful zombie attack."""
@@ -16,19 +16,20 @@ class Meal(models.Model):
     description = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return u"{}: {} -> {}".format(eater.game, eater, eaten)
+        return u"{}: {} -> {}".format(self.eater.game, self.eater, self.eaten)
 
     def clean(self):
         if self.eaten.team != "H":
             raise ValidationError("Victim is not a human.")
 
         if self.eater.game != self.eaten.game:
-            raise ValidationError("Eater's game is {}, victim's game is {}.".format(
-                    eater.game,
-                    eaten.game))
+            raise ValidationError(
+                "Eater's game is {}, victim's game is {}.".format(
+                    self.eater.game,
+                    self.eaten.game))
 
-        if time:
-            TimeValidator(eater.game)(time)
+        if self.time:
+            TimeValidator(self.eater.game)(self.time)
 
         return super(Meal, self).clean()
 

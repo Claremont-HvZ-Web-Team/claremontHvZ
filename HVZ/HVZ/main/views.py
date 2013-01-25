@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.views.generic.edit import FormView
 

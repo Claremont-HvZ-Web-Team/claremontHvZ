@@ -1,9 +1,7 @@
 from datetime import date, timedelta
 
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User, Group
 from django.test import TestCase
-from django.test.client import Client
 
 from HVZ.main import models
 

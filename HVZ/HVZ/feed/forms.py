@@ -1,10 +1,7 @@
 from django import forms
-from django.conf import settings
 
-from HVZ.main import utils
 from HVZ.main.forms import FeedCodeField
 from HVZ.main.models import Building
-from HVZ.feed.models import Meal
 from HVZ.feed.validators import human_with_code
 
 class MealForm(forms.Form):

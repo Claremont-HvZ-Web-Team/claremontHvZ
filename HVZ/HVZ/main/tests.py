@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
-from django.contrib.auth import login
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test.client import Client
 
@@ -116,7 +115,7 @@ class SignupTest(BaseTest):
         # Register our user
         c = Client()
         self.login_table(c)
-        response = c.post(reverse("register"), HUGH_MANN)
+        c.post(reverse("register"), HUGH_MANN)
 
         # Move our Game into the past
         g = models.Game.objects.get()

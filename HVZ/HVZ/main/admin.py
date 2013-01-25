@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from HVZ.main.models import School, Player, Game, MonolithController
+from HVZ.main.models import Player, Game, MonolithController
 
 class MonolithControllerAdmin(admin.ModelAdmin):
     list_display = ('__unicode__','admin', 'forcefield')

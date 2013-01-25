@@ -55,8 +55,11 @@ class Player(models.Model):
 
     cell = PhoneNumberField(blank=True, null=True)
 
-    human_pic = models.ImageField()
-    zombie_pic = models.ImageField()
+    def get_player_upload_path(self, fname):
+        return '/'.join(['main', 'images', self.user.username, fname])
+
+    human_pic = models.ImageField(upload_to=get_player_upload_path)
+    zombie_pic = models.ImageField(upload_to=get_player_upload_path)
 
     bad_meals = models.PositiveIntegerField(default=0, blank=False)
 

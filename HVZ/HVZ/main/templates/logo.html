@@ -1,0 +1,22 @@
+{% load staticfiles %}
+
+<header>
+    <div id='logo'>
+        <img src="" alt="Humans vs. Zombies: Claremont/>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/" id="main"><span>Home</span></a></li>
+            <li><a href="/rules/" id="rules"><span>Rules</span></a></li>
+            <li><a href="/forum/" id="forum">Forums</a></li>
+            <li><a href="/player/" id="player"><span>Players</span></a></li>
+            <li><a href="/mission/" id="mission"><span>Missions</span></a></li>
+            <li><a href="/status/" id="status"><span>Status</span></a></li>
+            <li><a href="/timeline/" id="timeline"><span>Timeline</span></a></li>
+            {% if user.isMod %}
+            <li><a href="/attendance/">Attendance</a></li>
+            <li><a href="/email/">Email</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>

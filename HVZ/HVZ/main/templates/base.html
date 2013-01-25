@@ -1,0 +1,50 @@
+{% load staticfiles %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Humans Versus Zombies at the Claremont Colleges</title>
+
+        <!-- Load css -->
+        {% block stylein %}
+        {% endblock stylein %}
+        <!-- Load javascript -->
+        <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/jquery-ui.js' %}"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        {% block morehead %}{% endblock %}
+
+    </head>
+    <body>
+        {% block pre_logo %}
+
+        {% endblock pre_logo %}
+
+        {% include "logo.html" %}
+        {% block post_header %}
+            <div id="contentContainer">
+                <div id="mainContainer" class="background" style="width:95%">
+                {% block content %}{% endblock %}
+                </div>
+            </div>
+        {% endblock post_header %}
+
+
+        <footer>
+            <p>
+            Humans vs Zombies and HvZ are property of <a
+            href="http://gnarwhalstudios.com/">Gnarwhal Studios</a>.
+            For game questions contact the mod team at <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a>.
+            For problems on the website, contact the web team at <a href="mailto:web@claremonthvz.org">web@claremonthvz.org</a>
+            </p>
+        </footer>
+        <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart"]});
+        $(document).ready(function() {
+        $('button').button();
+        });
+        </script>
+        {% block scriptin %}
+
+        {% endblock scriptin %}
+    </body>
+</html>

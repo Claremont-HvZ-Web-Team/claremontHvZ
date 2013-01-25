@@ -3,3 +3,25 @@
     -moz-box-shadow:$top $left $blur $color #{$inset};
     box-shadow:$top $left $blur $color #{$inset};
 }
+
+@mixin rounded_corner($corner, $radius: 5px) {
+    -webkit-border-#{$corner}-radius: $radius;
+
+    border-#{$corner}-radius: $radius;
+    @if $corner == top-left {
+        -moz-border-radius-topleft: $radius;
+    } @else if $corner == top-right {
+        -moz-border-radius-topright: $radius;
+    } @else if $corner == bottom-right {
+        -moz-border-radius-bottomright: $radius;
+    } @else {
+        -moz-border-radius-bottomleft: $radius;
+    }
+}
+
+@mixin rounded($radius: 5px) {
+  @include rounded_corner(top-right, $radius);
+  @include rounded_corner(top-left, $radius);
+  @include rounded_corner(bottom-right, $radius);
+  @include rounded_corner(bottom-left, $radius);
+}

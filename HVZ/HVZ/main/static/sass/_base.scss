@@ -5,6 +5,7 @@
 
 body {
     background-color: $bg_grey;
+    background-image: url(/static/images/concrete_wall.png);
 }
 
 a {
@@ -31,6 +32,7 @@ $container_width: 1000px;
     width: $container_width;
 
     background-color: white;
+    background-image: url(/static/images/subtle_grunge.png);
     @include box-shadow(0, 10px, 10px, rgba(0, 0, 0, 0.075));
 }
 

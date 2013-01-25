@@ -12,25 +12,29 @@ header {
 
 #breakoutbar {
     height: 40px;
-    width: 75%;
+    width: 72%;
     background-color: $bg_green;
+    background-image: url(/static/images/green_grunge.jpg);
+    background-position: 0px;
     margin-bottom: 1em;
     margin-left: 25px;
 
+    @include rounded_corner(top-left);
+    @include rounded_corner(bottom-left);
 }
 
 #zombieproglead {
     height: 100%;
-    width: 35px;
-    background-image:url('/static/images/zombie_outbreak_edge2.png');
-    background-position: 10px 50%;
+    width: 25px;
+    background-image:url(/static/images/zombie_outbreak_edge2.png);
+    background-position: 0px 50%;
     background-repeat: no-repeat;
     float: right;
 }
 #zombieprog {
     height: 100%;
     float: right;
-    width: 25%;
+    width: 0%;
     background-color: $bg_red;
 }
 

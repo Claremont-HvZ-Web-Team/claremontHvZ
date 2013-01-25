@@ -15,28 +15,32 @@
 
     </head>
     <body>
-        {% block pre_logo %}
+        <div class="supercontainer">
+            <div class="container">
+                {% block pre_logo %}
 
-        {% endblock pre_logo %}
+                {% endblock pre_logo %}
 
-        {% include "logo.html" %}
-        {% block post_header %}
-            <div id="contentContainer">
-                <div id="mainContainer" class="background" style="width:95%">
-                {% block content %}{% endblock %}
-                </div>
+                {% include "logo.html" %}
+                {% block post_header %}
+                    <div id="contentContainer">
+                        <div id="mainContainer" class="background" style="width:95%">
+                        {% block content %}{% endblock %}
+                        </div>
+                    </div>
+                {% endblock post_header %}
+                <footer>
+                    <div class="disclaimers left">
+                        <p>For game questions contact the mod team at <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a></p>
+                        <p>For problems on the website, contact the web team at <a href="mailto:web@claremonthvz.org">web@claremonthvz.org</a></p>
+                    </div>
+                    <div class="disclaimers right">
+                        <p>Humans vs Zombies and HvZ are property of <a href="http://gnarwhalstudios.com/">Gnarwhal Studios</a></p>
+                    </div>
+                    <div class="clearer"></div>
+                </footer>
             </div>
-        {% endblock post_header %}
-
-
-        <footer>
-            <p>
-            Humans vs Zombies and HvZ are property of <a
-            href="http://gnarwhalstudios.com/">Gnarwhal Studios</a>.
-            For game questions contact the mod team at <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a>.
-            For problems on the website, contact the web team at <a href="mailto:web@claremonthvz.org">web@claremonthvz.org</a>
-            </p>
-        </footer>
+        </div>
         <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart"]});
         $(document).ready(function() {

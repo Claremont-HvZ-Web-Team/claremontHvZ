@@ -1,0 +1,79 @@
+
+header {
+    width: 1100px;
+    margin-top: 144px;
+    margin-left: -50px;
+    div {
+        display: inline-block;
+    }
+
+
+
+    #breakoutbar {
+        height: 40px;
+        width: 75%;
+        background-color: $bg_green;
+        margin-bottom: 1em;
+        margin-left: 25px;
+
+    }
+
+    #zombieproglead {
+        height: 100%;
+        width: 35px;
+        background-image:url('/static/images/zombie_outbreak_edge.png');
+        background-position: 10px 50%;
+        background-repeat: no-repeat;
+        float: right;
+    }
+    #zombieprog {
+        height: 100%;
+        float: right;
+        width: 25%;
+        background-color: $bg_red;
+    }
+
+    .modcall {
+        width: 400px;
+        margin: 0 auto;
+        display: block;
+        text-transform: lowercase;
+        font: {
+            size: 1.25em;
+            variant: small-caps;
+        }
+    }
+
+    nav {
+        display: inline-block;
+        position: static;
+        bottom: 15px;
+        width: 100%;
+        font-size: 1.5em;
+        color: $link_color;
+
+        ul {
+            padding: 0.5em;
+            background-color: $dark_color;
+            list-style-type: none;
+        }
+        li {
+            display: inline;
+
+            &:not(:first-child):before {
+                content: "| ";
+            }
+        }
+
+        a {
+            text-transform: uppercase;
+        }
+
+        #logo {
+            float: right;
+            &.big{
+                margin-top: -285px;
+            }
+        }
+    }
+}

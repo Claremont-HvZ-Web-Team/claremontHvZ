@@ -1,22 +1,37 @@
 {% load staticfiles %}
 
 <header>
-    <div id='logo'>
-        <img src="" alt="Humans vs. Zombies: Claremont"/>
+    <div id='breakoutbar'>
+        <div id="zombieprog"></div>
+        <div id="zombieproglead"></div>
+    </div>
+    <div class='modcall'>
+        Mod on Call: {% firstof current_mod.first_name.lower "nobody" %} (703) 943-9385{{settings.MOD_PHONE_NUMBER}}
     </div>
     <nav>
         <ul>
-            <li><a href="/" id="main"><span>Home</span></a></li>
-            <li><a href="/rules/" id="rules"><span>Rules</span></a></li>
-            <li><a href="/forum/" id="forum">Forums</a></li>
-            <li><a href="/player/" id="player"><span>Players</span></a></li>
-            <li><a href="/mission/" id="mission"><span>Missions</span></a></li>
-            <li><a href="/status/" id="status"><span>Status</span></a></li>
-            <li><a href="/timeline/" id="timeline"><span>Timeline</span></a></li>
-            {% if user.isMod %}
+            <li><a href="">Rules</a></li>
+            <li><a href="">Forums</a></li>
+            <li><a href="">Players</a></li>
+            <li><a href="">Missions</a></li>
+            <li><a href="">Status</a></li>
+            <li><a href="">Timeline</a></li>
+            {% if request.user.isMod %}
             <li><a href="/attendance/">Attendance</a></li>
             <li><a href="/email/">Email</a></li>
             {% endif %}
         </ul>
+        <div id='logo' {% if is_landing_page %}
+            class="big"
+        {% endif %}>
+            <a href=""><img src="{% spaceless %}
+                {% if is_landing_page %}
+                {% static 'images/logo.png' %}
+                {% else %}
+                {% static 'images/square_logo.png' %}
+                {% endif %}
+            {% endspaceless %}" alt="Humans vs. Zombies: Claremont"/></a>
+
+        </div>
     </nav>
 </header>

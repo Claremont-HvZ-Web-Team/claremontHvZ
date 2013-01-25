@@ -162,7 +162,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'HVZ.urls'
 
 TEMPLATE_DIRS = (
-    absolute_path('prototype-templates'),
+    absolute_path('HVZ/prototype-templates'),
     absolute_path('templates'),
     # Put strings here, like "/home/html/django_templates" or
     # "C:/www/django/templates".  Always use forward slashes, even on

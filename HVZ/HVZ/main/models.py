@@ -6,8 +6,8 @@ from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
 from django.conf import settings
 
-from validators import validate_chars
-
+from HVZ.main.validators import validate_chars
+from HVZ.main.exceptions import NoActiveGame
 
 class FeedCodeField(models.CharField):
     default_validators = [validate_chars]
@@ -58,7 +58,7 @@ class Building(models.Model):
 
     def get_kind(self):
         try:
-            return self.KINDS[self.building_type]
+            return Building.KINDS[self.building_type]
         except KeyError:
             return None
 
@@ -93,6 +93,25 @@ class Game(models.Model):
         if Game.objects.filter(start_date__lte=self.end_date,
                                end_date__gte=self.start_date).exists():
             raise ValidationError("This Game overlaps with another!")
+
+    @staticmethod
+    def unfinished_games():
+        """Return the set of all games which haven't yet ended."""
+        return Game.objects.filter(end_date__gte=date.today())
+
+    @staticmethod
+    def game_in_progress():
+        """True iff a Game is currently ongoing."""
+        return Game.unfinished_games().filter(
+            start_date__lte=date.today()).exists()
+
+    @staticmethod
+    def nearest_game():
+        """Returns the Game currently ongoing or nearest to now."""
+        try:
+            return Game.unfinished_games().order_by("start_date")[0]
+        except IndexError:
+            raise NoActiveGame
 
     class Meta:
         get_latest_by = "start_date"
@@ -139,6 +158,21 @@ class Player(models.Model):
 
     def __unicode__(self):
         return u"Player: {}".format(self.user)
+
+    @staticmethod
+    def current_players():
+        """Return all Players in the current Game."""
+        return models.Player.objects.filter(game=Game.nearest_game())
+
+    @staticmethod
+    def logged_in_player(request):
+        """Return the currently logged in Player."""
+        return Player.current_players().get(user=request.user)
+
+    @staticmethod
+    def user_to_player(u):
+        """Return the most current Player corresponding to the given User."""
+        return Player.objects.filter(game=Game.nearest_game(), user=u).get()
 
     class Meta:
         # A User can only have one Player per Game.

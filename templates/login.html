@@ -1,9 +1,0 @@
-{% load url from future %}
-
-<div id="login_error" class="ui-state-highlight"></div>
-<form method="POST" action="/login/">
-	{% csrf_token %}
-    {{form.as_p}}
-	<button type="button" onclick="login_auth()">Log In</button>
-	<a href="{% url "password_reset" %}">Forgot Password</a>
-</form>

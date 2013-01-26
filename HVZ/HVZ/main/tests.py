@@ -51,7 +51,8 @@ class SignupTest(BaseTest):
         c.post(reverse("register"), HUGH_MANN)
         response = c.post(reverse("register"), HUGH_MANN)
         self.assertFormError(response, "form", "email",
-                             "{} has already registered for this Game.".format(HUGH_MANN["email"]))
+                             "{} has already registered for this Game."
+                             .format(HUGH_MANN["email"]))
 
     def test_invalid_chars(self):
         """Ensure feedcodes with invalid characters throw error messages."""
@@ -119,7 +120,7 @@ class SignupTest(BaseTest):
         g.save()
 
         # Create a new current Game
-        self.new_game()
+        self.create_new_game()
 
         # Modify our user settings slightly
         d = HUGH_MANN.copy()

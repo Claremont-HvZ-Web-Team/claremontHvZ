@@ -87,6 +87,7 @@ class EatingTest(BaseTest):
 
         # Create a zombie
         c.post(reverse("register"), ROB_ZOMBIE)
+        
         z = Player.objects.get()
         z.team = "Z"
         z.save()
@@ -159,7 +160,7 @@ class MultiGame(BaseTest):
         g.save()
 
         # And a zombie in the present
-        self.new_game()
+        self.create_new_game()
         c.post(reverse("register"), ROB_ZOMBIE)
         z = Player.objects.filter(user__email=ROB_ZOMBIE["email"]).get()
         z.team = "Z"

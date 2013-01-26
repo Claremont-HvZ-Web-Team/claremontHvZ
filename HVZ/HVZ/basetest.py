@@ -22,7 +22,7 @@ class BaseTest(TestCase):
     def setUpClass(cls):
         """Create an initial game and tabler."""
         # Create a current Game.
-        cls.new_game()
+        cls.create_new_game()
 
         tabler = User.objects.create_user(username="tabler", password="a")
         tabler.save()
@@ -51,7 +51,7 @@ class BaseTest(TestCase):
         return (t0, tf)
 
     @staticmethod
-    def new_game():
+    def create_new_game():
         """Create a Game starting today and lasting a week."""
         today = date.today()
         g = models.Game(start_date=today,

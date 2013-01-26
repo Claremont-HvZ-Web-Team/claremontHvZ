@@ -33,9 +33,3 @@ def logged_in_player(request):
 def user_to_player(u):
     """Return the most current Player corresponding to the given User."""
     return models.Player.objects.filter(game=nearest_game(), user=u).get()
-
-# Building retrieval functions.
-
-def dorms():
-    """Return all Buildings in which students typically live."""
-    return models.Building.objects.filter(building_type="D")

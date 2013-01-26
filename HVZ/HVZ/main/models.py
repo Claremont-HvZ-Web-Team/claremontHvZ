@@ -51,6 +51,11 @@ class Building(models.Model):
             self.campus,
         )
 
+    @staticmethod
+    def dorms():
+        """Return all Buildings in which students typically live."""
+        return Building.objects.filter(building_type="D")
+
     def get_kind(self):
         try:
             return self.KINDS[self.building_type]

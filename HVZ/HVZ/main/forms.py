@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from HVZ.main import utils
-from HVZ.main.models import School
+from HVZ.main.models import School, Building
 
 from validators import validate_chars, ensure_unregistered
 
@@ -58,7 +58,7 @@ class RegisterForm(forms.Form):
     )
 
     dorm = forms.ModelChoiceField(
-        queryset=utils.dorms(),
+        queryset=Building.dorms(),
         required=True,
         empty_label=_("Select a dorm"),
     )

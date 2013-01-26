@@ -18,10 +18,11 @@ def define_user(d):
 class BaseTest(TestCase):
     """Commonly used code and convenience functions for other TestCases."""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """Create an initial game and tabler."""
         # Create a current Game.
-        self.new_game()
+        cls.new_game()
 
         tabler = User.objects.create_user(username="tabler", password="a")
         tabler.save()
@@ -30,18 +31,27 @@ class BaseTest(TestCase):
         ts.user_set.add(tabler)
         ts.save()
 
-    def login_table(self, c):
-        """Convenience function to login as a tabler."""
-        return c.login(username="tabler", password="a")
+    @classmethod
+    def tearDownClass(cls):
+        """Delete all Games and Users."""
+        models.Game.objects.all().delete()
+        models.User.objects.all().delete()
 
-    def last_semester(self):
+    @staticmethod
+    def login_as_tabler(client):
+        """Log the given Client in as a tabler."""
+        return client.login(username="tabler", password="a")
+
+    @staticmethod
+    def last_semester():
         """Return a pair of values corresponding to a fake previous game."""
         today = date.today()
         t0 = today - timedelta(weeks=26)
         tf = t0 + timedelta(7)
         return (t0, tf)
 
-    def new_game(self):
+    @staticmethod
+    def new_game():
         """Create a Game starting today and lasting a week."""
         today = date.today()
         g = models.Game(start_date=today,

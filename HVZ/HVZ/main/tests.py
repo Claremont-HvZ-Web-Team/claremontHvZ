@@ -21,10 +21,6 @@ HUGH_MANN = define_user({
         })
 
 class SignupTest(BaseTest):
-    def login_table(self, c):
-        """Convenience function to login as a tabler."""
-        return c.post(reverse("login"), {"username": "tabler", "password": "a"})
-
 
     def test_tabler_required(self):
         """Ensure the registration page requires a logged-in tabler."""
@@ -38,7 +34,7 @@ class SignupTest(BaseTest):
         self.assertFalse(registered())
 
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
 
         response = c.get(reverse("register"))
         self.assertEqual(response.status_code, 200)
@@ -51,7 +47,7 @@ class SignupTest(BaseTest):
     def test_double_signup(self):
         """Ensure a Player can't sign up twice for the same Game."""
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
         c.post(reverse("register"), HUGH_MANN)
         response = c.post(reverse("register"), HUGH_MANN)
         self.assertFormError(response, "form", "email",
@@ -64,7 +60,7 @@ class SignupTest(BaseTest):
         d["feed"] = "XKXKX"
 
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
         response = c.post(reverse("register"), d)
         self.assertFormError(response, "form", "feed", "X is not a valid character.")
 
@@ -74,7 +70,7 @@ class SignupTest(BaseTest):
         d["feed"] = "PLAN"
 
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
 
         with self.settings(FEED_LEN=5):
             response = c.post(reverse("register"), d)
@@ -95,7 +91,7 @@ class SignupTest(BaseTest):
         old_game.save()
         
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
 
         self.assertFalse(models.Player.objects.filter(game=old_game).exists())
         self.assertFalse(models.Player.objects.filter(game__start_date=today).exists())
@@ -114,7 +110,7 @@ class SignupTest(BaseTest):
 
         # Register our user
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
         c.post(reverse("register"), HUGH_MANN)
 
         # Move our Game into the past

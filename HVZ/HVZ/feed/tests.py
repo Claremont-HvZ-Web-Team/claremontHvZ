@@ -45,7 +45,7 @@ class PermissionTest(BaseTest):
         super(PermissionTest, self).setUp()
 
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
         c.post(reverse("register"), ROB_ZOMBIE)
         c.post(reverse("register"), VICTIM)
 
@@ -82,10 +82,8 @@ class PermissionTest(BaseTest):
 
 class EatingTest(BaseTest):
     def setUp(self):
-        super(EatingTest, self).setUp()
-
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
 
         # Create a zombie
         c.post(reverse("register"), ROB_ZOMBIE)
@@ -148,11 +146,11 @@ class EatingTest(BaseTest):
         self.assertEqual(get_victim().team, "Z")
 
 class MultiGame(BaseTest):
+
     def setUp(self):
-        super(MultiGame, self).setUp()
 
         c = Client()
-        self.login_table(c)
+        self.login_as_tabler(c)
 
         # Create a victim in the past
         c.post(reverse("register"), VICTIM)

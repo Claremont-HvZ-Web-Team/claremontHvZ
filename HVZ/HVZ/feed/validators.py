@@ -6,4 +6,4 @@ def human_with_code(feedcode):
     """Ensure the feedcode corresponds to a currently-playing Human."""
     if not utils.current_players().filter(team="H", feed=feedcode).exists():
         raise ValidationError(
-            "{} does not correspond to a player in this game.".format(feedcode))
+            "{} doesn't correspond to a playing human!".format(feedcode))

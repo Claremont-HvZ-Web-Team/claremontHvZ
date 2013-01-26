@@ -119,7 +119,7 @@ class EatingTest(BaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Meal.objects.count(), 1)
         self.assertFormError(response, "form", "feedcode",
-                             "{} does not correspond to a player in this game."
+                             "{} doesn't correspond to a playing human!"
                              .format(VICTIM["feed"]))
 
     def test_resurrected_eating(self):
@@ -176,5 +176,5 @@ class MultiGame(BaseTest):
         victim = Player.objects.filter(user__email=VICTIM["email"]).get()
         self.assertEqual(victim.team, "H")
         self.assertFormError(response, "form", "feedcode",
-                             "{} does not correspond to a player in this game."
+                             "{} doesn't correspond to a playing human!"
                              .format(VICTIM["feed"]))

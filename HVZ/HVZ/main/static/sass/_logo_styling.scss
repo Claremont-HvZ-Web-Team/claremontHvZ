@@ -12,16 +12,17 @@ header {
 $logo_width: 271px;
 
 .barholder {
-
+    width: $header_width - $logo_width;
 }
 
 #breakoutbar {
     height: 40px;
-    width: $header_width - $logo_width;
     background-color: $bg_green;
     background-image: url(/static/images/green_grunge.jpg);
     background-position: 0px;
-    margin-bottom: 1em;
+
+    margin-left: 2.1%;
+    width: 98%;
 
     @include rounded_corner(top-left);
     @include rounded_corner(bottom-left);
@@ -45,11 +46,12 @@ $logo_width: 271px;
 
 .modcall {
     width: 400px;
-    margin: 0 auto;
+    margin: 0.5em auto;
     display: block;
     text-transform: uppercase;
+    text-align: center;
     font: {
-        size: 0.75em;
+        size: 0.9em;
     }
 }
 
@@ -83,7 +85,7 @@ nav {
 #logo {
     float: right;
     &.big{
-        margin-top: -284px;
+        margin-top: -283px;
     }
 
     z-index: 100;

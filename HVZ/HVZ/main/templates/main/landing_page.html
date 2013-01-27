@@ -7,6 +7,16 @@
 
 
 {% block pre_logo %}
+    <div class="logo_holder">
+        {% if not request.user.is_authenticated %}
+            <form method="POST" action="{% url login %}">
+                {% csrf_token %}
+                <div>{{login_form.username}}</div>
+                <div>{{login_form.password}}</div>
+                <input class="button-submit" type="submit" value="Log In!"/>
+            </form>
+        {% endif %}
+    </div>
     <div class='intro'>
         <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
     </div>

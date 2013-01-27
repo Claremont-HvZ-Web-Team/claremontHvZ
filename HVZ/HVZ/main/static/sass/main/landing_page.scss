@@ -21,3 +21,19 @@
         text-align: justify;
     }
 }
+
+.logo_holder {
+    float: right;
+    padding: 15px;
+
+    div {
+        padding-bottom: 0.5em;
+    }
+
+    input {
+        font-size: 20px;
+        padding: 5px;
+        width: $logo_width - 15px;
+    }
+
+}

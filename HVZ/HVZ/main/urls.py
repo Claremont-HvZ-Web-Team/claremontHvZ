@@ -1,3 +1,4 @@
+from django.contrib.auth.views import login, logout_then_login
 from django.conf.urls import patterns, url
 
 from views import LandingPage
@@ -15,5 +16,7 @@ urlpatterns = patterns('HVZ.main.views',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^login', login,  name="login"),
+    url(r'^logout', logout_then_login, name="logout"),
     url(r'^$', LandingPage.as_view(), name="main_landing"),
 )

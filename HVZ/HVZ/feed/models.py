@@ -1,6 +1,6 @@
 from django.db import models
 
-from main.models import Building, Game, Player
+from HVZ.main.models import Building, Game, Player
 # Create your models here.
 
 

@@ -10,7 +10,6 @@
         <!-- Load javascript -->
         <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
         <script type="text/javascript" src="{% static 'scripts/jquery-ui.js' %}"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
         {% block morehead %}{% endblock %}
 
@@ -42,12 +41,6 @@
                 </footer>
             </div>
         </div>
-        <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart"]});
-        $(document).ready(function() {
-        $('button').button();
-        });
-        </script>
         {% block scriptin %}
 
         {% endblock scriptin %}

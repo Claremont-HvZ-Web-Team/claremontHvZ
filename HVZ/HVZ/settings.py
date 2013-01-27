@@ -181,4 +181,5 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     # 'tinymce',
     'HVZ.main',
+    'HVZ.feed',
 )

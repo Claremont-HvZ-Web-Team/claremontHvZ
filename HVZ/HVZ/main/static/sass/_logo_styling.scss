@@ -11,6 +11,10 @@ header {
 }
 $logo_width: 271px;
 
+.barholder {
+
+}
+
 #breakoutbar {
     height: 40px;
     width: $header_width - $logo_width;
@@ -18,7 +22,6 @@ $logo_width: 271px;
     background-image: url(/static/images/green_grunge.jpg);
     background-position: 0px;
     margin-bottom: 1em;
-    margin-left: 5px;
 
     @include rounded_corner(top-left);
     @include rounded_corner(bottom-left);
@@ -52,16 +55,16 @@ $logo_width: 271px;
 
 nav {
     display: inline-block;
-    position: static;
-    bottom: 15px;
     width: 100%;
     font-size: 1.5em;
+    background-color: $dark_color;
     color: $link_color;
 
     ul {
         padding: 0.5em;
-        background-color: $dark_color;
         list-style-type: none;
+        width: 94%;
+        margin: 0 auto;
     }
     li {
         display: inline;
@@ -75,11 +78,13 @@ nav {
         text-transform: uppercase;
     }
 
-    #logo {
-        float: right;
-        &.big{
-            margin-top: -285px;
-        }
-    }
 }
 
+#logo {
+    float: right;
+    &.big{
+        margin-top: -284px;
+    }
+
+    z-index: 100;
+}

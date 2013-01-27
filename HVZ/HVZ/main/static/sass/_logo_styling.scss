@@ -1,23 +1,24 @@
 
+$header_width: 1000px;
 header {
-    $width: 1000px;
-    width: $width;
+    width: $header_width;
     margin-top: 144px;
-    margin-left: ($width - $container_width)/2;
+    margin-left: ($header_width - $container_width)/2;
     div {
         display: inline-block;
     }
 
 }
+$logo_width: 271px;
 
 #breakoutbar {
     height: 40px;
-    width: 72%;
+    width: $header_width - $logo_width;
     background-color: $bg_green;
     background-image: url(/static/images/green_grunge.jpg);
     background-position: 0px;
     margin-bottom: 1em;
-    margin-left: 25px;
+    margin-left: 5px;
 
     @include rounded_corner(top-left);
     @include rounded_corner(bottom-left);
@@ -38,14 +39,14 @@ header {
     background-color: $bg_red;
 }
 
+
 .modcall {
     width: 400px;
     margin: 0 auto;
     display: block;
-    text-transform: lowercase;
+    text-transform: uppercase;
     font: {
-        size: 1.25em;
-        variant: small-caps;
+        size: 0.75em;
     }
 }
 

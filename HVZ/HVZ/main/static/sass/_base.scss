@@ -33,7 +33,7 @@ $container_width: 1000px;
 
     background-color: white;
     background-image: url(/static/images/subtle_grunge.png);
-    @include box-shadow(0, 10px, 10px, rgba(0, 0, 0, 0.075));
+    @include box-shadow(0, 15px, 15px, rgba(0, 0, 0, 1));
 }
 
 #contentContainer {

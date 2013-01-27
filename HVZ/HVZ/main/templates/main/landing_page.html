@@ -13,5 +13,22 @@
 {% endblock pre_logo %}
 
 {% block content %}
+<section class='ticker'>
+    {% for meal in latest_meals %}
+        <div class='time'>
+            {{meal.time|date:"%H:%M"}}
+        </div>
+        <div class='meal'>
+            {{meal.eater}} ate {{meal.eaten}}
+        </div>
+        <div class='loc'>
+            {{meal.location}}
+        </div>
+    {% endfor %}
+</section>
+<section class='mission'>
+{% if not request.user.is_authenticated %}
 
+{% endif %}
+</section>
 {% endblock content %}

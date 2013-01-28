@@ -1,6 +1,7 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
 import os
+
 import local_settings
 
 ### The following settings should all be defined in a file called
@@ -26,7 +27,7 @@ TEMPLATE_DEBUG = local_settings.TEMPLATE_DEBUG
 # addresses. It should look something like the following:
 
 # ADMINS = (
-#     # ('Your Name', 'your_email@domain.com'),
+#     ('Your Name', 'your_email@domain.com'),
 # )
 
 ADMINS = local_settings.ADMINS
@@ -113,9 +114,17 @@ USE_I18N = False
 # calendars according to the current locale
 USE_L10N = True
 
+# Used by Django's auth decorators to log a user in.
+# These can become named url patterns once we upgrade to Django 1.5.
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = absolute_path('public/media/')
+MEDIA_ROOT = absolute_path(os.path.join('public','media'))
+
+HUMAN_PICS = os.path.join(MEDIA_ROOT, 'human_pics')
+ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -132,18 +141,13 @@ ADMIN_MEDIA_PREFIX = '/admin-media/'
 
 # List of callables that know how to import templates from various sources.
 
-TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-        )),
-)
-
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',
-#     'django.template.loaders.app_directories.Loader',
-# #     'django.template.loaders.eggs.Loader',
-# )
+if not DEBUG:
+    TEMPLATE_LOADERS = (
+        ('django.template.loaders.cached.Loader', (
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                )),
+    )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -155,9 +159,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-ROOT_URLCONF = 'DjangoProject.urls'
+ROOT_URLCONF = 'HVZ.urls'
 
 TEMPLATE_DIRS = (
+    absolute_path('HVZ/prototype-templates'),
     absolute_path('templates'),
     # Put strings here, like "/home/html/django_templates" or
     # "C:/www/django/templates".  Always use forward slashes, even on
@@ -172,10 +177,16 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    # 'tinymce',
-    'HVZ',
+    'HVZ.main',
+    'HVZ.feed'
 )
+
+# App-specific settings below:
+
+# The length of a feed code.
+FEED_LEN = 5
+
+# The characters we allow in a feed code.
+VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]

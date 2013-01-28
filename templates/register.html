@@ -29,6 +29,7 @@
                         {% for field in form %}
                             <div class="fieldWrapper">
                               {{ field.errors }}
+                              {{ field.label }}
                               {{ field }}
                               <div class="reminder">{{ field.help_text }}</div>
                             </div>

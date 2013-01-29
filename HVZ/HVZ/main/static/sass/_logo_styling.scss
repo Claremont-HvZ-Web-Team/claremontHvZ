@@ -84,8 +84,12 @@ nav {
 
 #logo {
     float: right;
-    &.big{
+    &.big {
         margin-top: -283px;
+    }
+    &:not(.big) {
+        margin-top: -157px;
+        @include box-shadow(5px, -1px, 10px, rgba(0, 0, 0, 0.5));
     }
 
     z-index: 100;

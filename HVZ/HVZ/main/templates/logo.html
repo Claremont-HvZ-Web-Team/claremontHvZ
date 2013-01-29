@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+{% load url from future %}
 <header>
     <div class='barholder'>
         <div id='breakoutbar'>
@@ -27,7 +27,7 @@
     <div id='logo' {% if is_landing_page %}
         class="big"
     {% endif %}>
-        <a href=""><img src="{% spaceless %}
+        <a href="{% url 'main_landing' %}"><img src="{% spaceless %}
             {% if is_landing_page %}
             {% static 'images/logo.png' %}
             {% else %}

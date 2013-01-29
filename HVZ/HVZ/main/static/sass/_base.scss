@@ -35,10 +35,16 @@ $container_width: 1000px;
     background-color: white;
     background-image: url(/static/images/subtle_grunge.png);
     @include box-shadow(0, 15px, 15px, rgba(0, 0, 0, 1));
+
 }
 
 #contentContainer {
     min-height: 250px;
+    padding: 1em;
+    #mainContainer {
+        padding: 0.25em 1em;
+        background-color: rgba(255, 255, 255, 0.5);
+    }
 }
 
 footer {

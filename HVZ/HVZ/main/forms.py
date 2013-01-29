@@ -1,11 +1,23 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.localflavor.us.forms import USPhoneNumberField
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from HVZ.main.models import Building, Game, School
 from HVZ.main.validators import validate_chars, ensure_unregistered
+
+
+class PrettyAuthForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(PrettyAuthForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({
+            "placeholder": "username",
+        })
+        self.fields['password'].widget.attrs.update({
+            "placeholder": "password",
+        })
 
 
 class FeedCodeField(forms.CharField):
@@ -43,7 +55,7 @@ class RegisterForm(forms.Form):
     )
 
     password2 = forms.CharField(
-        label=_("Password confirmation"),
+        label=_("Password (again)"),
         widget=forms.PasswordInput,
         required=True,
         help_text=_("Enter the same password as above, for verification."),

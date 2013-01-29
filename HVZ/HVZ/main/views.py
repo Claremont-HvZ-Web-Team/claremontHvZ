@@ -1,4 +1,3 @@
-from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
@@ -8,7 +7,7 @@ from django.views.generic.edit import FormView
 
 from HVZ.feed.models import Meal
 from HVZ.main.models import Game, Player
-from HVZ.main.forms import RegisterForm
+from HVZ.main.forms import PrettyAuthForm, RegisterForm
 from HVZ.main.decorators import require_unfinished_game
 
 
@@ -19,7 +18,7 @@ class LandingPage(TemplateView):
         context = super(LandingPage, self).get_context_data(*args, **kwargs)
 
         if not self.request.user.is_authenticated():
-            form = AuthenticationForm()
+            form = PrettyAuthForm()
         else:
             form = None
 

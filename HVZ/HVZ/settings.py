@@ -1,6 +1,7 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
 import os
+
 import local_settings
 
 ### The following settings should all be defined in a file called
@@ -127,6 +128,7 @@ STATIC_ROOT = local_settings.STATIC_ROOT
 STATIC_URL = local_settings.STATIC_URL
 
 LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

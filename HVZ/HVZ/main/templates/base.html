@@ -6,6 +6,7 @@
 
         <!-- Load css -->
         {% block stylein %}
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/main/core.css' %}">
         {% endblock stylein %}
         <!-- Load javascript -->
         <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
@@ -24,7 +25,7 @@
                 {% include "logo.html" %}
                 {% block post_header %}
                     <div id="contentContainer">
-                        <div id="mainContainer" class="background" style="width:95%">
+                        <div id="mainContainer" class="background" >
                         {% block content %}{% endblock %}
                         </div>
                     </div>

@@ -9,7 +9,7 @@
 {% block pre_logo %}
     <div class="logo_holder">
         {% if not request.user.is_authenticated %}
-            <form method="POST" action="{% url login %}">
+            <form method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
                 <div>{{login_form.username}}</div>
                 <div>{{login_form.password}}</div>

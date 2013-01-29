@@ -35,6 +35,7 @@ class Register(FormView):
         finally:
             u.first_name=grab("first_name")
             u.last_name=grab("last_name")
+            u.full_clean()
             u.save()
 
         p = Player(user=u,
@@ -47,6 +48,7 @@ class Register(FormView):
                    can_oz=grab("can_oz"),
                    can_c3=grab("can_c3"),
                    team="H")
+        p.full_clean()
         p.save()
 
         return super(Register, self).form_valid(form)

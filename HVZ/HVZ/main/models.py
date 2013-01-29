@@ -16,8 +16,8 @@ class FeedCodeField(models.CharField):
         kwargs["max_length"] = settings.FEED_LEN
         return super(FeedCodeField, self).__init__(*args, **kwargs)
 
-    def clean(self, value):
-        return super(FeedCodeField, self).clean(value.upper())
+    def clean(self, value, model):
+        return super(FeedCodeField, self).clean(value.upper(), model)
 
 class School(models.Model):
     """Represents a campus"""
@@ -153,8 +153,8 @@ class Player(models.Model):
         null=True,
     )
 
-    human_pic = models.ImageField(upload_to=settings.HUMAN_PICS)
-    zombie_pic = models.ImageField(upload_to=settings.ZOMBIE_PICS)
+    profile_pic = models.ImageField(upload_to=settings.HUMAN_PICS,
+                                    blank=True, null=True)
 
     def __unicode__(self):
         return u"Player: {}".format(self.user)
@@ -162,7 +162,7 @@ class Player(models.Model):
     @staticmethod
     def current_players():
         """Return all Players in the current Game."""
-        return models.Player.objects.filter(game=Game.nearest_game())
+        return Player.objects.filter(game=Game.nearest_game())
 
     @staticmethod
     def logged_in_player(request):

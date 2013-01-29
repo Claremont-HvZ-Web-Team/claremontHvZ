@@ -30,9 +30,9 @@ class TimeValidator:
         if time > datetime.now():
             raise ValidationError(u"{} must be in the past.".format(time))
 
-        if time.date < self.game.start_date:
+        if time.date() < self.game.start_date:
             raise ValidationError(
-                u"The {} game started on {}. This field is {}.").format(
+                u"The {} game started on {}. This date is {}.".format(
                 self.game,
                 self.game.start_date,
-                time)
+                time.date()))

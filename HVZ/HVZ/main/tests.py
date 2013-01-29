@@ -20,13 +20,16 @@ HUGH_MANN = define_user({
         "feed": "PLANS"
         })
 
+
 class SignupTest(BaseTest):
 
     def test_tabler_required(self):
         """Ensure the registration page requires a logged-in tabler."""
         c = Client()
-        response = c.get(reverse("register"), follow=True)
-        self.assertRedirects(response, "/login/?next=%2Fregister%2F")
+        url_register = reverse("register")
+        url_login = reverse("login")
+        response = c.get(url_register, follow=True)
+        self.assertRedirects(response, "{}/?next={}".format(url_login, url_register))
 
     def test_valid_signup(self):
         """Ensure a player can sign up with valid data."""
@@ -90,7 +93,7 @@ class SignupTest(BaseTest):
         tf = t0 + timedelta(7)
         old_game = models.Game(start_date=t0, end_date=tf)
         old_game.save()
-        
+
         c = Client()
         self.login_as_tabler(c)
 
@@ -98,7 +101,7 @@ class SignupTest(BaseTest):
         self.assertFalse(models.Player.objects.filter(game__start_date=today).exists())
 
         c.post(reverse("register"), HUGH_MANN)
-        
+
         self.assertFalse(models.Player.objects.filter(game=old_game).exists())
         self.assertTrue(models.Player.objects.filter(game__start_date=today).exists())
 

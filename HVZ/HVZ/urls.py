@@ -12,8 +12,6 @@ urlpatterns = patterns(
     '',
     # Examples:
 
-    url(r'^register/', HVZ.main.views.Register.as_view(), name="register"),
-
     # Coupled to settings.LOGIN_URL for reasons out of my control.
     url(r'^login/', 'django.contrib.auth.views.login', name="login"),
 

@@ -164,20 +164,20 @@ class Player(models.Model):
     def __unicode__(self):
         return u"Player: {}".format(self.user)
 
-    @staticmethod
-    def current_players():
+    @classmethod
+    def current_players(cls):
         """Return all Players in the current Game."""
-        return models.Player.objects.filter(game=Game.nearest_game())
+        return cls.objects.filter(game=Game.nearest_game())
 
-    @staticmethod
-    def logged_in_player(request):
+    @classmethod
+    def logged_in_player(cls, request):
         """Return the currently logged in Player."""
-        return Player.current_players().get(user=request.user)
+        return cls.current_players().get(user=request.user)
 
-    @staticmethod
-    def user_to_player(u):
+    @classmethod
+    def user_to_player(cls, u):
         """Return the most current Player corresponding to the given User."""
-        return Player.objects.filter(game=Game.nearest_game(), user=u).get()
+        return cls.objects.filter(game=Game.nearest_game(), user=u).get()
 
     class Meta:
         # A User can only have one Player per Game.

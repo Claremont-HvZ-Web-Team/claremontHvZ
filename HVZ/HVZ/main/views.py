@@ -31,7 +31,7 @@ class LandingPage(TemplateView):
 
 class Register(FormView):
     form_class = RegisterForm
-    template_name = "register.html"
+    template_name = "main/register.html"
 
     @method_decorator(permission_required("main.add_player"))
     @method_decorator(require_unfinished_game)

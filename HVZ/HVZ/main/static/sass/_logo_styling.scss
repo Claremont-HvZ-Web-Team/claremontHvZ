@@ -16,6 +16,7 @@ $logo_width: 271px;
 }
 
 #breakoutbar {
+    margin-top: 10px;
     height: 40px;
     background-color: $bg_green;
     background-image: url(/static/images/green_grunge.jpg);
@@ -58,7 +59,7 @@ $logo_width: 271px;
 nav {
     display: inline-block;
     width: 100%;
-    font-size: 1.5em;
+    font-size: 1.45em;
     background-color: $dark_color;
     color: $link_color;
 
@@ -88,9 +89,22 @@ nav {
         margin-top: -283px;
     }
     &:not(.big) {
-        margin-top: -157px;
+        margin-top: -156px;
         @include box-shadow(5px, -1px, 10px, rgba(0, 0, 0, 0.5));
     }
 
     z-index: 100;
 }
+
+.spacer {
+    display: block;
+    height: 5px;
+}
+
+.login_holder {
+    padding: 0.25em 0.5em;
+    float: right;
+    text-align: right;
+    display: block;
+}
+

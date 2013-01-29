@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-
+{% load url from future %}
 {% block stylein %}
 <link rel="stylesheet" href="{% static 'styles/main/landing_page.css' %}" />
 {% endblock stylein %}
@@ -15,6 +15,22 @@
                 <div>{{login_form.password}}</div>
                 <input class="button-submit" type="submit" value="Log In!"/>
             </form>
+
+        {% else %}
+            <div>{% if request.user.player.team == "H" %}
+                Good luck, {{user.first_name}}
+            {% else %}
+                Brrrrains! (amirite, {{user.first_name}}?)
+            {% endif %}
+        </div>
+        <div>
+            <ul>
+                <li><a href="{% url 'logout' %}">logout</a></li>
+                {% if request.user.player.team == 'Z' %}
+                <li><a href="{% url 'feed_eat' %}">feed</a></li>
+                {% endif %}
+            </ul>
+        </div>
         {% endif %}
     </div>
     <div class='intro'>

@@ -1,12 +1,28 @@
+from datetime import date
+
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import PhoneNumberField
 from django.db import models
+from django.conf import settings
 
-# Create your models here.
+from HVZ.main.validators import validate_chars
+from HVZ.main.exceptions import NoActiveGame
+
+
+class FeedCodeField(models.CharField):
+    default_validators = [validate_chars]
+
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = settings.FEED_LEN
+        return super(FeedCodeField, self).__init__(*args, **kwargs)
+
+    def clean(self, value):
+        return super(FeedCodeField, self).clean(value.upper())
 
 
 class School(models.Model):
-    """Representation of a campus"""
+    """Represents a campus"""
     name = models.CharField(max_length=7)
 
     def __unicode__(self):
@@ -29,7 +45,7 @@ class Building(models.Model):
     campus = models.ForeignKey(School, blank=True, null=True)
     building_type = models.CharField(
         max_length=1,
-        choices=[(x, KINDS[x]) for x in KINDS],
+        choices=KINDS.items(),
     )
 
     def __unicode__(self):
@@ -38,110 +54,134 @@ class Building(models.Model):
             self.campus,
         )
 
+    @staticmethod
+    def dorms():
+        """Return all Buildings in which students typically live."""
+        return Building.objects.filter(building_type="D")
+
     def get_kind(self):
         try:
-            return self.KINDS[self.building_type]
+            return Building.KINDS[self.building_type]
         except KeyError:
             return None
 
 
-class Player(models.Model):
-    """Game-related data about a user"""
-    user = models.OneToOneField(User)
-    school = models.ForeignKey(School)
-    dorm = models.ForeignKey(Building)
-
-    grad_year = models.PositiveIntegerField(blank=True, null=True)
-
-    cell = PhoneNumberField(blank=True, null=True)
-
-    def get_player_upload_path(self, fname):
-        return '/'.join(['main', 'images', self.user.username, fname])
-
-    human_pic = models.ImageField(upload_to=get_player_upload_path)
-    zombie_pic = models.ImageField(upload_to=get_player_upload_path)
-
-    bad_meals = models.PositiveIntegerField(default=0, blank=False)
-
-    def __unicode__(self):
-        return u"Player: {}".format(self.user)
-
-
-class PlayerSetting(models.Model):
-    """A User's settings"""
-    player = models.OneToOneField(Player)
-
-    cell_emergency = models.BooleanField()
-    cell_send = models.BooleanField()
-    cell_mission_announce = models.BooleanField()
-    cell_mission_update = models.BooleanField()
-    cell_npc_announce = models.BooleanField()
-    cell_npc_update = models.BooleanField()
-
-    def __unicode__(self):
-        return u"Settings: {}".format(self.player)
-
-
 class Game(models.Model):
     """Um. A Game."""
-    SEMESTERS = {
-        "S": "Spring",
-        "F": "Fall",
-    }
 
-    semester = models.CharField(
-        max_length=1,
-        choices=[(x, SEMESTERS[x]) for x in SEMESTERS]
-    )
-    year = models.PositiveIntegerField()
-    start_date = models.DateField()
+    start_date = models.DateField(unique=True)
+    end_date = models.DateField(unique=True)
 
     def __unicode__(self):
-        return u"{} {}".format(
-            self.SEMESTERS[self.semester],
-            self.year,
+        if self.start_date <= date.today() <= self.end_date:
+            s = u"{} {} (ongoing)"
+        else:
+            s = u"{} {}"
+        return s.format(
+            self.semester(),
+            self.start_date.year,
         )
 
+    def semester(self):
+        """Return 'Spring', 'Summer', or 'Fall', based on academic fiat."""
+        if 1 <= self.start_date.month < 6:
+            return "Spring"
+        elif 6 <= self.start_date.month < 9:
+            return "Summer"
+        else:
+            return "Fall"
 
-class Registration(models.Model):
-    """An instance of a player in a certain game."""
+    def clean(self):
+        # Two date ranges A and B overlap if:
+        # (A.start <= B.end) and (A.end >= B.start)
+        if Game.objects.filter(start_date__lte=self.end_date,
+                               end_date__gte=self.start_date).exists():
+            raise ValidationError("This Game overlaps with another!")
+
+    @staticmethod
+    def unfinished_games():
+        """Return the set of all games which haven't yet ended."""
+        return Game.objects.filter(end_date__gte=date.today())
+
+    @staticmethod
+    def game_in_progress():
+        """True iff a Game is currently ongoing."""
+        return Game.unfinished_games().filter(
+            start_date__lte=date.today()).exists()
+
+    @staticmethod
+    def nearest_game():
+        """Returns the Game currently ongoing or nearest to now."""
+        try:
+            return Game.unfinished_games().order_by("start_date")[0]
+        except IndexError:
+            raise NoActiveGame
+
+    class Meta:
+        get_latest_by = "start_date"
+
+
+class Player(models.Model):
+    """Game-related data about a user"""
+
     TEAMS = {
         "H": "Humans",
         "Z": "Zombies",
     }
 
-    HIDDEN_UPGRADES = {
-        "R": "Rebel Zombie",
-    }
+    UPGRADES = {}
 
-    player = models.ForeignKey(Player)
-    hardcore = models.BooleanField(default=False)
-    feed = models.CharField(max_length=6)
+    user = models.ForeignKey(User)
+    cell = PhoneNumberField(blank=True, null=True)
 
     game = models.ForeignKey(Game)
-    team = models.CharField(
-        max_length=1,
-        choices=[(x, TEAMS[x]) for x in TEAMS],
-        default="H",
-    )
+
+    school = models.ForeignKey(School)
+    dorm = models.ForeignKey(Building)
+    grad_year = models.PositiveIntegerField(blank=True, null=True)
+
     can_oz = models.BooleanField(default=False)
     can_c3 = models.BooleanField(default=False)
 
+    feed = FeedCodeField()
+
+    team = models.CharField(
+        max_length=1,
+        choices=TEAMS.items(),
+        default="H",
+    )
+
     upgrade = models.CharField(
         max_length=1,
-        choices=[(x, HIDDEN_UPGRADES[x]) for x in HIDDEN_UPGRADES],
+        choices=UPGRADES.items(),
         blank=True,
         null=True,
     )
 
-    bonus = models.PositiveIntegerField(default=0, blank=False)
+    human_pic = models.ImageField(upload_to=settings.HUMAN_PICS)
+    zombie_pic = models.ImageField(upload_to=settings.ZOMBIE_PICS)
 
     def __unicode__(self):
-        return u"{}: {} {}".format(
-            self.game,
-            self.player.first_name(),
-            self.player.last_name(),
-        )
+        return u"Player: {}".format(self.user)
+
+    @staticmethod
+    def current_players():
+        """Return all Players in the current Game."""
+        return models.Player.objects.filter(game=Game.nearest_game())
+
+    @staticmethod
+    def logged_in_player(request):
+        """Return the currently logged in Player."""
+        return Player.current_players().get(user=request.user)
+
+    @staticmethod
+    def user_to_player(u):
+        """Return the most current Player corresponding to the given User."""
+        return Player.objects.filter(game=Game.nearest_game(), user=u).get()
+
+    class Meta:
+        # A User can only have one Player per Game.
+        unique_together = (("user", "game"),)
 
 
 class Award(models.Model):
@@ -162,7 +202,6 @@ class ModSchedule(models.Model):
     mod = models.ForeignKey(
         Player,
         limit_choices_to={
-            'cell__gte': '1',
             'user__is_staff': 'True',
         }
     )
@@ -182,7 +221,7 @@ class MonolithController(models.Model):
     def save(self, *args, **kwargs):
         # prevent additional models
         self.id = 1
-        super(MonolithController, self).save(*args, **kwargs)
+        return super(MonolithController, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return "Monolith Controller"

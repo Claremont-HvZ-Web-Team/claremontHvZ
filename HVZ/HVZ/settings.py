@@ -193,3 +193,11 @@ INSTALLED_APPS = (
     'HVZ.main',
     'HVZ.feed',
 )
+
+# App-specific settings below:
+
+# The length of a feed code.
+FEED_LEN = 5
+
+# The characters we allow in a feed code.
+VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]

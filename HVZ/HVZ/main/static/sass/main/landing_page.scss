@@ -41,6 +41,9 @@
 
 .ticker {
     float: right;
+    margin: 0.25em {
+        right: -0.5em;
+    }
     min-height: 250px;
     width: 200px;
     background-color: orange;

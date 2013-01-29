@@ -39,9 +39,6 @@
 {% endblock pre_logo %}
 
 {% block content %}
-<section>
- <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
-</section>
 
 <section class='ticker'>
     {% for meal in latest_meals %}
@@ -56,6 +53,11 @@
         </div>
     {% endfor %}
 </section>
+
+<section class='text'>
+ <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
+</section>
+
 <section class='mission'>
 {% if not request.user.is_authenticated %}
 

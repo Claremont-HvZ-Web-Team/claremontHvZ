@@ -3,13 +3,13 @@ from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
-from django.views.generic.edit import FormView, TemplateView
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 
 from HVZ.feed.models import Meal
-from HVZ.main.models import Player
+from HVZ.main.models import Game, Player
 from HVZ.main.forms import RegisterForm
 from HVZ.main.decorators import require_unfinished_game
-from HVZ.main.utils import nearest_game
 
 
 class LandingPage(TemplateView):
@@ -49,24 +49,28 @@ class Register(FormView):
             u = User.objects.get(email=grab("email"))
             u.set_password(grab("password1"))
         except User.DoesNotExist:
-            u = User.objects.create_user(email=grab("email"),
-                                         username=grab("email"),
-                                         password=grab("password1"))
+            u = User.objects.create_user(
+                email=grab("email"),
+                username=grab("email"),
+                password=grab("password1"),
+            )
         finally:
             u.first_name = grab("first_name")
             u.last_name = grab("last_name")
             u.save()
 
-        p = Player(user=u,
-                   game=nearest_game(),
-                   school=grab("school"),
-                   dorm=grab("dorm"),
-                   grad_year=grab("grad_year"),
-                   cell=grab("cell"),
-                   feed=grab("feed"),
-                   can_oz=grab("can_oz"),
-                   can_c3=grab("can_c3"),
-                   team="H")
+        p = Player(
+            user=u,
+            game=Game.nearest_game(),
+            school=grab("school"),
+            dorm=grab("dorm"),
+            grad_year=grab("grad_year"),
+            cell=grab("cell"),
+            feed=grab("feed"),
+            can_oz=grab("can_oz"),
+            can_c3=grab("can_c3"),
+            team="H",
+        )
         p.save()
 
         return super(Register, self).form_valid(form)

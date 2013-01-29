@@ -1,7 +1,7 @@
 from django.contrib.auth.views import login, logout_then_login
 from django.conf.urls import patterns, url
 
-from views import LandingPage
+from views import LandingPage, Register
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -18,5 +18,7 @@ urlpatterns = patterns('HVZ.main.views',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^login', login,  name="login"),
     url(r'^logout', logout_then_login, name="logout"),
+    url(r'^register/', Register.as_view(), name="register"),
+
     url(r'^$', LandingPage.as_view(), name="main_landing"),
 )

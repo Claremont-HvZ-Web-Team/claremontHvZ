@@ -116,7 +116,8 @@ USE_L10N = True
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = absolute_path('upload-media')
-
+HUMAN_PICS = os.path.join(MEDIA_ROOT, 'human_pics')
+ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -124,6 +125,8 @@ MEDIA_URL = '/upload-media/'
 
 STATIC_ROOT = local_settings.STATIC_ROOT
 STATIC_URL = local_settings.STATIC_URL
+
+LOGIN_URL = "/login/"
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

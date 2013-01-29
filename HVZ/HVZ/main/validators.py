@@ -3,9 +3,9 @@ from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
+# Can't import specific names because circular import!
 import models
 
-from utils import nearest_game
 
 def validate_chars(feedcode):
     """Raise an exception if we contain unapproved characters."""
@@ -13,15 +13,17 @@ def validate_chars(feedcode):
         if c not in settings.VALID_CHARS:
             raise ValidationError(u"{} is not a valid character.".format(c))
 
+
 def ensure_unregistered(uname):
     """Ensure the given User has not already registered for this Game."""
-    if models.Player.objects.filter(user__username=uname, game=nearest_game()).exists():
+    if models.Player.objects.filter(user__username=uname, game=models.Game.nearest_game()).exists():
         raise ValidationError(u"{} has already registered for this Game.".format(uname))
+
 
 class TimeValidator:
     def __init__(self, game=None):
         if game is None:
-            game = nearest_game()
+            game = models.Game.nearest_game()
 
         self.game = game
 

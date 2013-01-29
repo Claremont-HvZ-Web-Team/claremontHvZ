@@ -4,10 +4,8 @@ from django.contrib.localflavor.us.forms import USPhoneNumberField
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from HVZ.main import utils
-from HVZ.main.models import School, Building
-
-from validators import validate_chars, ensure_unregistered
+from HVZ.main.models import Building, Game, School
+from HVZ.main.validators import validate_chars, ensure_unregistered
 
 
 class FeedCodeField(forms.CharField):
@@ -97,7 +95,7 @@ class RegisterForm(forms.Form):
     )
 
     def clean(self):
-        if not utils.game_in_progress():
+        if not Game.game_in_progress():
             raise ValidationError("There are no ongoing Games in progress!")
 
         return super(RegisterForm, self).clean()

@@ -4,10 +4,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 from HVZ.main.decorators import zombie_required
-from HVZ.main.utils import current_players, logged_in_player
 
-from models import Meal
+from models import Meal, Player
 from forms import MealForm
+
 
 class EatView(FormView):
     form_class = MealForm
@@ -25,11 +25,12 @@ class EatView(FormView):
         def grab(s):
             return form.cleaned_data[s]
 
-        m = Meal(eater=logged_in_player(self.request),
-                 eaten=current_players().filter(feed=grab("feedcode")).get(),
-                 time=grab("time"),
-                 location = grab("location"),
-                 description = grab("description")
+        m = Meal(
+            eater=Player.logged_in_player(self.request),
+            eaten=Player.current_players().filter(feed=grab("feedcode")).get(),
+            time=grab("time"),
+            location=grab("location"),
+            description=grab("description"),
         )
         m.save()
 

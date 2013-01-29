@@ -10,6 +10,8 @@ from HVZ.main.models import Game, Player
 from HVZ.main.forms import PrettyAuthForm, RegisterForm
 from HVZ.main.decorators import require_unfinished_game
 
+import datetime
+
 
 class LandingPage(TemplateView):
     template_name = "main/landing_page.html"
@@ -24,7 +26,14 @@ class LandingPage(TemplateView):
 
         context['login_form'] = form
         context['is_landing_page'] = True
-        context['latest_meals'] = Meal.objects.all().order_by('time')[:20]
+        context['latest_meals'] = Meal.objects.all().order_by('time')[:20] or [
+            {
+                'time': datetime.datetime.now(),
+                'eater': "ZombieJohn{}".format(x),
+                'eaten': "HumanGreg{}".format(x),
+                'location': None if x % 2 else "HOCH"
+            } for x in range(15)
+        ]
         return context
 
 

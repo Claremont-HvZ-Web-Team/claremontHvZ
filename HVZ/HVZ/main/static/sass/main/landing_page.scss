@@ -44,7 +44,13 @@
     margin: 0.25em {
         right: -0.5em;
     }
+
+    padding: 5px;
+
     min-height: 250px;
-    width: 200px;
-    background-color: orange;
+    max-height: 400px;
+    overflow-y: scroll;
+    width: 250px;
+    background-color: $bg_grey;
+    color: white;
 }

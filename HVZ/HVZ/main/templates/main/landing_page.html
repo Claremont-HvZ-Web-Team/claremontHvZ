@@ -40,27 +40,27 @@
 
 {% block content %}
 
+{% if latest_meals %}
 <section class='ticker'>
     {% for meal in latest_meals %}
         <div class='time'>
-            {{meal.time|date:"%H:%M"}}
-        </div>
-        <div class='meal'>
-            {{meal.eater}} ate {{meal.eaten}}
+            {{meal.time|date:"h:m a"}}
         </div>
         <div class='loc'>
             {{meal.location}}
         </div>
+        <div class='meal'>
+            {{meal.eater}} ate {{meal.eaten}}
+        </div>
     {% endfor %}
 </section>
+{% endif %}
 
-<section class='text'>
- <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
-</section>
-
-<section class='mission'>
+<section class='mission text'>
 {% if not request.user.is_authenticated %}
 
 {% endif %}
+ <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
 </section>
+<div class='clearer'></div>
 {% endblock content %}

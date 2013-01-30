@@ -12,8 +12,8 @@ import local_settings
 PROJECT_PATH = local_settings.PROJECT_PATH
 
 
-def absolute_path(path):
-    return os.path.join(PROJECT_PATH, path)
+def absolute_path(*paths):
+    return os.path.join(PROJECT_PATH, *paths)
 
 # Do you want the site to display a bunch of information when
 # something goes wrong? Either True or False.
@@ -27,7 +27,7 @@ TEMPLATE_DEBUG = local_settings.TEMPLATE_DEBUG
 # addresses. It should look something like the following:
 
 # ADMINS = (
-#     ('Your Name', 'your_email@domain.com'),
+#     # ('Your Name', 'your_email@domain.com'),
 # )
 
 ADMINS = local_settings.ADMINS
@@ -114,18 +114,11 @@ USE_I18N = False
 # calendars according to the current locale
 USE_L10N = True
 
-# Used by Django's auth decorators to log a user in.
-# These can become named url patterns once we upgrade to Django 1.5.
-LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/'
-
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = absolute_path(os.path.join('public','media'))
-
+MEDIA_ROOT = absolute_path('upload-media')
 HUMAN_PICS = os.path.join(MEDIA_ROOT, 'human_pics')
 ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -134,6 +127,9 @@ MEDIA_URL = '/upload-media/'
 STATIC_ROOT = local_settings.STATIC_ROOT
 STATIC_URL = local_settings.STATIC_URL
 
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -141,13 +137,21 @@ ADMIN_MEDIA_PREFIX = '/admin-media/'
 
 # List of callables that know how to import templates from various sources.
 
-if not DEBUG:
-    TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader', (
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                )),
-    )
+TEMPLATE_LOADERS = (
+    (
+        'django.template.loaders.cached.Loader',
+        (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+        ),
+    ),
+)
+
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -162,12 +166,22 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'HVZ.urls'
 
 TEMPLATE_DIRS = (
-    absolute_path('HVZ/prototype-templates'),
-    absolute_path('templates'),
     # Put strings here, like "/home/html/django_templates" or
     # "C:/www/django/templates".  Always use forward slashes, even on
     # Windows.  Don't forget to use absolute paths, not relative
     # paths.
+    absolute_path("HVZ", "templates"),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "django.core.context_processors.request",
+    "HVZ.main.context_processors.inject_outbreak_percentage",
 )
 
 INSTALLED_APPS = (
@@ -177,10 +191,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    # 'tinymce',
     'HVZ.main',
-    'HVZ.feed'
+    'HVZ.feed',
 )
 
 # App-specific settings below:

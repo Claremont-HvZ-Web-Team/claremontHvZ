@@ -4,3 +4,6 @@ core
 local_settings.py
 *.pyc
 passenger_wsgi.py
+
+*.css
+.sass-cache

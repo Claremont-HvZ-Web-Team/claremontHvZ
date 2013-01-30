@@ -1,0 +1,110 @@
+
+$header_width: 1000px;
+header {
+    width: $header_width;
+    margin-top: 144px;
+    margin-left: ($header_width - $container_width)/2;
+    div {
+        display: inline-block;
+    }
+
+}
+$logo_width: 271px;
+
+.barholder {
+    width: $header_width - $logo_width;
+}
+
+#breakoutbar {
+    margin-top: 10px;
+    height: 40px;
+    background-color: $bg_green;
+    background-image: url(/static/images/green_grunge.jpg);
+    background-position: 0px;
+
+    margin-left: 2.1%;
+    width: 98%;
+
+    @include rounded_corner(top-left);
+    @include rounded_corner(bottom-left);
+}
+
+#zombieproglead {
+    height: 100%;
+    width: 25px;
+    background-image:url(/static/images/zombie_outbreak_edge2.png);
+    background-position: 0px 50%;
+    background-repeat: no-repeat;
+    float: right;
+}
+#zombieprog {
+    height: 100%;
+    float: right;
+    width: 0%;
+    background-color: $bg_red;
+}
+
+
+.modcall {
+    width: 400px;
+    margin: 0.5em auto;
+    display: block;
+    text-transform: uppercase;
+    text-align: center;
+    font: {
+        size: 0.9em;
+    }
+}
+
+nav {
+    display: inline-block;
+    width: 100%;
+    font-size: 1.45em;
+    background-color: $dark_color;
+    color: $link_color;
+
+    ul {
+        padding: 0.5em;
+        list-style-type: none;
+        width: 94%;
+        margin: 0 auto;
+    }
+    li {
+        display: inline;
+
+        &:not(:first-child):before {
+            content: "| ";
+        }
+    }
+
+    a {
+        text-transform: uppercase;
+    }
+
+}
+
+#logo {
+    float: right;
+    &.big {
+        margin-top: -283px;
+    }
+    &:not(.big) {
+        margin-top: -156px;
+        @include box-shadow(5px, -1px, 10px, rgba(0, 0, 0, 0.5));
+    }
+
+    z-index: 100;
+}
+
+.spacer {
+    display: block;
+    height: 5px;
+}
+
+.login_holder {
+    padding: 0.25em 0.5em;
+    float: right;
+    text-align: right;
+    display: block;
+}
+

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load player_extras %}
+
+{% load url from future %}
+
+
+{% block stylein %}
+<link rel="stylesheet" href="{% static 'styles/main/landing_page.css' %}" />
+{% endblock stylein %}
+
+
+{% block pre_logo %}
+    <div class="logo_holder">
+        {% if not request.user.is_authenticated %}
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div>{{login_form.username}}</div>
+                <div>{{login_form.password}}</div>
+                <input class="button-submit" type="submit" value="Log In!"/>
+            </form>
+
+        {% else %}
+            {% with request.user|as_player as player  %}
+
+            <div>{% if player.team == "H" %}
+                Good luck, {{user.first_name}}!
+            {% else %}
+                Brrrrains! (amirite, {{user.first_name}}?)
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div>
+            <ul>
+                <li><a href="{% url 'logout' %}">logout</a></li>
+                {% if request.user.player.team == 'Z' %}
+                <li><a href="{% url 'feed_eat' %}">feed</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    <div class='intro'>
+        <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
+    </div>
+{% endblock pre_logo %}
+
+{% block content %}
+
+{% if latest_meals %}
+<section class='ticker'>
+    {% for meal in latest_meals %}
+        <div class='time'>
+            {{meal.time|date:"h:m a"}}
+        </div>
+        <div class='loc'>
+            {{meal.location}}
+        </div>
+        <div class='meal'>
+            {{meal.eater}} ate {{meal.eaten}}
+        </div>
+    {% endfor %}
+</section>
+{% endif %}
+
+<section class='mission text'>
+{% if not request.user.is_authenticated %}
+
+{% endif %}
+ <p>Thundercats esse master cleanse intelligentsia umami sriracha. Viral post-ironic sapiente Austin. Incididunt VHS hoodie blog fashion axe artisan. Intelligentsia fingerstache swag chambray pitchfork lo-fi. Ad echo park sartorial before they sold out, fugiat 90's fixie hoodie iphone flannel american apparel ethnic assumenda.</p>
+</section>
+<div class='clearer'></div>
+{% endblock content %}

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load player_extras %}
+
 {% load url from future %}
+
+
 {% block stylein %}
 <link rel="stylesheet" href="{% static 'styles/main/landing_page.css' %}" />
 {% endblock stylein %}
@@ -17,11 +21,14 @@
             </form>
 
         {% else %}
-            <div>{% if request.user.player.team == "H" %}
-                Good luck, {{user.first_name}}
+            {% with request.user|as_player as player  %}
+
+            <div>{% if player.team == "H" %}
+                Good luck, {{user.first_name}}!
             {% else %}
                 Brrrrains! (amirite, {{user.first_name}}?)
             {% endif %}
+            {% endwith %}
         </div>
         <div>
             <ul>

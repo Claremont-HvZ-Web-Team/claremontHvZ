@@ -2,7 +2,10 @@ from HVZ.main.models import Player
 
 
 def inject_outbreak_percentage(request):
-    zombies = Player.objects.filter(team='Z').count()
+    humans = Player.objects.filter(team='H').count()
+    print "humans", humans
     players = Player.objects.count()
-    percent = (float(zombies) / players) * 100 if players > 0 else 0
+    print "players", players
+    percent = (float(humans) / players) * 100 if players > 0 else 0
+    print "percent", percent
     return {'outbreak_percent': min(96, percent)}

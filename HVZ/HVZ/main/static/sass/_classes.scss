@@ -1,0 +1,33 @@
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clearer {
+    clear: both;
+}
+
+.errors {
+    .errorlist {
+        background-color: $bg_red;
+        color: white;
+
+        text-align: center;
+        padding: 0.25em 0;
+
+    }
+}
+
+.error {
+    background-color: $bg_red;
+    color: white;
+    text-align: center;
+}
+
+.text {
+    max-width: 650px;
+    line-height: 1.25em;
+}

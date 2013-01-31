@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load url from future %}
+
+{% block stylein %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main/register.css' %}"/>
+{% endblock stylein %}
+
+{% block content %}
+{% if form.errors %}
+<div class="error">There were some problems with your submission</div>
+{{form.non_field_errors}}
+{% endif %}
+
+<form class='register_form' method="post" action="{% url 'register' %}">
+  {% csrf_token %}
+  {% for field in form  %}
+  <div class='row'>
+    <div>
+        <label for="{{field.id_for_label}}">{{ field.label }}</label>
+    </div>
+    <div>
+        <div>{{field}}</div>
+       {% if field.errors %}
+            <div><div class="errors">
+                {{field.errors}}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div>{{field.help_text}}</div>
+  </div>
+  {% endfor %}
+  <input type="submit" class='button-submit' />
+</form>
+{% endblock %}

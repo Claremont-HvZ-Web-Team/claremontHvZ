@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Humans Versus Zombies at the Claremont Colleges</title>
+
+        <!-- Load css -->
+        {% block stylein %}
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/main/core.css' %}">
+        {% endblock stylein %}
+        <!-- Load javascript -->
+        <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/jquery-ui.js' %}"></script>
+        <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
+        {% block morehead %}{% endblock %}
+
+    </head>
+    <body>
+        <div class="supercontainer">
+            <div class="container">
+                {% block pre_logo %}
+
+                {% endblock pre_logo %}
+
+                {% include "logo.html" %}
+                {% block post_header %}
+                    <div id="contentContainer">
+                        <div id="mainContainer" class="background" >
+                        {% block content %}{% endblock %}
+                        </div>
+                    </div>
+                {% endblock post_header %}
+                <footer>
+                    <div class="disclaimers left">
+                        <p>For game questions contact the mod team at <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a></p>
+                        <p>For problems on the website, contact the web team at <a href="mailto:web@claremonthvz.org">web@claremonthvz.org</a></p>
+                    </div>
+                    <div class="disclaimers right">
+                        <p>Humans vs Zombies and HvZ are property of <a href="http://gnarwhalstudios.com/">Gnarwhal Studios</a></p>
+                    </div>
+                    <div class="clearer"></div>
+                </footer>
+            </div>
+        </div>
+        {% block scriptin %}
+
+        {% endblock scriptin %}
+    </body>
+</html>

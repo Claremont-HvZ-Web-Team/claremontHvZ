@@ -39,6 +39,7 @@ MEAL = {
     "feedcode": VICTIM["feed"]
 }
 
+
 class PermissionTest(BaseTest):
     def setUp(self):
         # Create a game and tabler
@@ -53,14 +54,14 @@ class PermissionTest(BaseTest):
         """Ensure that humans can't access the meal page."""
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
-        response = c.get(reverse("eat"))
+        response = c.get(reverse("feed_eat"))
         self.assertEqual(response.status_code, 403)
 
     def test_humans_cannot_eat(self):
         """Attempt to bypass the meal page and eat as a human anyway."""
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
-        response = c.post(reverse("eat"), MEAL)
+        response = c.post(reverse("feed_eat"), MEAL)
 
         # Ensure we were denied and could not create a meal.
         self.assertEqual(response.status_code, 403)
@@ -77,8 +78,9 @@ class PermissionTest(BaseTest):
         # Should allow
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
-        response = c.get(reverse("eat"))
+        response = c.get(reverse("feed_eat"))
         self.assertEqual(response.status_code, 200)
+
 
 class EatingTest(BaseTest):
     def setUp(self):
@@ -87,7 +89,7 @@ class EatingTest(BaseTest):
 
         # Create a zombie
         c.post(reverse("register"), ROB_ZOMBIE)
-        
+
         z = Player.objects.get()
         z.team = "Z"
         z.save()
@@ -101,7 +103,7 @@ class EatingTest(BaseTest):
         c.post(reverse("login"), ROB_ZOMBIE)
 
         self.assertEqual(Meal.objects.count(), 0)
-        c.post(reverse("eat"), MEAL)
+        c.post(reverse("feed_eat"), MEAL)
 
         # Check that a meal was created
         self.assertEqual(Meal.objects.count(), 1)
@@ -114,9 +116,9 @@ class EatingTest(BaseTest):
         """Ensure a zombie can't eat the same victim twice."""
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
-        
-        c.post(reverse("eat"), MEAL)
-        response = c.post(reverse("eat"), MEAL)
+
+        c.post(reverse("feed_eat"), MEAL)
+        response = c.post(reverse("feed_eat"), MEAL)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Meal.objects.count(), 1)
         self.assertFormError(response, "form", "feedcode",
@@ -127,9 +129,9 @@ class EatingTest(BaseTest):
         """A zombie can eat the same victim twice with resurrection."""
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
-        
-        c.post(reverse("eat"), MEAL)
-        c.post(reverse("eat"), MEAL)
+
+        c.post(reverse("feed_eat"), MEAL)
+        c.post(reverse("feed_eat"), MEAL)
 
         self.assertEqual(Meal.objects.count(), 1)
 
@@ -140,11 +142,12 @@ class EatingTest(BaseTest):
         p.team = "H"
         p.save()
 
-        c.post(reverse("eat"), MEAL)
+        c.post(reverse("feed_eat"), MEAL)
 
         # We should have eaten the victim twice.
         self.assertEqual(Meal.objects.count(), 2)
         self.assertEqual(get_victim().team, "Z")
+
 
 class MultiGame(BaseTest):
 
@@ -170,7 +173,7 @@ class MultiGame(BaseTest):
         """Ensure one can't eat across games."""
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
-        response = c.post(reverse("eat"), MEAL)
+        response = c.post(reverse("feed_eat"), MEAL)
 
         self.assertEqual(Meal.objects.count(), 0)
 

@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth import models as auth_models
 from django.test import TestCase
 
 from HVZ.main import models
@@ -24,10 +24,15 @@ class BaseTest(TestCase):
         # Create a current Game.
         cls.create_new_game()
 
-        tabler = User.objects.create_user(username="tabler", password="a")
-        tabler.save()
+        tabler = auth_models.User.objects.create_user(
+            username="tabler",
+            password="a",
+        )
 
-        ts = Group.objects.get(name="Tablers")
+        ts = auth_models.Group.objects.create(name="Tablers")
+        ts.permissions.add(
+            auth_models.Permission.objects.filter(codename="add_player").get()
+        )
         ts.user_set.add(tabler)
         ts.save()
 
@@ -36,6 +41,7 @@ class BaseTest(TestCase):
         """Delete all Games and Users."""
         models.Game.objects.all().delete()
         models.User.objects.all().delete()
+        auth_models.Group.objects.all().delete()
 
     @staticmethod
     def login_as_tabler(client):

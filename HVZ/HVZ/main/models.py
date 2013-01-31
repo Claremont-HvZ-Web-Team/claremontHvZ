@@ -9,6 +9,7 @@ from django.conf import settings
 from HVZ.main.validators import validate_chars
 from HVZ.main.exceptions import NoActiveGame
 
+
 class FeedCodeField(models.CharField):
     default_validators = [validate_chars]
 
@@ -19,12 +20,14 @@ class FeedCodeField(models.CharField):
     def clean(self, value, model):
         return super(FeedCodeField, self).clean(value.upper(), model)
 
+
 class School(models.Model):
     """Represents a campus"""
     name = models.CharField(max_length=7)
 
     def __unicode__(self):
         return u"{}".format(self.name)
+
 
 class Building(models.Model):
     """A building on a campus."""
@@ -61,6 +64,7 @@ class Building(models.Model):
             return Building.KINDS[self.building_type]
         except KeyError:
             return None
+
 
 class Game(models.Model):
     """Um. A Game."""
@@ -116,6 +120,7 @@ class Game(models.Model):
     class Meta:
         get_latest_by = "start_date"
 
+
 class Player(models.Model):
     """Game-related data about a user"""
 
@@ -159,24 +164,25 @@ class Player(models.Model):
     def __unicode__(self):
         return u"Player: {}".format(self.user)
 
-    @staticmethod
-    def current_players():
+    @classmethod
+    def current_players(cls):
         """Return all Players in the current Game."""
-        return Player.objects.filter(game=Game.nearest_game())
+        return cls.objects.filter(game=Game.nearest_game())
 
-    @staticmethod
-    def logged_in_player(request):
+    @classmethod
+    def logged_in_player(cls, request):
         """Return the currently logged in Player."""
-        return Player.current_players().get(user=request.user)
+        return cls.current_players().get(user=request.user)
 
-    @staticmethod
-    def user_to_player(u):
+    @classmethod
+    def user_to_player(cls, u):
         """Return the most current Player corresponding to the given User."""
-        return Player.objects.filter(game=Game.nearest_game(), user=u).get()
+        return cls.objects.filter(game=Game.nearest_game(), user=u).get()
 
     class Meta:
         # A User can only have one Player per Game.
         unique_together = (("user", "game"),)
+
 
 class Award(models.Model):
     title = models.CharField(max_length=80)

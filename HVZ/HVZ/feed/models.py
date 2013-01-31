@@ -4,6 +4,7 @@ from django.db import models
 from HVZ.main.models import Player, Building
 from HVZ.main.validators import TimeValidator
 
+
 class Meal(models.Model):
     """Models a successful zombie attack."""
 

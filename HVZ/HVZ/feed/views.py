@@ -31,6 +31,7 @@ class EatView(FormView):
                  location = grab("location"),
                  description = grab("description")
         )
+        m.full_clean()
         m.save()
 
         return super(EatView, self).form_valid(form)

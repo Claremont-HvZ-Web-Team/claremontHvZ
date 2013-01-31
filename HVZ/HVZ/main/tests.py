@@ -31,7 +31,9 @@ class SignupTest(BaseTest):
     def test_valid_signup(self):
         """Ensure a player can sign up with valid data."""
         registered = User.objects.filter(username=HUGH_MANN["email"]).exists
+
         self.assertFalse(registered())
+        self.assertEqual(models.Player.objects.count(), 0)
 
         c = Client()
         self.login_as_tabler(c)
@@ -42,6 +44,7 @@ class SignupTest(BaseTest):
         response = c.post(reverse("register"), HUGH_MANN)
         self.assertRedirects(response, reverse("register"))
 
+        self.assertEqual(models.Player.objects.count(), 1)
         self.assertTrue(registered())
 
     def test_double_signup(self):

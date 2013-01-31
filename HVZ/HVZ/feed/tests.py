@@ -33,7 +33,7 @@ VICTIM = define_user({
         })
 
 MEAL = {
-    "time": datetime.now().strftime("%a %b %d %H:%M"),
+    "time": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
     "location": "208",
     "description": "I don't want to live on this planet anymore.",
     "feedcode": VICTIM["feed"]

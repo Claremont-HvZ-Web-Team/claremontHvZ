@@ -12,7 +12,6 @@ class MealForm(forms.Form):
     )
 
     time = forms.DateTimeField(
-        input_formats=["%a %b %d %H:%M"],
         required=False
     )
 

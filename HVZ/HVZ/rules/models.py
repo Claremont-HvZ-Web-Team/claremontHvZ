@@ -1,16 +1,22 @@
 from django.db import models
+from markupfield import fields
 
-# Create your models here.
+class BaseRule(models.Model):
+    title = models.CharField(max_length=100)
+    body = fields.MarkupField()
 
+class CoreRule(BaseRule):
+    """Rules that are fundamental to the game."""
+    pass
 
-class Rule(models.Model):
-    CATEGORIES = {
-        "L": "Location",
-        "C": "Class",
-        "B": "Basic",
-    }
+class LocationRule(BaseRule):
+    """Describe the game in different areas."""
+    pass
 
-    category = models.CharField(
-        max_length=1,
-        choices=CATEGORIES.items()
-    )
+class ClassRule(BaseRule):
+    """Describe the behavior of superhumans."""
+    pass
+
+class SpecialInfectedRule(BaseRule):
+    """Describe the behavior of superzombies."""
+    pass

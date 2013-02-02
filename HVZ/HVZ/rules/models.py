@@ -2,6 +2,9 @@ from django.db import models
 from markupfield import fields
 
 class BaseRule(models.Model):
+    class Meta:
+        abstract = True
+
     title = models.CharField(max_length=100)
     body = fields.MarkupField()
 

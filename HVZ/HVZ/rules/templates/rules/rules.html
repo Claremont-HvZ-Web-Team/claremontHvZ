@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load url from future %}
+
+{% block content %}
+{% for r in core %}
+  <div id="core_{{r.id}}">
+    <h1>{{r.title}}</h1>
+    {{ r.body.rendered|safe }}
+  </div>
+{% endfor %}
+
+{% for r in classes %}
+  <div id="class_{{r.id}}">
+    <h1>{{r.title}}</h1>
+    {{ r.body.rendered|safe }}
+  </div>
+{% endfor %}
+
+{% for r in specialinfected %}
+  <div id="infected_{{r.id}}">
+    <h1>{{r.title}}</h1>
+    {{ r.body.rendered|safe }}
+  </div>
+{% endfor %}
+{% endblock %}

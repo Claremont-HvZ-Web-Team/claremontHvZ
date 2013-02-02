@@ -1,12 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.localflavor.us.forms import USPhoneNumberField
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from HVZ.main.models import Building, Game, School
-from HVZ.main.validators import validate_chars, ensure_unregistered
+from HVZ.main.models import Building, Game, School, Player
+from HVZ.main.validators import validate_chars
 
 
 class PrettyAuthForm(AuthenticationForm):
@@ -34,7 +35,13 @@ class FeedCodeField(forms.CharField):
                           [validate_chars])
 
 
-class RegisterForm(forms.Form):
+class RegisterForm(forms.ModelForm):
+
+    error_messages = {
+        'duplicate_user': _("You have already registered for this game!"),
+        'duplicate_feed': _("That feed code is already in use for this game!"),
+        'password_mismatch': _("The two password fields didn't match!"),
+    }
 
     first_name = forms.CharField(
         label=_("First name"),
@@ -46,7 +53,7 @@ class RegisterForm(forms.Form):
         required=True
     )
 
-    email = forms.EmailField(required=True, validators=[ensure_unregistered])
+    email = forms.EmailField(required=True)
 
     password1 = forms.CharField(
         label=_("Password"),
@@ -106,8 +113,84 @@ class RegisterForm(forms.Form):
                     ).format(settings.VALID_CHARS)
     )
 
-    def clean(self):
-        if not Game.game_in_progress():
-            raise ValidationError("There are no ongoing Games in progress!")
+    class Meta:
+        model = Player
+        fields = ('first_name',
+                  'last_name',
+                  'email',
+                  'password1',
+                  'password2',
+                  'school',
+                  'dorm',
+                  'grad_year',
+                  'cell',
+                  'can_oz',
+                  'can_c3',
+                  'feed',
+        )
 
-        return super(RegisterForm, self).clean()
+    def clean_email(self):
+        """Ensure that a user does not register twice for the same game."""
+        username = self.cleaned_data['email']
+        try:
+            Player.current_players().get(user__username=username)
+        except Player.DoesNotExist:
+            return username
+        raise ValidationError(self.error_messages['duplicate_user'])
+
+    def clean_feed(self):
+        """Ensure that the same feed code is not used twice in the same game."""
+        feedcode = self.cleaned_data['feed']
+
+        try:
+            Player.current_players().get(feed=feedcode)
+
+        except Player.DoesNotExist:
+            return feedcode
+
+        raise ValidationError(self.error_messages['duplicate_feed'])
+
+    def clean_password2(self):
+        """Ensure that the two password fields match."""
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(
+                self.error_messages['password_mismatch'])
+
+        return password2
+
+    def save(self, commit=True):
+        """Save the player, creating or updating the user if necessary."""
+        player = super(RegisterForm, self).save(commit=False)
+
+        def grab(s):
+            return self.cleaned_data.get(s)
+
+        email = grab('email')
+        password = grab('password1')
+
+        try:
+            user = User.objects.get(email=email)
+            user.set_password(password)
+
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                email=email,
+                username=email,
+                password=password,
+            )
+        finally:
+            user.first_name = grab("first_name")
+            user.last_name = grab("last_name")
+            user.full_clean()
+            user.save()
+
+        player.user = user
+        player.game = Game.nearest_game()
+
+        if commit == True:
+            player.save()
+
+        return player

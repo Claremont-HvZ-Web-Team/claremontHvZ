@@ -131,24 +131,21 @@ class RegisterForm(forms.ModelForm):
 
     def clean_email(self):
         """Ensure that a user does not register twice for the same game."""
-        username = self.cleaned_data['email']
-        try:
-            Player.current_players().get(user__username=username)
-        except Player.DoesNotExist:
-            return username
-        raise ValidationError(self.error_messages['duplicate_user'])
+        email = self.cleaned_data['email']
+
+        if Player.current_players().filter(user__username=email).exists():
+            raise ValidationError(self.error_messages['duplicate_user'])
+
+        return email
 
     def clean_feed(self):
         """Ensure that the same feed code is not used twice in the same game."""
         feedcode = self.cleaned_data['feed']
 
-        try:
-            Player.current_players().get(feed=feedcode)
+        if Player.current_players().filter(feed=feedcode).exists():
+            raise ValidationError(self.error_messages['duplicate_feed'])
 
-        except Player.DoesNotExist:
-            return feedcode
-
-        raise ValidationError(self.error_messages['duplicate_feed'])
+        return feedcode
 
     def clean_password2(self):
         """Ensure that the two password fields match."""
@@ -181,6 +178,7 @@ class RegisterForm(forms.ModelForm):
                 username=email,
                 password=password,
             )
+
         finally:
             user.first_name = grab("first_name")
             user.last_name = grab("last_name")

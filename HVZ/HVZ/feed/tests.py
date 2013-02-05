@@ -122,7 +122,7 @@ class EatingTest(BaseTest):
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
         self.assertEqual(Meal.objects.count(), 0)
-        response = c.post(reverse("feed_eat"), m)
+        c.post(reverse("feed_eat"), m)
         self.assertEqual(Meal.objects.count(), 0)
 
     def test_double_eating(self):

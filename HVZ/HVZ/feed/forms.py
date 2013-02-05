@@ -10,12 +10,12 @@ class MealForm(forms.Form):
     feedcode = FeedCodeField(
         label="Feed code",
         help_text="Type in the feed code of the person you ate",
-        validators=[human_with_code]
+        validators=[human_with_code],
     )
 
     time = forms.DateTimeField(
         required=False,
-        validators=[TimeValidator()]
+        validators=[TimeValidator()],
     )
 
     location = forms.ModelChoiceField(

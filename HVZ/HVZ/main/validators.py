@@ -13,13 +13,6 @@ def validate_chars(feedcode):
         if c not in settings.VALID_CHARS:
             raise ValidationError(u"{} is not a valid character.".format(c))
 
-
-def ensure_unregistered(uname):
-    """Ensure the given User has not already registered for this Game."""
-    if models.Player.objects.filter(user__username=uname, game=models.Game.nearest_game()).exists():
-        raise ValidationError(u"{} has already registered for this Game.".format(uname))
-
-
 class TimeValidator:
     def __init__(self, game=None):
         if game is None:

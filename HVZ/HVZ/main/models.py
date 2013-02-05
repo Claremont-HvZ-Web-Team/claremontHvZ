@@ -94,9 +94,13 @@ class Game(models.Model):
     def clean(self):
         # Two date ranges A and B overlap if:
         # (A.start <= B.end) and (A.end >= B.start)
-        if Game.objects.filter(start_date__lte=self.end_date,
-                               end_date__gte=self.start_date).exists():
-            raise ValidationError("This Game overlaps with another!")
+        try:
+            self.objects.get(start_date__lte=self.end_date,
+                             end_date__gte=self.start_date)
+        except Game.DoesNotExist:
+            return super(Game, self).clean()
+
+        raise ValidationError("This Game overlaps with another!")
 
     @staticmethod
     def unfinished_games():
@@ -177,11 +181,12 @@ class Player(models.Model):
     @classmethod
     def user_to_player(cls, u):
         """Return the most current Player corresponding to the given User."""
-        return cls.objects.filter(game=Game.nearest_game(), user=u).get()
+        return cls.objects.get(game=Game.nearest_game(), user=u)
 
     class Meta:
-        # A User can only have one Player per Game.
-        unique_together = (("user", "game"),)
+        # A User can only have one Player per Game, and a feed code
+        # can only correspond to one player per game.
+        unique_together = (('user', 'game'), ('feed', 'game'))
 
 
 class Award(models.Model):

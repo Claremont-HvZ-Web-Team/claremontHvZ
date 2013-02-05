@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.urlresolvers import reverse
 from django.test.client import Client
@@ -111,6 +111,19 @@ class EatingTest(BaseTest):
         # Check that the victim is now a zombie
         victim = Player.objects.filter(user__email=VICTIM["email"]).get()
         self.assertEqual(victim.team, "Z")
+
+    def test_invalid_time(self):
+        """Ensure that eating times only occur within the game's timeline."""
+        yesterday = datetime.now() - timedelta(days=1)
+
+        m = MEAL.copy()
+        m['time'] = yesterday.strftime("%m/%d/%Y %H:%M:%S")
+
+        c = Client()
+        c.post(reverse("login"), ROB_ZOMBIE)
+        self.assertEqual(Meal.objects.count(), 0)
+        c.post(reverse("feed_eat"), m)
+        self.assertEqual(Meal.objects.count(), 0)
 
     def test_double_eating(self):
         """Ensure a zombie can't eat the same victim twice."""

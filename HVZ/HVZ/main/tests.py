@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.test.client import Client
 
 from HVZ.basetest import BaseTest, define_user
-from HVZ.main import models
+from HVZ.main import models, forms
 
 HUGH_MANN = define_user({
         "first_name": "Hugh",
@@ -17,9 +17,8 @@ HUGH_MANN = define_user({
         "grad_year": "2013",
         "cell": "1234567890",
         "can_c3": "on",
-        "feed": "PLANS"
-        })
-
+        "feed": "PLANS",
+})
 
 class SignupTest(BaseTest):
 
@@ -50,15 +49,42 @@ class SignupTest(BaseTest):
         self.assertEqual(models.Player.objects.count(), 1)
         self.assertTrue(registered())
 
+    def test_password_match(self):
+        """Ensure that the password fields must match when registering."""
+        c = Client()
+        self.login_as_tabler(c)
+
+        p = HUGH_MANN.copy()
+        p['password2'] = "wrong"
+
+        response = c.post(reverse('register'), p)
+
+        self.assertFormError(
+            response, 'form', 'password2',
+            forms.RegisterForm.error_messages['password_mismatch']
+        )
+
+        self.assertEqual(models.Player.objects.count(), 0)
+
     def test_double_signup(self):
         """Ensure a Player can't sign up twice for the same Game."""
         c = Client()
         self.login_as_tabler(c)
+
+        self.assertEqual(models.Player.objects.count(), 0)
+
         c.post(reverse("register"), HUGH_MANN)
+        self.assertEqual(models.Player.objects.count(), 1)
+
+        # Try to register again
         response = c.post(reverse("register"), HUGH_MANN)
-        self.assertFormError(response, "form", "email",
-                             "{} has already registered for this Game."
-                             .format(HUGH_MANN["email"]))
+
+        self.assertFormError(
+            response, "form", "email",
+            forms.RegisterForm.error_messages['duplicate_user'],
+        )
+
+        self.assertEqual(models.Player.objects.count(), 1)
 
     def test_invalid_chars(self):
         """Ensure feedcodes with invalid characters throw error messages."""
@@ -88,6 +114,32 @@ class SignupTest(BaseTest):
             response = c.post(reverse("register"), d)
             self.assertFormError(response, "form", "feed",
                                  "Ensure this value has at most 5 characters (it has 6).")
+
+    def test_duplicate_feeds(self):
+        """Ensure that duplicate feed codes aren't allowed."""
+        d = HUGH_MANN.copy()
+        d["email"] = "newplayer@hmc.edu"
+
+        c = Client()
+        self.login_as_tabler(c)
+
+        self.assertEqual(models.Player.objects.count(), 0)
+        self.assertEqual(models.User.objects.count(), 1)
+
+        c.post(reverse("register"), HUGH_MANN)
+
+        self.assertEqual(models.Player.objects.count(), 1)
+        self.assertEqual(models.User.objects.count(), 2)
+
+        # Register a different player with the same feed code. Some
+        # error should be thrown, and the registration should not go
+        # through.
+        response = c.post(reverse("register"), d)
+        self.assertFormError(response, "form", 'feed',
+                             forms.RegisterForm.error_messages['duplicate_feed'],
+        )
+        self.assertEqual(User.objects.count(), 2)
+        self.assertEqual(models.Player.objects.count(), 1)
 
     def test_multi_game(self):
         """Ensure we register players for the newest game when multiple are available."""
@@ -148,7 +200,7 @@ class SignupTest(BaseTest):
 
         # And the new User's fields should be those defined by the newest
         # registration.
-        u = models.User.objects.filter(username=d["email"]).get()
+        u = models.User.objects.get(username=d["email"])
         self.assertEqual(u.first_name, d["first_name"])
         self.assertEqual(u.last_name, d["last_name"])
         self.assertNotEqual(u.password, old_password)

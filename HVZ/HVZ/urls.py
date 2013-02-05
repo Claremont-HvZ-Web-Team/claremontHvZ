@@ -14,6 +14,8 @@ urlpatterns = patterns(
 
     url(r'^feed/', include('HVZ.feed.urls')),
 
+    url(r'^rules/', include('HVZ.rules.urls')),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

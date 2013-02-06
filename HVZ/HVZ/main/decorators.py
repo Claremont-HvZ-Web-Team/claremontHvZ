@@ -11,7 +11,7 @@ def require_active_game(view_func):
     """Raise an exception if no game is in progress."""
     @wraps(view_func)
     def wrapper(*args, **kwargs):
-        if not Game.game_in_progress():
+        if not Game.games(started=True, finished=False).exists():
             raise NoActiveGame
         return view_func(*args, **kwargs)
 
@@ -34,7 +34,12 @@ def require_unfinished_game(view_func):
 def zombie_required(*args, **kwargs):
     """Raise an exception if the current user is not a zombie."""
     def check_zombie(u):
-        if Player.user_to_player(u).team != "Z":
+        try:
+            player = Player.user_to_player(u)
+        except Player.DoesNotExist:
+            raise PermissionDenied("You are not registered for this game!")
+
+        if player.team != "Z":
             raise PermissionDenied("You must be a zombie to view this page.")
         return True
 

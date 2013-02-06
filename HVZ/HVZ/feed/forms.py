@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 
 from HVZ.main.forms import FeedCodeField
@@ -15,7 +17,9 @@ class MealForm(forms.Form):
 
     time = forms.DateTimeField(
         required=False,
+        initial=datetime.datetime.now,
         validators=[TimeValidator()],
+        widget=forms.SplitDateTimeWidget,
     )
 
     location = forms.ModelChoiceField(

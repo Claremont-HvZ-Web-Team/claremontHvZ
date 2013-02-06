@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
 {% load url from future %}
 
+{% block morehead %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script type="text/javascript" src="{% static 'scripts/eat.js' %}"></script>
+{% endblock %}
+
 {% block content %}
+<div id="game_start" class="hidden">
+  {{ game_start }}
+</div>
+
 <form method="post" action="{% url 'feed_eat' %}">
   {% csrf_token %}
   {{ form.as_p }}

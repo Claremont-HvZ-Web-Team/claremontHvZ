@@ -33,7 +33,8 @@ VICTIM = define_user({
         })
 
 MEAL = {
-    "time": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
+    "time_0": datetime.now().strftime("%m/%d/%Y"),
+    "time_1": datetime.now().strftime("%H:%M:%S"),
     "location": "208",
     "description": "I don't want to live on this planet anymore.",
     "feedcode": VICTIM["feed"]
@@ -117,7 +118,7 @@ class EatingTest(BaseTest):
         yesterday = datetime.now() - timedelta(days=1)
 
         m = MEAL.copy()
-        m['time'] = yesterday.strftime("%m/%d/%Y %H:%M:%S")
+        m['time_0'] = yesterday.strftime("%m/%d/%Y")
 
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)

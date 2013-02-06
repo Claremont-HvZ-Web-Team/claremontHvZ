@@ -5,8 +5,9 @@ from django.contrib.auth.decorators import login_required
 
 from HVZ.main.decorators import zombie_required
 
-from models import Meal, Player
+from models import Meal
 from forms import MealForm
+from HVZ.main.models import Player, Game
 
 
 class EatView(FormView):
@@ -20,6 +21,14 @@ class EatView(FormView):
 
     def get_success_url(self):
         return reverse("main_landing")
+
+    def get_context_data(self, **kwargs):
+        context = super(EatView, self).get_context_data(**kwargs)
+        game = Game.nearest_game()
+
+        context['game_start'] = game.start_date
+
+        return context
 
     def form_valid(self, form):
         def grab(s):

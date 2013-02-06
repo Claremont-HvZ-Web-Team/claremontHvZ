@@ -22,7 +22,7 @@ def require_unfinished_game(view_func):
     """Raise an exception if no unfinished games are in progress."""
     @wraps(view_func)
     def wrapper(*args, **kwargs):
-        if not Game.unfinished_games().exists():
+        if not Game.games(finished=False).exists():
             raise NoUnfinishedGames
         return view_func(*args, **kwargs)
 

@@ -62,5 +62,6 @@ class BaseTest(TestCase):
         today = date.today()
         g = models.Game(start_date=today,
                         end_date=today+timedelta(7))
+        g.full_clean()
         g.save()
         return g

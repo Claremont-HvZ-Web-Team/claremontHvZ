@@ -16,7 +16,7 @@ def validate_chars(feedcode):
 class TimeValidator:
     def __init__(self, game=None):
         if game is None:
-            game = models.Game.nearest_game()
+            game = models.Game.imminent_game()
 
         self.game = game
 

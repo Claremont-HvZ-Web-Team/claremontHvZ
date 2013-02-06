@@ -186,7 +186,7 @@ class RegisterForm(forms.ModelForm):
             user.save()
 
         player.user = user
-        player.game = Game.nearest_game()
+        player.game = Game.imminent_game()
 
         if commit == True:
             player.save()

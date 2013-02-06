@@ -94,30 +94,54 @@ class Game(models.Model):
     def clean(self):
         # Two date ranges A and B overlap if:
         # (A.start <= B.end) and (A.end >= B.start)
-        try:
-            self.objects.get(start_date__lte=self.end_date,
-                             end_date__gte=self.start_date)
-        except Game.DoesNotExist:
+        overlapping = Game.objects.filter(start_date__lte=self.end_date,
+                                          end_date__gte=self.start_date)
+
+        # But one game can overlap with itself.
+        if not overlapping.exclude(id=self.id).exists():
             return super(Game, self).clean()
 
         raise ValidationError("This Game overlaps with another!")
 
-    @staticmethod
-    def unfinished_games():
-        """Return the set of all games which haven't yet ended."""
-        return Game.objects.filter(end_date__gte=date.today())
+    @classmethod
+    def games(cls, **flags):
+        """Return a list of games satisfying the given arguments.
 
-    @staticmethod
-    def game_in_progress():
-        """True iff a Game is currently ongoing."""
-        return Game.unfinished_games().filter(
-            start_date__lte=date.today()).exists()
+        @started: True iff you want a game that began in the past.
 
-    @staticmethod
-    def nearest_game():
-        """Returns the Game currently ongoing or nearest to now."""
+        @finished: True iff you want a game that has not completed
+                   yet.
+
+        @ordered: True iff you want the list of games to be ordered by
+                  ascending starting date.
+
+        """
+        kwargs = {}
+
+        if 'started' in flags:
+            if flags['started']:
+                kwargs['start_date__lte'] = date.today()
+            else:
+                kwargs['start_date__gt'] = date.today()
+
+        if 'finished' in flags:
+            if flags['finished']:
+                kwargs['end_date__lt'] = date.today()
+            else:
+                kwargs['end_date__gte'] = date.today()
+
+        qset = cls.objects.filter(**kwargs)
+
+        if flags.get('ordered'):
+            return qset.order_by('start_date')
+
+        return qset
+
+    @classmethod
+    def imminent_game(cls):
+        """Returns the unfinished Game with the most recent starting date."""
         try:
-            return Game.unfinished_games().order_by("start_date")[0]
+            return cls.games(finished=False, ordered=True)[0]
         except IndexError:
             raise NoActiveGame
 
@@ -171,7 +195,7 @@ class Player(models.Model):
     @classmethod
     def current_players(cls):
         """Return all Players in the current Game."""
-        return cls.objects.filter(game=Game.nearest_game())
+        return cls.objects.filter(game=Game.imminent_game())
 
     @classmethod
     def logged_in_player(cls, request):
@@ -181,7 +205,7 @@ class Player(models.Model):
     @classmethod
     def user_to_player(cls, u):
         """Return the most current Player corresponding to the given User."""
-        return cls.objects.get(game=Game.nearest_game(), user=u)
+        return cls.objects.get(game=Game.imminent_game(), user=u)
 
     class Meta:
         # A User can only have one Player per Game, and a feed code

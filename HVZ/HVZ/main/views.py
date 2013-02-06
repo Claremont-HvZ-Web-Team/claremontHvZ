@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import permission_required
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 
+from HVZ.main.models import Game
 from HVZ.feed.models import Meal
 from HVZ.main.forms import PrettyAuthForm, RegisterForm
 from HVZ.main.decorators import require_unfinished_game
@@ -24,7 +25,7 @@ class LandingPage(TemplateView):
 
         context['login_form'] = form
         context['is_landing_page'] = True
-        context['latest_meals'] = Meal.objects.all().order_by('time')[:20] or [
+        context['latest_meals'] = Meal.objects.filter(eater__game=Game.games(started=True).latest()).order_by('-time')[:20] or [
             {
                 'time': datetime.datetime.now(),
                 'eater': "ZombieJohn{}".format(x),

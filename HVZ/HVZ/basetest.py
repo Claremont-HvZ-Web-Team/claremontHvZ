@@ -18,6 +18,8 @@ def define_user(d):
 class BaseTest(TestCase):
     """Commonly used code and convenience functions for other TestCases."""
 
+    fixtures = ["production.json"]
+
     @classmethod
     def setUpClass(cls):
         """Create an initial game and tabler."""

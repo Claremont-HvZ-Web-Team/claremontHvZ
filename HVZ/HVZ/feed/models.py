@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from HVZ.main.models import Player, Building
-from HVZ.main.validators import TimeValidator
+from HVZ.main import validators
 
 
 class Meal(models.Model):
@@ -30,7 +30,8 @@ class Meal(models.Model):
                     self.eaten.game))
 
         if self.time:
-            TimeValidator(self.eater.game)(self.time)
+            validators.validate_past(self.time)
+            validators.DateValidator(self.eater.game)(self.time.date())
 
         return super(Meal, self).clean()
 

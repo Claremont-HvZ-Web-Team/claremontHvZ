@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load url from future %}
+
+{% load mission_extras %}
+
+{% block content %}
+<table id="mission_list">
+  {% for plot in plot_list %}
+  <tr class="{% outcome %}">
+    <td class="mission_time">
+      {{ plot.mission|mission_time }}
+    </td>
+    <td class="mission_title">
+      <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">
+        {{ plot.title }}
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

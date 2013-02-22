@@ -1,0 +1,15 @@
+@import "base";
+
+.eat_form {
+    display: table;
+
+    .row {
+        display: table-row;
+
+
+        & > div {
+            padding: 0.5em 0.25em;
+            display: table-cell;
+        }
+    }
+}

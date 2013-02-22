@@ -1,11 +1,29 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
+{% load debug_extras %}
 {% load url from future %}
+
+{% block stylein %}
+   <link rel="stylesheet" type="text/css" href="{% static 'styles/feed/eat.css' %}">
+{% endblock stylein %}
 
 {% block content %}
 <form method="post" action="{% url 'feed_eat' %}">
   {% csrf_token %}
-  {{ form.as_p }}
+  <div class='eat_form'>
+    <div class="row">
+        <div><label for="{{form.feedcode.id_for_label}}">{{ form.feedcode.label }}:</label></div>
+        <div>{{form.feedcode}}</div>
+    </div>
+    <div class="row">
+        <div>Time:</div>
+        <div>{{form.day}} {{form.time}}</div>
+    </div>
+    <div class="row">
+        <div><label for="{{form.description.id_for_label}}">{{ form.description.label }}:</label></div>
+        <div>{{form.description}}</div>
+    </div>
+  </div>
   <input type="submit" class="button-submit" />
 </form>
 {% endblock %}

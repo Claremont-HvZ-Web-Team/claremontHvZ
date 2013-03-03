@@ -203,6 +203,7 @@ INSTALLED_APPS = (
     # 'tinymce',
     'HVZ.main',
     'HVZ.feed',
+    'HVZ.players',
     'HVZ.rules',
 )
 

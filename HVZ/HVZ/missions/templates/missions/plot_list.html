@@ -7,7 +7,7 @@
 {% block content %}
 <table id="mission_list">
   {% for plot in plot_list %}
-  <tr class="{% outcome %}">
+  <tr class="{% if plot.mission.victor == 'B' %}{{ player.team }}{% else %}{{ plot.mission.victor }}{% endif %}_won">
     <td class="mission_time">
       {{ plot.mission|mission_time }}
     </td>

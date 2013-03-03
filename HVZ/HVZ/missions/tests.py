@@ -123,7 +123,34 @@ class SingleMissionTest(BaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data['plot_list'][0], HUMAN_PLOT)
 
+        # Zombie
         response = c.post(reverse('login'), ROB_ZOMBIE)
         response = c.get(reverse('plot_list'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data['plot_list'][0], ZOMBIE_PLOT)
+
+    def test_access_restrictions(self):
+        """Ensure that humans can't access zombie plots, and vice versa."""
+        c = Client()
+
+        # Human
+        c.post(reverse('login'), HUGH_MANN)
+
+        response = c.get(reverse('plot_detail',
+                                 args=(HUMAN_PLOT.id, HUMAN_PLOT.slug)))
+        self.assertEqual(response.status_code, 200)
+
+        response = c.get(reverse('plot_detail',
+                                 args=(ZOMBIE_PLOT.id, ZOMBIE_PLOT.slug)))
+        self.assertEqual(response.status_code, 403)
+
+        # Zombie
+        c.post(reverse('login'), ROB_ZOMBIE)
+
+        response = c.get(reverse('plot_detail',
+                                 args=(ZOMBIE_PLOT.id, ZOMBIE_PLOT.slug)))
+        self.assertEqual(response.status_code, 200)
+
+        response = c.get(reverse('plot_detail',
+                                 args=(HUMAN_PLOT.id, HUMAN_PLOT.slug)))
+        self.assertEqual(response.status_code, 403)

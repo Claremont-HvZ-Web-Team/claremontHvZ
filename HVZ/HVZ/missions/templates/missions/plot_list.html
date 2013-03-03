@@ -7,7 +7,8 @@
 {% block content %}
 <table id="mission_list">
   {% for plot in plot_list %}
-  <tr class="{% if plot.mission.victor == 'B' %}{{ player.team }}{% else %}{{ plot.mission.victor }}{% endif %}_won">
+  {% with victor=plot.mission.victor %}
+  <tr class="{% if not victor %}unfinished{% elif victor == 'B' %}{{ player.team }}_won{% else %}{{ victor }}_won{% endif %}">
     <td class="mission_time">
       {{ plot.mission|mission_time }}
     </td>
@@ -17,6 +18,7 @@
       </a>
     </td>
   </tr>
+  {% endwith %}
   {% endfor %}
 </table>
 {% endblock %}

@@ -17,7 +17,6 @@ class Mission(models.Model):
     VICTORS = {
         'H': "humans",
         'Z': "zombies",
-        'N': "neither",
         'B': "both",
     }
 

@@ -210,8 +210,9 @@ INSTALLED_APPS = (
 
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
-TODAY = local_settings.TODAY or datetime.date.today
 NOW = local_settings.NOW or datetime.datetime.now
+def TODAY():
+    return NOW().date()
 
 # The length of a feed code.
 FEED_LEN = 5

@@ -96,10 +96,10 @@ class Game(models.Model):
                                           end_date__gte=self.start_date)
 
         # But one game can overlap with itself.
-        if not overlapping.exclude(id=self.id).exists():
-            return super(Game, self).clean()
+        if overlapping.exclude(id=self.id).exists():
+            raise ValidationError("This Game overlaps with another!")
 
-        raise ValidationError("This Game overlaps with another!")
+        return super(Game, self).clean()
 
     @classmethod
     def games(cls, **flags):
@@ -156,7 +156,9 @@ class Player(models.Model):
         "Z": "Zombies",
     }
 
-    UPGRADES = {}
+    UPGRADES = {
+        'O': "Original Zombie",
+    }
 
     user = models.ForeignKey(User)
     cell = PhoneNumberField(blank=True, null=True)

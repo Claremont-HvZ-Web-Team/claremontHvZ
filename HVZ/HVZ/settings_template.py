@@ -152,3 +152,7 @@ LOGGING = {
         },
     }
 }
+
+# Override these if you want set the website to a fixed point in time.
+TODAY = None # lambda: return datetime.date(7, 4, 1776)
+NOW = None

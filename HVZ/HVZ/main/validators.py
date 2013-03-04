@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
@@ -24,7 +22,7 @@ class TimeValidator:
         """Ensures that the given time is between our start date and now."""
         game = self.lazy_game()
 
-        if time > datetime.now():
+        if time > settings.NOW():
             raise ValidationError(u"{} must be in the past.".format(time))
 
         if time.date() < game.start_date:

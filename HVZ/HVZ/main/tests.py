@@ -1,5 +1,6 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test.client import Client
@@ -143,7 +144,7 @@ class SignupTest(BaseTest):
 
     def test_multi_game(self):
         """Ensure we register players for the newest game when multiple are available."""
-        today = date.today()
+        today = settings.TODAY()
         t0 = today - timedelta(weeks=24)
         tf = t0 + timedelta(7)
         old_game = models.Game(start_date=t0, end_date=tf)

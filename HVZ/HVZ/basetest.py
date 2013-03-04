@@ -1,5 +1,6 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
 
@@ -53,7 +54,7 @@ class BaseTest(TestCase):
     @staticmethod
     def last_semester():
         """Return a pair of values corresponding to a fake previous game."""
-        today = date.today()
+        today = settings.TODAY()
         t0 = today - timedelta(weeks=26)
         tf = t0 + timedelta(7)
         return (t0, tf)
@@ -61,7 +62,7 @@ class BaseTest(TestCase):
     @staticmethod
     def create_new_game():
         """Create a Game starting today and lasting a week."""
-        today = date.today()
+        today = settings.TODAY()
         g = models.Game(start_date=today,
                         end_date=today+timedelta(7))
         g.full_clean()

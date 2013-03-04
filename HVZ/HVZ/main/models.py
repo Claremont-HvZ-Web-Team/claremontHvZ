@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import PhoneNumberField
@@ -73,7 +71,7 @@ class Game(models.Model):
     end_date = models.DateField(unique=True)
 
     def __unicode__(self):
-        if self.start_date <= date.today() <= self.end_date:
+        if self.start_date <= settings.TODAY() <= self.end_date:
             s = u"{} {} (ongoing)"
         else:
             s = u"{} {}"
@@ -118,17 +116,18 @@ class Game(models.Model):
         """
         kwargs = {}
 
+        today = settings.TODAY()
         if 'started' in flags:
             if flags['started']:
-                kwargs['start_date__lte'] = date.today()
+                kwargs['start_date__lte'] = today
             else:
-                kwargs['start_date__gt'] = date.today()
+                kwargs['start_date__gt'] = today
 
         if 'finished' in flags:
             if flags['finished']:
-                kwargs['end_date__lt'] = date.today()
+                kwargs['end_date__lt'] = today
             else:
-                kwargs['end_date__gte'] = date.today()
+                kwargs['end_date__gte'] = today
 
         qset = cls.objects.filter(**kwargs)
 

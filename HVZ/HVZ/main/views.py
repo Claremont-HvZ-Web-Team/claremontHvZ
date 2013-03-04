@@ -1,5 +1,4 @@
-import datetime
-
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
@@ -27,7 +26,7 @@ class LandingPage(TemplateView):
         context['is_landing_page'] = True
         context['latest_meals'] = Meal.objects.filter(eater__game=Game.games(started=True).latest()).order_by('-time')[:20] or [
             {
-                'time': datetime.datetime.now(),
+                'time': settings.NOW(),
                 'eater': "ZombieJohn{}".format(x),
                 'eaten': "HumanGreg{}".format(x),
                 'location': None if x % 2 else "HOCH"

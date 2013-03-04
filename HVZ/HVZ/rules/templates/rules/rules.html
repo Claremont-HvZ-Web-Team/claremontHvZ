@@ -5,22 +5,33 @@
 {% block content %}
 {% for r in core %}
   <div id="core_{{r.id}}">
-    <h1>{{r.title}}</h1>
+    <h2>{{r.title}}</h2>
     {{ r.body.rendered|safe }}
   </div>
 {% endfor %}
 
+<h1>Campus Rules</h1>
+{% for r in locations %}
+  <div id="location_{{r.id}}">
+    <h2>{{r.title}}</h2>
+    {{ r.body.rendered|safe }}
+  </div>
+{% endfor %}
+
+<h1>Classes</h1>
 {% for r in classes %}
   <div id="class_{{r.id}}">
-    <h1>{{r.title}}</h1>
+    <h2>{{r.title}}</h2>
     {{ r.body.rendered|safe }}
   </div>
 {% endfor %}
 
+<h1>Special Infected</h1>
 {% for r in specialinfected %}
   <div id="infected_{{r.id}}">
-    <h1>{{r.title}}</h1>
+    <h2>{{r.title}}</h2>
     {{ r.body.rendered|safe }}
   </div>
 {% endfor %}
+
 {% endblock %}

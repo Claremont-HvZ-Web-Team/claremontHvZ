@@ -11,15 +11,15 @@
         </div>
         <nav>
             <ul>
-                <li><a href="">Rules</a></li>
+                <li><a href="{% url 'rules' %}">Rules</a></li>
                 <li><a href="">Forums</a></li>
                 <li><a href="">Players</a></li>
                 <li><a href="">Missions</a></li>
                 <li><a href="">Status</a></li>
                 <li><a href="">Timeline</a></li>
                 {% if request.user.isMod %}
-                <li><a href="/attendance/">Attendance</a></li>
-                <li><a href="/email/">Email</a></li>
+                    <li><a href="/attendance/">Attendance</a></li>
+                    <li><a href="/email/">Email</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -38,13 +38,13 @@
     </div>
     {% if not is_landing_page %}
     <div class='spacer'></div>
-            <div class="login_holder">
-                {% if not request.user.is_authenticated %}
-                    <a href="{% url 'login' %}">log in</a>
-                {% else %}
-                    logged in as {{request.user.first_name}}<br/>
-                    <a href="{% url 'logout' %}">logout</a>
-                {% endif %}
-            </div>
+    <div class="login_holder">
+        {% if not request.user.is_authenticated %}
+            <a href="{% url 'login' %}">log in</a>
+        {% else %}
+            logged in as {{request.user.first_name}}<br/>
+            <a href="{% url 'logout' %}">logout</a>
+        {% endif %}
+    </div>
     {% endif %}
 </header>

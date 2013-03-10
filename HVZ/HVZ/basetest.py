@@ -54,7 +54,7 @@ class BaseTest(TestCase):
     @staticmethod
     def last_semester():
         """Return a pair of values corresponding to a fake previous game."""
-        today = settings.TODAY()
+        today = settings.NOW().date()
         t0 = today - timedelta(weeks=26)
         tf = t0 + timedelta(7)
         return (t0, tf)
@@ -62,7 +62,7 @@ class BaseTest(TestCase):
     @staticmethod
     def create_new_game():
         """Create a Game starting today and lasting a week."""
-        today = settings.TODAY()
+        today = settings.NOW().date()
         g = models.Game(start_date=today,
                         end_date=today+timedelta(7))
         g.full_clean()

@@ -71,7 +71,7 @@ class Game(models.Model):
     end_date = models.DateField(unique=True)
 
     def __unicode__(self):
-        if self.start_date <= settings.TODAY() <= self.end_date:
+        if self.start_date <= settings.NOW().date() <= self.end_date:
             s = u"{} {} (ongoing)"
         else:
             s = u"{} {}"
@@ -116,7 +116,7 @@ class Game(models.Model):
         """
         kwargs = {}
 
-        today = settings.TODAY()
+        today = settings.NOW().date()
         if 'started' in flags:
             if flags['started']:
                 kwargs['start_date__lte'] = today

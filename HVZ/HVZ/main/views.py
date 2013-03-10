@@ -24,14 +24,20 @@ class LandingPage(TemplateView):
 
         context['login_form'] = form
         context['is_landing_page'] = True
-        context['latest_meals'] = Meal.objects.filter(eater__game=Game.games(started=True).latest()).order_by('-time')[:20] or [
-            {
-                'time': settings.NOW(),
-                'eater': "ZombieJohn{}".format(x),
-                'eaten': "HumanGreg{}".format(x),
-                'location': None if x % 2 else "HOCH"
-            } for x in range(15)
-        ]
+        try:
+            context['latest_meals'] = (
+                Meal.objects.filter(
+                    eater__game=Game.games(started=True).latest(),
+                ).order_by('-time')[:20])
+        except Game.DoesNotExist:
+            context['latest_meals'] = [
+                {
+                    'time': settings.NOW(),
+                    'eater': "ZombieJohn{}".format(x),
+                    'eaten': "HumanGreg{}".format(x),
+                    'location': None if x % 2 else "HOCH",
+                } for x in range(15)
+            ]
         return context
 
 

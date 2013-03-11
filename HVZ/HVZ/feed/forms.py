@@ -7,7 +7,6 @@ from HVZ.feed.widgets import SelectTimeWidget
 
 import calendar
 import datetime
-import time
 
 CAL = calendar.TextCalendar(firstweekday=6)
 

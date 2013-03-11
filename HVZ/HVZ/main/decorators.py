@@ -30,26 +30,19 @@ def require_unfinished_game(view_func):
 
 # Player team checks
 
+def team_required(team):
+    def wrapped(*args, **kwargs):
+        """Raise an exception if the current user is not of the given team."""
+        def check_team(u):
+            try:
+                player = Player.user_to_player(u)
+            except Player.DoesNotExist:
+                raise PermissionDenied("You are not registered for this game!")
 
-def zombie_required(*args, **kwargs):
-    """Raise an exception if the current user is not a zombie."""
-    def check_zombie(u):
-        try:
-            player = Player.user_to_player(u)
-        except Player.DoesNotExist:
-            raise PermissionDenied("You are not registered for this game!")
+            if player.team != team:
+                team_name = "human" if team == 'H' else "zombie"
+                raise PermissionDenied("You must be a {} to view this page.".format(team_name))
+            return True
 
-        if player.team != "Z":
-            raise PermissionDenied("You must be a zombie to view this page.")
-        return True
-
-    return auth.user_passes_test(check_zombie)(*args, **kwargs)
-
-
-def human_required(*args, **kwargs):
-    def check_human(u):
-        if Player.user_to_player(u).team != "H":
-            raise PermissionDenied("You must be a human to view this page.")
-        return True
-
-    return auth.user_passes_test(check_human)(*args, **kwargs)
+        return auth.user_passes_test(check_team)(*args, **kwargs)
+    return wrapped

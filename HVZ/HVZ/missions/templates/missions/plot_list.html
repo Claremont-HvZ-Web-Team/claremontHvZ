@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load url from future %}
+
+{% load mission_extras %}
+
+{% block content %}
+<table id="mission_list">
+  {% for plot in plot_list %}
+  {% with victor=plot.mission.victor %}
+  <tr class="{% if not victor %}unfinished{% elif victor == 'B' %}{{ player.team }}_won{% else %}{{ victor }}_won{% endif %}">
+    <td class="mission_time">
+      {{ plot.mission|mission_time }}
+    </td>
+    <td class="mission_title">
+      <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">
+        {{ plot.title }}
+      </a>
+    </td>
+  </tr>
+  {% endwith %}
+  {% endfor %}
+</table>
+{% endblock %}

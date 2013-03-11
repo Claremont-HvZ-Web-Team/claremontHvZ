@@ -3,7 +3,7 @@ from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-from HVZ.main.decorators import zombie_required
+from HVZ.main.decorators import team_required
 
 from models import Meal, Player
 from forms import MealForm
@@ -16,7 +16,7 @@ class EatView(FormView):
     template_name = "feed/eat.html"
 
     @method_decorator(login_required)
-    @method_decorator(zombie_required)
+    @method_decorator(team_required('Z'))
     def dispatch(self, *args, **kwargs):
         return super(EatView, self).dispatch(*args, **kwargs)
 

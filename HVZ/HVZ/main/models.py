@@ -103,6 +103,10 @@ class Game(models.Model):
 
         raise ValidationError("This Game overlaps with another!")
 
+    def is_unfinished(self):
+        """True iff the game is still going on."""
+        return self.end_date > date.today()
+
     @classmethod
     def games(cls, **flags):
         """Return a list of games satisfying the given arguments.
@@ -203,9 +207,15 @@ class Player(models.Model):
         return cls.current_players().get(user=request.user)
 
     @classmethod
-    def user_to_player(cls, u):
-        """Return the most current Player corresponding to the given User."""
-        return cls.objects.get(game=Game.imminent_game(), user=u)
+    def user_to_player(cls, u, game=None):
+        """Return the most current Player corresponding to the given User.
+
+        Because a User has multiple players, you can specify which
+        player to retrieve by passing a Game.
+
+        """
+        game = game or Game.imminent_game()
+        return cls.objects.get(game=game, user=u)
 
     class Meta:
         # A User can only have one Player per Game, and a feed code

@@ -1,119 +1,124 @@
+from markupfield import fields
+
+from django.db.models import Q
+from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
-from main.models import Building, Game
-# Create your models here.
-
+from HVZ.main.models import Game
+from HVZ.main import validators
 
 class Mission(models.Model):
-    DAYS = {
-        0: "Monday",
-        1: "Tuesday",
-        2: "Wednesday",
-        3: "Thursday",
-        4: "Friday",
-        5: "Saturday",
+    """Traps used by the mods to kill good human players."""
+
+    TIMES = {
+        'D': "Day",
+        'N': "Night",
     }
 
-    KINDS = {
-        "D": "Day",
-        "N": "Night",
-        "X": "NPC",
-        "L": "Legendary",
+    VICTORS = {
+        'H': "humans",
+        'Z': "zombies",
+        'B': "both",
     }
 
-    STATUS = {
-        "N": "Not Over",
-        "HF": "Human Full",
-        "HP": "Human Partial",
-        "D": "Draw",
-        "ZP": "Zombie Partial",
-        "ZF": "Zombie Full",
-    }
+    day = models.DateField()
 
-    VISIBILITY = {
-        "H": "Humans",
-        "Z": "Zombies",
-        "B": "Both",
-        "M": "Mods",
-    }
+    time = models.CharField(
+        max_length=1,
+        choices=TIMES.items(),
+    )
 
-    human_title = models.CharField(max_length=30, blank=True, null=True)
-    zombie_title = models.CharField(max_length=30, blank=True, null=True)
+    victor = models.CharField(
+        max_length=1,
+        choices=VICTORS.items(),
+        blank=True,
+    )
 
     game = models.ForeignKey(Game)
 
-    day = models.CharField(
-        max_length=1,
-        choices=[(x, DAYS[x]) for x in DAYS],
-    )
-
-    kind = models.CharField(
-        max_length=1,
-        choices=[(x, KINDS[x]) for x in KINDS],
-    )
-
-    visibility = models.CharField(
-        max_length=2,
-        choices=[(x, VISIBILITY[x]) for x in VISIBILITY],
-    )
-
     def __unicode__(self):
-        return u"{}: #{} {}/{}".format(
+        return u"{}: {} {}".format(
             self.game,
-            self.id,
-            self.human_title,
-            self.zombie_title,
+            self.day.strftime("%A"),
+            self.TIMES[self.time],
         )
 
+    def clean(self):
+        validators.DateValidator(self.game)(self.day)
+        return super(Mission, self).clean()
 
-class MissionBuilding(models.Model):
-    LOC_TYPE = {
-        "S": "Start",
-        "D": "Do Something",
-        "F": "Find Something",
-        "G": "Go Here",
-        "E": "Escort Someone Here",
-        "C": "Completion",
-    }
+    def start_time(self):
+        return settings.START_TIMES[self.time]
 
-    VISIBILITY = {
-        "H": "Humans",
-        "Z": "Zombies",
-        "B": "Both",
-        "M": "Mods",
-    }
+    def unfinished(self):
+        return not self.victor
 
-    mission = models.ForeignKey(Mission)
-    location = models.ForeignKey(Building)
+    def won(self, team):
+        return self.victor in ('B', team)
 
-    kind = models.CharField(
-        max_length=1,
-        choices=[(x, LOC_TYPE[x]) for x in LOC_TYPE],
-    )
-
-    visibility = models.CharField(
-        max_length=1,
-        choices=[(x, VISIBILITY[x]) for x in VISIBILITY],
-    )
+    class Meta:
+        unique_together = (('day', 'time'),)
+        get_latest_by = "day"
 
 
 class Plot(models.Model):
+    """The aspects of Missions which are visible to players."""
+
     TEAMS = {
         "H": "Humans",
         "Z": "Zombies",
-        "B": "Both",
-        "N": "Neither",
     }
 
-    title = models.CharField(max_length=30)
-    game = models.ForeignKey(Game)
-    visibility = models.CharField(
+    title = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50)
+
+    team = models.CharField(
         max_length=1,
-        choices=[(x, TEAMS[x]) for x in TEAMS],
+        choices=TEAMS.items(),
     )
 
-    story = models.TextField()
-    reveal_time = models.DateTimeField()
+    before_story = fields.MarkupField(blank=True, null=True)
+    victory_story = fields.MarkupField(blank=True, null=True)
+    defeat_story = fields.MarkupField(blank=True, null=True)
 
-    def __unicode_(self):
-        return u"{}: {}".format(self.game, self.title)
+    visible = models.NullBooleanField()
+    reveal_time = models.DateTimeField(blank=True, null=True)
+
+    mission = models.ForeignKey(Mission)
+
+    def __unicode__(self):
+        return self.title
+
+    def clean(self):
+        # Set a default time to reveal the next mission.
+        if not self.reveal_time:
+            self.reveal_time = self.mission.start_time()
+
+        return super(Plot, self).clean()
+
+    @classmethod
+    def get_visible(cls, game, team):
+        """Returns all plots visible to the given team during the given game."""
+        return cls.objects.filter(
+            Q(visible=True) | Q(visible__isnull=True, reveal_time__lt=timezone.now()),
+            team=team,
+            mission__game=game,
+        )
+
+    def get_story(self, team):
+        if self.mission.unfinished():
+            return self.before_story
+        elif self.mission.won(team):
+            return self.victory_story
+        else:
+            return self.defeat_story
+
+    def is_visible(self):
+        if self.visible == None:
+            return timezone.now() >= self.reveal_time
+
+        return self.visible
+
+    class Meta:
+        unique_together = (('mission', 'team'),)

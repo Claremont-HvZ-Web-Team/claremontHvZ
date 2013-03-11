@@ -1,4 +1,4 @@
-import cPickle
+import string
 import itertools
 import random
 from optparse import make_option
@@ -10,13 +10,26 @@ from django.contrib.auth.models import User
 from HVZ.main.models import Player, Game, School, Building
 
 
-NAMES = "misc/names.pickle"
 PASSWORD = "asdf"
 SCHOOLS = School.objects.all()
 DORMS = Building.dorms()
 FEEDS = itertools.permutations(settings.VALID_CHARS, r=settings.FEED_LEN)
 
 NUM_OZS = 7
+
+
+def random_name():
+
+    firstname = "".join(
+        [random.choice(string.ascii_uppercase)] +
+        [random.choice(string.ascii_lowercase) for x in xrange(6)],
+    )
+
+    lastname = "".join(
+        [random.choice(string.ascii_uppercase)] +
+        [random.choice(string.ascii_lowercase) for x in xrange(8)],
+    )
+    return firstname, lastname
 
 
 class Command(BaseCommand):
@@ -29,10 +42,6 @@ class Command(BaseCommand):
         make_option(
             '--ozs',
             type='int',
-        ),
-        make_option(
-            '--names',
-            type='string',
         ),
         make_option(
             '--password',
@@ -49,25 +58,22 @@ class Command(BaseCommand):
             return
 
         num_players = options.get('players')
-        names_file = options.get('names') or NAMES
         num_ozs = options.get('ozs') or NUM_OZS
 
         self.password = options.get('password') or PASSWORD
 
-        with open(names_file) as f:
-            names = cPickle.load(f)
-
         self.year = settings.NOW().year
 
-        players = list(self.make_players(names[:num_players]))
+        players = self.make_players(num_players)
         Player.objects.bulk_create(players)
 
         self.pick_ozs(num_ozs)
 
-    def make_players(self, names):
-        for firstname, lastname in names:
-            uname = '{}{}@hmc.edu'.format(firstname[0].lower(),
-                                          lastname.lower())
+    def make_players(self, num_players):
+        for i in xrange(num_players):
+
+            firstname, lastname = random_name()
+            uname = '{}{}@randomplayer.xyz'.format(firstname[0].lower(), lastname.lower())
 
             try:
                 u = User.objects.get(username=uname)

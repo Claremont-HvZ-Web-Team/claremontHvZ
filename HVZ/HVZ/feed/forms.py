@@ -2,7 +2,7 @@ from django import forms
 
 from HVZ.main.forms import FeedCodeField
 from HVZ.main.models import Building
-from HVZ.main.validators import TimeValidator
+from HVZ.main import validators
 from HVZ.feed.validators import human_with_code
 
 
@@ -15,7 +15,9 @@ class MealForm(forms.Form):
 
     time = forms.DateTimeField(
         required=False,
-        validators=[TimeValidator()],
+        validators=[validators.validate_past,
+                    lambda t: validators.DateValidator()(t.date()),
+        ]
     )
 
     location = forms.ModelChoiceField(

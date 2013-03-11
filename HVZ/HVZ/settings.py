@@ -1,6 +1,7 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
 import os
+import datetime
 
 import markdown
 
@@ -204,6 +205,7 @@ INSTALLED_APPS = (
     'HVZ.main',
     'HVZ.feed',
     'HVZ.rules',
+    'HVZ.missions',
 )
 
 # App-specific settings below:
@@ -218,3 +220,10 @@ MARKUP_FIELD_TYPES = (
     ('markdown', markdown.markdown),
     ('plain', lambda markup: html.urlize(html.linebreaks(markup))),
 )
+
+# The times corresponding to the beginning of "day" and "night". Used
+# for missions.
+START_TIMES = {
+    'D': datetime.time(hour=7),
+    'N': datetime.time(hour=17),
+}

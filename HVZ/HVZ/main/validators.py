@@ -13,24 +13,27 @@ def validate_chars(feedcode):
         if c not in settings.VALID_CHARS:
             raise ValidationError(u"{} is not a valid character.".format(c))
 
-class TimeValidator:
+def validate_past(time):
+    """Ensure that the given time is in the past."""
+    if time > datetime.now():
+        raise ValidationError(u"{} must be in the past.".format(time))
+
+
+class DateValidator:
     def __init__(self, game=None):
         if game is None:
             self.lazy_game = models.Game.imminent_game
         else:
             self.lazy_game = lambda: game
 
-    def __call__(self, time):
-        """Ensures that the given time is between our start date and now."""
+    def __call__(self, date):
+        """Ensures that the given date is within the game's boundaries."""
         game = self.lazy_game()
 
-        if time > datetime.now():
-            raise ValidationError(u"{} must be in the past.".format(time))
-
-        if time.date() < game.start_date:
+        if date < game.start_date:
             raise ValidationError(
                 u"The {} game started on {}. This date is {}.".format(
                     game,
                     game.start_date,
-                    time.date()
+                    date
                 ))

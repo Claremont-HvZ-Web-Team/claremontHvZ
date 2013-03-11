@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% load mission_extras %}
+
+{% block content %}
+<h1>{{ plot.title }}</h1>
+
+<p>{{ story.rendered|safe }}</p>
+{% endblock %}

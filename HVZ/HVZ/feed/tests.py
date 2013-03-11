@@ -33,7 +33,7 @@ VICTIM = define_user({
 })
 
 MEAL = {
-    "day": datetime.now().isoweekday() - 1,
+    "day": datetime.today().isoweekday() - 1,
     "time": datetime.now().strftime("%H:%M:%S"),
     "location": "208",
     "description": "I don't want to live on this planet anymore.",

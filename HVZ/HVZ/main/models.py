@@ -5,7 +5,6 @@ from django.db import models
 from django.conf import settings
 
 from HVZ.main.validators import validate_chars
-from HVZ.main.exceptions import NoActiveGame
 
 
 class FeedCodeField(models.CharField):
@@ -142,7 +141,7 @@ class Game(models.Model):
         try:
             return cls.games(finished=False, ordered=True)[0]
         except IndexError:
-            raise NoActiveGame
+            raise Game.DoesNotExist
 
     class Meta:
         get_latest_by = "start_date"

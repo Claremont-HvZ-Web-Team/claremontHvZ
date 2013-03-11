@@ -43,6 +43,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        try:
+            self.game = Game.imminent_game()
+        except Game.DoesNotExist:
+            self.stderr.write("No currently-running game found.")
+            return
+
         num_players = options.get('players')
         names_file = options.get('names') or NAMES
         num_ozs = options.get('ozs') or NUM_OZS
@@ -52,7 +58,6 @@ class Command(BaseCommand):
         with open(names_file) as f:
             names = cPickle.load(f)
 
-        self.game = Game.imminent_game()
         self.year = settings.NOW().year
 
         players = list(self.make_players(names[:num_players]))

@@ -19,8 +19,12 @@
         <div>{{form.feedcode}}</div>
     </div>
     <div class="row">
-        <div>Time:</div>
+        <div>{{form.time.label}}:</div>
         <div>{{form.day}} {{form.time}}</div>
+    </div>
+    <div class="row">
+        <div><label for="{{form.location.id_for_label}}">{{form.location.label}}:</label></div>
+        <div>{{form.location}}</div>
     </div>
     <div class="row">
         <div><label for="{{form.description.id_for_label}}">{{ form.description.label }}:</label></div>

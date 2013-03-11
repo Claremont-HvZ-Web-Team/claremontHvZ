@@ -62,8 +62,8 @@ class BaseTest(TestCase):
     def create_new_game():
         """Create a Game starting today and lasting a week."""
         today = date.today()
-        g = models.Game(start_date=today,
-                        end_date=today+timedelta(7))
+        g = models.Game(start_date=today-timedelta(1),
+                        end_date=today+timedelta(6))
         g.full_clean()
         g.save()
         return g

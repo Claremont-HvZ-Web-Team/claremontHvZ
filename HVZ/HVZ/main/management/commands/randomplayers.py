@@ -4,7 +4,6 @@ import random
 from optparse import make_option
 
 from django.core.management.base import BaseCommand
-from django.db import IntegrityError
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -71,13 +70,14 @@ class Command(BaseCommand):
                                           lastname.lower())
 
             try:
+                u = User.objects.get(username=uname)
+
+            except User.DoesNotExist:
                 u = User.objects.create_user(username=uname,
                                              password=self.password)
-            except IntegrityError:
-                continue
-            u.first_name = firstname
-            u.last_name = lastname
-            u.save()
+                u.first_name = firstname
+                u.last_name = lastname
+                u.save()
 
             yield Player(
                 user=u,

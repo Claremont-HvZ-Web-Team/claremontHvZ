@@ -8,6 +8,9 @@
 {% endblock stylein %}
 
 {% block content %}
+{% if form.errors %}
+    {{form.errors}}
+{% endif %}
 <form method="post" action="{% url 'feed_eat' %}">
   {% csrf_token %}
   <div class='eat_form'>

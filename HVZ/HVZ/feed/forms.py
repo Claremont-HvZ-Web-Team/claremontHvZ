@@ -1,11 +1,13 @@
 from django import forms
 
 from HVZ.main.forms import FeedCodeField
-from HVZ.main.models import Building
+from HVZ.main.models import Building, Game
 from HVZ.feed.validators import human_with_code
 from HVZ.feed.widgets import SelectTimeWidget
 
 import calendar
+import datetime
+import time
 
 CAL = calendar.TextCalendar(firstweekday=6)
 
@@ -42,3 +44,14 @@ class MealForm(forms.Form):
     description = forms.CharField(
         widget=forms.Textarea,
     )
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(MealForm, self).clean(*args, **kwargs)
+
+        game_end = Game.imminent_game().end_date
+        offset = (game_end.weekday() - int(cleaned_data['day']))
+        feed_date = game_end - datetime.timedelta(days=offset)
+
+        cleaned_data['day'] = feed_date
+
+        return cleaned_data

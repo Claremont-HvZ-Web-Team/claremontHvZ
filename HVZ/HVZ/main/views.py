@@ -1,16 +1,15 @@
+import datetime
+
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 
+from HVZ.main.models import Game
 from HVZ.feed.models import Meal
-from HVZ.main.models import Game, Player
 from HVZ.main.forms import PrettyAuthForm, RegisterForm
 from HVZ.main.decorators import require_unfinished_game
-
-import datetime
 
 
 class LandingPage(TemplateView):
@@ -26,7 +25,7 @@ class LandingPage(TemplateView):
 
         context['login_form'] = form
         context['is_landing_page'] = True
-        context['latest_meals'] = Meal.objects.all().order_by('time')[:20] or [
+        context['latest_meals'] = Meal.objects.filter(eater__game=Game.games(started=True).latest()).order_by('-time')[:20] or [
             {
                 'time': datetime.datetime.now(),
                 'eater': "ZombieJohn{}".format(x),
@@ -50,37 +49,5 @@ class Register(FormView):
         return reverse("register")
 
     def form_valid(self, form):
-        def grab(s):
-            return form.cleaned_data[s]
-
-        try:
-            u = User.objects.get(email=grab("email"))
-            u.set_password(grab("password1"))
-        except User.DoesNotExist:
-            u = User.objects.create_user(
-                email=grab("email"),
-                username=grab("email"),
-                password=grab("password1"),
-            )
-        finally:
-            u.first_name = grab("first_name")
-            u.last_name = grab("last_name")
-            u.full_clean()
-            u.save()
-
-        p = Player(
-            user=u,
-            game=Game.nearest_game(),
-            school=grab("school"),
-            dorm=grab("dorm"),
-            grad_year=grab("grad_year"),
-            cell=grab("cell"),
-            feed=grab("feed"),
-            can_oz=grab("can_oz"),
-            can_c3=grab("can_c3"),
-            team="H",
-        )
-        p.full_clean()
-        p.save()
-
+        form.save()
         return super(Register, self).form_valid(form)

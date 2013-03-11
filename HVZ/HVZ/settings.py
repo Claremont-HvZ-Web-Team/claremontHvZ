@@ -2,6 +2,10 @@
 
 import os
 
+import markdown
+
+from django.utils import html
+
 import local_settings
 
 ### The following settings should all be defined in a file called
@@ -199,6 +203,7 @@ INSTALLED_APPS = (
     # 'tinymce',
     'HVZ.main',
     'HVZ.feed',
+    'HVZ.rules',
 )
 
 # App-specific settings below:
@@ -208,3 +213,8 @@ FEED_LEN = 5
 
 # The characters we allow in a feed code.
 VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]
+
+MARKUP_FIELD_TYPES = (
+    ('markdown', markdown.markdown),
+    ('plain', lambda markup: html.urlize(html.linebreaks(markup))),
+)

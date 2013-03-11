@@ -15,7 +15,7 @@ class MealForm(forms.Form):
     feedcode = FeedCodeField(
         label="Feed code",
         help_text="Type in the feed code of the person you ate",
-        validators=[human_with_code]
+        validators=[human_with_code],
     )
 
     # given just one week to register feeds, only need to track
@@ -36,9 +36,9 @@ class MealForm(forms.Form):
 
     location = forms.ModelChoiceField(
         Building.objects,
-        required=False
+        required=False,
     )
 
     description = forms.CharField(
-        widget=forms.Textarea
+        widget=forms.Textarea,
     )

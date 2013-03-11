@@ -1,7 +1,9 @@
 from markupfield import fields
 
+from django.db.models import Q
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from HVZ.main.models import Game
 from HVZ.main import validators
@@ -52,12 +54,8 @@ class Mission(models.Model):
     def unfinished(self):
         return not self.victor
 
-    def everyone_wins(self):
-        """The Pollyanna option."""
-        return self.victor == 'B'
-
     def won(self, team):
-        return self.everyone_wins() or self.victor == team
+        return self.victor in ('B', team)
 
     class Meta:
         unique_together = (('day', 'time'),)
@@ -84,6 +82,7 @@ class Plot(models.Model):
     victory_story = fields.MarkupField(blank=True, null=True)
     defeat_story = fields.MarkupField(blank=True, null=True)
 
+    visible = models.NullBooleanField()
     reveal_time = models.DateTimeField(blank=True, null=True)
 
     mission = models.ForeignKey(Mission)
@@ -98,6 +97,15 @@ class Plot(models.Model):
 
         return super(Plot, self).clean()
 
+    @classmethod
+    def get_visible(cls, game, team):
+        """Returns all plots visible to the given team during the given game."""
+        return cls.objects.filter(
+            Q(visible=True) | Q(visible__isnull=True, reveal_time__lt=timezone.now()),
+            team=team,
+            mission__game=game,
+        )
+
     def get_story(self, team):
         if self.mission.unfinished():
             return self.before_story
@@ -105,6 +113,12 @@ class Plot(models.Model):
             return self.victory_story
         else:
             return self.defeat_story
+
+    def is_visible(self):
+        if self.visible == None:
+            return timezone.now() >= self.reveal_time
+
+        return self.visible
 
     class Meta:
         unique_together = (('mission', 'team'),)

@@ -5,7 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.urlresolvers import reverse
 from django.test.client import Client
@@ -59,6 +59,8 @@ ZOMBIE_PLOT = Plot(
 
     defeat_story="Zombies done lost.",
     defeat_story_markup_type="markdown",
+
+    visible=True,
 )
 
 HUMAN_PLOT = Plot(
@@ -75,13 +77,23 @@ HUMAN_PLOT = Plot(
 
     defeat_story="Humans done lost.",
     defeat_story_markup_type="markdown",
+
+    visible=True,
 )
 
 class SingleMissionTest(BaseTest):
 
-    @classmethod
-    def setUpClass(cls):
-        super(SingleMissionTest, cls).setUpClass()
+    def setUp(self):
+        """Create the players who will view the missions."""
+        c = Client()
+        self.login_as_tabler(c)
+
+        c.post(reverse('register'), ROB_ZOMBIE)
+        z = Player.objects.get()
+        z.team = 'Z'
+        z.save()
+
+        c.post(reverse('register'), HUGH_MANN)
 
         # Create the mission and its plot views
         MISSION.game = Game.objects.get()
@@ -95,23 +107,9 @@ class SingleMissionTest(BaseTest):
         ZOMBIE_PLOT.mission = m
         ZOMBIE_PLOT.save()
 
-    @classmethod
-    def tearDownClass(cls):
-        super(SingleMissionTest, cls).tearDownClass()
+    def tearDown(self):
         Mission.objects.all().delete()
         Plot.objects.all().delete()
-
-    def setUp(self):
-        """Create the players who will view the missions."""
-        c = Client()
-        self.login_as_tabler(c)
-
-        c.post(reverse('register'), ROB_ZOMBIE)
-        z = Player.objects.get()
-        z.team = 'Z'
-        z.save()
-
-        c.post(reverse('register'), HUGH_MANN)
 
     def test_list_perspectives(self):
         """Check that each team sees a different list of missions."""
@@ -154,3 +152,47 @@ class SingleMissionTest(BaseTest):
         response = c.get(reverse('plot_detail',
                                  args=(HUMAN_PLOT.id, HUMAN_PLOT.slug)))
         self.assertEqual(response.status_code, 403)
+
+    def test_visibility_override(self):
+        """A false visibility should prevent us from seeing a mission."""
+        c = Client()
+
+        human_plot = Plot.objects.get(team='H')
+        human_plot.visible = False
+        human_plot.reveal_time = datetime.now() - timedelta(hours=1)
+        human_plot.save()
+
+        # We should not see any missions.
+        c.post(reverse('login'), HUGH_MANN)
+        response = c.get(reverse('plot_list'))
+        self.assertFalse(response.context_data['plot_list'])
+
+    def test_visibility_restriction(self):
+        """We should be able to see a mission with a reveal time in the past."""
+        c = Client()
+
+        # Set a revealed mission
+        human_plot = Plot.objects.get(team='H')
+        human_plot.visible = None
+        human_plot.reveal_time = datetime.now() - timedelta(hours=1)
+        human_plot.save()
+
+        # Check for visibility
+        c.post(reverse('login'), HUGH_MANN)
+        response = c.get(reverse('plot_list'))
+        self.assertTrue(response.context_data['plot_list'])
+
+    def test_future_reveal_times(self):
+        """We shouldn't see a mission if its reveal time is in the future."""
+        c = Client()
+
+        # Set a revealed mission
+        human_plot = Plot.objects.get(team='H')
+        human_plot.visible = None
+        human_plot.reveal_time = datetime.now() + timedelta(hours=1)
+        human_plot.save()
+
+        # Check for visibility
+        c.post(reverse('login'), HUGH_MANN)
+        response = c.get(reverse('plot_list'))
+        self.assertFalse(response.context_data['plot_list'])

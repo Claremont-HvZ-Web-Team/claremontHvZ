@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.views.generic.list import ListView
@@ -22,10 +23,7 @@ class PlotListView(ListView, PlayerAwareMixin):
     def get_queryset(self):
         game = Game.imminent_game()
         team = self.player.team
-        return Plot.objects.filter(
-            mission__game=game,
-            team=team,
-        ).order_by('-reveal_time').select_related('mission')
+        return Plot.get_visible(game, team).select_related('mission')
 
     def get_context_data(self, **kwargs):
         context = super(PlotListView, self).get_context_data(**kwargs)
@@ -51,5 +49,8 @@ class PlotDetailView(DetailView, PlayerAwareMixin):
         if self.player.team != team and plot.mission.game.is_unfinished():
             team_name = "human" if team == 'H' else "zombie"
             raise PermissionDenied("You must be a {} to view this page.".format(team_name))
+
+        if not plot.is_visible():
+            raise Http404
 
         return context

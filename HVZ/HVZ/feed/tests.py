@@ -8,32 +8,32 @@ from HVZ.main.models import Player, Game
 from HVZ.feed.models import Meal
 
 ROB_ZOMBIE = define_user({
-        "first_name": "Rob",
-        "last_name": "Zombie",
-        "email": "rzed@cmc.edu",
-        "password": "hunter2",
-        "school": "4",
-        "dorm": "208",
-        "grad_year": "2013",
-        "cell": "1234567890",
-        "can_oz": "on",
-        "feed": "SNEAK"
+    "first_name": "Rob",
+    "last_name": "Zombie",
+    "email": "rzed@cmc.edu",
+    "password": "hunter2",
+    "school": "4",
+    "dorm": "208",
+    "grad_year": "2013",
+    "cell": "1234567890",
+    "can_oz": "on",
+    "feed": "SNEAK"
 })
 
 VICTIM = define_user({
-        "first_name": "Hapless",
-        "last_name": "Victim",
-        "email": "hv@hmc.edu",
-        "password": "swordfish",
-        "school": "4",
-        "dorm": "208",
-        "grad_year": "2015",
-        "cell": "1234567890",
-        "feed": "EATEN"
+    "first_name": "Hapless",
+    "last_name": "Victim",
+    "email": "hv@hmc.edu",
+    "password": "swordfish",
+    "school": "4",
+    "dorm": "208",
+    "grad_year": "2015",
+    "cell": "1234567890",
+    "feed": "EATEN"
 })
 
 MEAL = {
-    "day": datetime.today().isoweekday() - 1,
+    "day": datetime.today().weekday(),
     "time": datetime.now().strftime("%H:%M:%S"),
     "location": "208",
     "description": "I don't want to live on this planet anymore.",

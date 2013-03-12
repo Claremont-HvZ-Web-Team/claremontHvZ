@@ -28,11 +28,10 @@ class MealForm(forms.Form):
             if i <= Game.imminent_game().end_date.weekday()
             and i >= Game.imminent_game().start_date.weekday()
         ),
-        initial=datetime.date.today().weekday(),
     )
 
     time = forms.TimeField(
-        required=False,
+        required=True,
         widget=SelectTimeWidget(
             minute_step=5,
             twelve_hr=True,
@@ -51,10 +50,15 @@ class MealForm(forms.Form):
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(MealForm, self).clean(*args, **kwargs)
+        if not 'day' in cleaned_data:
+            raise forms.ValidationError("Somehow you didn't specify the day.")
 
         game_end = Game.imminent_game().end_date
-        offset = (game_end.weekday() - int(cleaned_data['day']))
+        offset = (game_end.weekday() - int(cleaned_data['day'])) % 7
         feed_date = game_end - datetime.timedelta(days=offset)
+
+        if feed_date < Game.imminent_game().start_date:
+            raise forms.ValidationError("Can't have eaten before the game!")
 
         cleaned_data['day'] = feed_date
 

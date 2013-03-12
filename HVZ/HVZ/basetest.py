@@ -24,7 +24,7 @@ class BaseTest(TestCase):
     def setUpClass(cls):
         """Create an initial game and tabler."""
         # Create a current Game.
-        cls._game_start = date.today() - timedelta(1)
+        cls._game_start = date.today()
         cls.create_new_game(cls._game_start)
 
         tabler = auth_models.User.objects.create_user(
@@ -67,7 +67,7 @@ class BaseTest(TestCase):
 
         g = models.Game(
             start_date=game_start,
-            end_date=game_start+timedelta(6),
+            end_date=game_start + timedelta(6),
         )
         g.full_clean()
         g.save()

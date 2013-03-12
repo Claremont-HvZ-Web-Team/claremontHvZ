@@ -1,0 +1,14 @@
+@import "base.scss";
+
+p {
+    max-width: 650px;
+    line-height: 1.25em;
+}
+
+ul {
+    list-style-type: disc;
+
+    li {
+        margin: 0.25em 0;
+    }
+}

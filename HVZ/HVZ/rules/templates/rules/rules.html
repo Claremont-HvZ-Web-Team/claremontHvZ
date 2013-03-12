@@ -4,7 +4,42 @@
     <link rel="stylesheet" type="text/css" href="{% static "styles/rules_base.css" %}">
 {% endblock stylein %}
 
+{% block scriptin %}
+<script type="text/javascript">
+function handleScroll() {
+    // moves the shortcuts navigation as you scroll down.
+    if (window.XMLHttpRequest) {
+        var offset = window.pageYOffset
+            ? window.pageYOffset
+            : document.documentElement.scrollTop;
+
+        var links = $('#shortcuts');
+        if (offset > 305) {
+            links.css('position', 'relative');
+            links.css('top', (offset - 305) + "px");
+        } else {
+            links.css('position', 'auto');
+        }
+    }
+}
+
+if (window.addEventListener) {
+    window.addEventListener('scroll', handleScroll, false);
+} else {
+    window.attachEven('onscroll', handleScroll);
+}
+</script>
+{% endblock scriptin %}
+
 {% block content %}
+
+<div id="shortcuts">
+    <ul>
+        <li><h2><a href="#core">Core</a></h2></li>
+        <li><h2><a href="#class">Class</a></li>
+        <li><h2><a href="#special">Special Infected</a></h2></li>
+    </ul>
+</div>
 
 <div class="intro">
 <p>
@@ -41,6 +76,7 @@
 </p>
 </div>
 
+<a name="core"></a>
 {% for r in core %}
   <div id="core_{{r.id}}" class="corerule">
     <h1>{{r.title}}</h1>
@@ -48,6 +84,7 @@
   </div>
 {% endfor %}
 
+<a name="class"></a>
 {% for r in classes %}
   <div id="class_{{r.id}}" class="classrule">
     <h1>{{r.title}}</h1>
@@ -55,6 +92,7 @@
   </div>
 {% endfor %}
 
+<a name="special"></a>
 {% for r in specialinfected %}
   <div id="infected_{{r.id}}" class="specialinfectedrule">
     <h1>{{r.title}}</h1>

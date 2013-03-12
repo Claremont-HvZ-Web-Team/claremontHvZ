@@ -28,6 +28,7 @@ class MealForm(forms.Form):
             if i <= Game.imminent_game().end_date.weekday()
             and i >= Game.imminent_game().start_date.weekday()
         ),
+        initial=datetime.date.today().weekday(),
     )
 
     time = forms.TimeField(

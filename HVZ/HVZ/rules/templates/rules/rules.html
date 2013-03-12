@@ -1,22 +1,100 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block stylein %}
+    <link rel="stylesheet" type="text/css" href="{% static "styles/rules_base.css" %}">
+{% endblock stylein %}
+
+{% block scriptin %}
+<script type="text/javascript">
+function handleScroll() {
+    // moves the shortcuts navigation as you scroll down.
+    if (window.XMLHttpRequest) {
+        var offset = window.pageYOffset
+            ? window.pageYOffset
+            : document.documentElement.scrollTop;
+
+        var links = $('#shortcuts');
+        if (offset > 305) {
+            links.css('position', 'relative');
+            links.css('top', (offset - 305) + "px");
+        } else {
+            links.css('position', 'auto');
+        }
+    }
+}
+
+if (window.addEventListener) {
+    window.addEventListener('scroll', handleScroll, false);
+} else {
+    window.attachEven('onscroll', handleScroll);
+}
+</script>
+{% endblock scriptin %}
 
 {% block content %}
+
+<div id="shortcuts">
+    <ul>
+        <li><h2><a href="#core">Core</a></h2></li>
+        <li><h2><a href="#class">Class</a></li>
+        <li><h2><a href="#special">Special Infected</a></h2></li>
+    </ul>
+</div>
+
+<div class="intro">
+<p>
+    Each semester Claremont HvZ organizes a 5 day game of moderated tag called
+    Humans Vs. Zombies. The game involves both “human” and “zombie” players.
+    Zombies attempt to tag humans. Humans defend themselves against zombies by
+    tagging zombies either with a dart fired from a foam dart blaster or a thrown
+    balled-up sock.
+</p>
+
+<p>
+    All foam dart blasters are brightly colored and do not resemble actual
+    firearms. Over the course of the week, participants complete a series of
+    carefully moderated missions and projects. With over 500 players, Humans Vs.
+    Zombies is one of the largest substance-free activities to take place at the
+    Claremont Colleges.
+</p>
+
+<p>
+    Non-players can identify participants by the purple colored bandanas they
+    wear on their arms/head. Participants have strict instructions not to
+    interfere with non-players, and the Claremont HvZ moderation team has
+    designed a rule set in conjunction with the administrations at each of the
+    Claremont Colleges to ensure that classes and non-players are not disrupted.
+<p>
+    Some of the missions involve props, such as empty cardboard boxes that
+    players retrieve. All such game props will be labeled with stickers or
+    writing saying “Claremont HvZ Game Prop. Please do not disturb”.
+<p>
+    If at any point during the game you have a question or a concern, you can
+    reach the on-duty moderator by emailing
+    <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a> or calling
+    <a href="tel:+19095254551">909-525-4551</a>.
+</p>
+</div>
+
+<a name="core"></a>
 {% for r in core %}
-  <div id="core_{{r.id}}">
+  <div id="core_{{r.id}}" class="corerule">
     <h1>{{r.title}}</h1>
     {{ r.body.rendered|safe }}
   </div>
 {% endfor %}
 
+<a name="class"></a>
 {% for r in classes %}
-  <div id="class_{{r.id}}">
+  <div id="class_{{r.id}}" class="classrule">
     <h1>{{r.title}}</h1>
     {{ r.body.rendered|safe }}
   </div>
 {% endfor %}
 
+<a name="special"></a>
 {% for r in specialinfected %}
-  <div id="infected_{{r.id}}">
+  <div id="infected_{{r.id}}" class="specialinfectedrule">
     <h1>{{r.title}}</h1>
     {{ r.body.rendered|safe }}
   </div>

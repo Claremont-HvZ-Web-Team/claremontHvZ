@@ -78,11 +78,18 @@ class Plot(models.Model):
         choices=TEAMS.items(),
     )
 
-    before_story = fields.MarkupField(blank=True, null=True)
-    victory_story = fields.MarkupField(blank=True, null=True)
-    defeat_story = fields.MarkupField(blank=True, null=True)
+    before_story = fields.MarkupField(default_markup_type="markdown", blank=True, null=True)
+    victory_story = fields.MarkupField(default_markup_type="markdown", blank=True, null=True)
+    defeat_story = fields.MarkupField(default_markup_type="markdown", blank=True, null=True)
 
-    visible = models.NullBooleanField()
+    visible = models.NullBooleanField(
+        verbose_name="Visibility Override",
+        choices = (
+            (None, "No Override"),
+            (True, "Force Visible"),
+            (False, "Force Invisible"),
+        )
+    )
     reveal_time = models.DateTimeField(blank=True, null=True)
 
     mission = models.ForeignKey(Mission)

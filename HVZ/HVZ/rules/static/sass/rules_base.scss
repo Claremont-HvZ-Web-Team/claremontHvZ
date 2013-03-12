@@ -1,12 +1,15 @@
 @import "base.scss";
 
+$good_text_width: 650px;
+
 p {
-    max-width: 650px;
+    max-width: $good_text_width;
     line-height: 1.25em;
 }
 
 ul {
     list-style-type: disc;
+    max-width: $good_text_width;
 
     li {
         margin: 0.25em 0;

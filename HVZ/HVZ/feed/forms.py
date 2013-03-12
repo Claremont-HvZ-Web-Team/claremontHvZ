@@ -46,6 +46,7 @@ class MealForm(forms.Form):
 
     description = forms.CharField(
         widget=forms.Textarea,
+        required=False,
     )
 
     def clean(self, *args, **kwargs):

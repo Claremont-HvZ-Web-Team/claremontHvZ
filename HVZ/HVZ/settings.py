@@ -20,6 +20,9 @@ PROJECT_PATH = local_settings.PROJECT_PATH
 def absolute_path(*paths):
     return os.path.join(PROJECT_PATH, *paths)
 
+# A list of hostnames from which this site can serve. Used in production.
+ALLOWED_HOSTS = local_settings.ALLOWED_HOSTS or []
+
 # Do you want the site to display a bunch of information when
 # something goes wrong? Either True or False.
 DEBUG = local_settings.DEBUG

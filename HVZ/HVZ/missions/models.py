@@ -1,3 +1,5 @@
+import datetime
+
 from markupfield import fields
 
 from django.db.models import Q
@@ -49,7 +51,10 @@ class Mission(models.Model):
         return super(Mission, self).clean()
 
     def start_time(self):
-        return settings.START_TIMES[self.time]
+        return datetime.datetime.combine(
+            self.day,
+            settings.START_TIMES[self.time],
+        )
 
     def unfinished(self):
         return not self.victor
@@ -88,8 +93,9 @@ class Plot(models.Model):
             (None, "No Override"),
             (True, "Force Visible"),
             (False, "Force Invisible"),
-        )
+        ),
     )
+
     reveal_time = models.DateTimeField(blank=True, null=True)
 
     mission = models.ForeignKey(Mission)

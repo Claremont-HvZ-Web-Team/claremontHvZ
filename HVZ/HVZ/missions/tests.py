@@ -97,14 +97,17 @@ class SingleMissionTest(BaseTest):
 
         # Create the mission and its plot views
         MISSION.game = Game.objects.get()
+        MISSION.full_clean()
         MISSION.save()
 
         m = Mission.objects.get()
 
         HUMAN_PLOT.mission = m
+        HUMAN_PLOT.full_clean()
         HUMAN_PLOT.save()
 
         ZOMBIE_PLOT.mission = m
+        ZOMBIE_PLOT.full_clean()
         ZOMBIE_PLOT.save()
 
     def tearDown(self):

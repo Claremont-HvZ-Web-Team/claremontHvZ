@@ -205,6 +205,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'HVZ.main',
     'HVZ.feed',
+    'HVZ.players',
     'HVZ.rules',
     'HVZ.missions',
 )

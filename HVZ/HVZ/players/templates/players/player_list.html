@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load url from future %}
+{% load player_extras %}
+
+{% block content %}
+<table id="player_list">
+  <tr>
+    <th>Name</th>
+    <th>School</th>
+    <th>Year</th>
+    <th>Team</th>
+    <th>Tags</th>
+    <th>Class</th>
+  </tr>
+  {% for player in player_list %}
+  <tr class="player {{ player.team }}">
+    <td class="name">{{ player.user.first_name }} {{ player.user.last_name }}</td>
+    <td class="school">{{ player.school }}</td>
+    <td class="year">{{ player.grad_year }}</td>
+    <td class="team">{{ player.team|team_name }}</td>
+    <td class="meal_count">
+      {% if player.team == 'Z' or player.meal_count > 0 %}{{ player.meal_count }}{% endif %}
+    </td>
+    <td class="upgrade">{{ player.upgrade|upgrade_name }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

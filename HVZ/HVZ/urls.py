@@ -17,6 +17,7 @@ urlpatterns = patterns(
     url(r'^rules/', include('HVZ.rules.urls')),
 
     url(r'^missions/', include('HVZ.missions.urls')),
+    url(r'^players/', include('HVZ.players.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

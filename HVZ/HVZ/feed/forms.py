@@ -58,6 +58,20 @@ class MealForm(forms.Form):
         required=False,
     )
 
+    def clean_time(self):
+        try:
+            super(MealForm, self).clean_time()
+        except AttributeError:
+            pass
+
+        if (
+            self.cleaned_data['time'] > datetime.datetime.now().time() or
+            int(self.cleaned_data['day']) > datetime.date.today().weekday()
+        ):
+            raise forms.ValidationError("You can't eat in the future, bro.")
+
+        return self.cleaned_data['time']
+
     def clean(self, *args, **kwargs):
         cleaned_data = super(MealForm, self).clean(*args, **kwargs)
 

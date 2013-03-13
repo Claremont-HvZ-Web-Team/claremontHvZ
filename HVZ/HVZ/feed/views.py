@@ -8,6 +8,8 @@ from HVZ.main.decorators import team_required
 from models import Meal, Player
 from forms import MealForm
 
+import datetime
+
 
 class EatView(FormView):
     form_class = MealForm
@@ -28,7 +30,7 @@ class EatView(FormView):
         m = Meal(
             eater=Player.logged_in_player(self.request),
             eaten=Player.current_players().filter(feed=grab("feedcode")).get(),
-            time=grab("time"),
+            time=datetime.datetime.combine(grab("day"), grab("time")),
             location=grab("location"),
             description=grab("description"),
         )

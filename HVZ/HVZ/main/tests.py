@@ -143,7 +143,7 @@ class SignupTest(BaseTest):
 
     def test_multi_game(self):
         """Ensure we register players for the newest game when multiple are available."""
-        today = date.today()
+        today = self._game_start
         t0 = today - timedelta(weeks=24)
         tf = t0 + timedelta(7)
         old_game = models.Game(start_date=t0, end_date=tf)

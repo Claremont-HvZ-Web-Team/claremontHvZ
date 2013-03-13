@@ -24,7 +24,8 @@ class BaseTest(TestCase):
     def setUpClass(cls):
         """Create an initial game and tabler."""
         # Create a current Game.
-        cls.create_new_game()
+        cls._game_start = date.today()
+        cls.create_new_game(cls._game_start)
 
         tabler = auth_models.User.objects.create_user(
             username="tabler",
@@ -59,11 +60,15 @@ class BaseTest(TestCase):
         return (t0, tf)
 
     @staticmethod
-    def create_new_game():
+    def create_new_game(game_start=None):
         """Create a Game starting today and lasting a week."""
-        today = date.today()
-        g = models.Game(start_date=today,
-                        end_date=today+timedelta(7))
+        if game_start is None:
+            game_start = date.today()
+
+        g = models.Game(
+            start_date=game_start,
+            end_date=game_start + timedelta(6),
+        )
         g.full_clean()
         g.save()
         return g

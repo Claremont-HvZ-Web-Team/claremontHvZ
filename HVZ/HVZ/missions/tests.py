@@ -1,14 +1,8 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.core.urlresolvers import reverse
 from django.test.client import Client
+from django.conf import settings
 
 from HVZ.basetest import BaseTest, define_user
 from HVZ.main.models import Player, Game
@@ -41,7 +35,7 @@ ROB_ZOMBIE = define_user({
 })
 
 MISSION = Mission(
-    day=datetime.today(),
+    day=settings.NOW().date(),
     time="N",
 )
 
@@ -159,7 +153,7 @@ class SingleMissionTest(BaseTest):
 
         human_plot = Plot.objects.get(team='H')
         human_plot.visible = False
-        human_plot.reveal_time = datetime.now() - timedelta(hours=1)
+        human_plot.reveal_time = settings.NOW() - timedelta(hours=1)
         human_plot.save()
 
         # We should not see any missions.
@@ -174,7 +168,7 @@ class SingleMissionTest(BaseTest):
         # Set a revealed mission
         human_plot = Plot.objects.get(team='H')
         human_plot.visible = None
-        human_plot.reveal_time = datetime.now() - timedelta(hours=1)
+        human_plot.reveal_time = settings.NOW() - timedelta(hours=1)
         human_plot.save()
 
         # Check for visibility
@@ -189,7 +183,7 @@ class SingleMissionTest(BaseTest):
         # Set a revealed mission
         human_plot = Plot.objects.get(team='H')
         human_plot.visible = None
-        human_plot.reveal_time = datetime.now() + timedelta(hours=1)
+        human_plot.reveal_time = settings.NOW() + timedelta(hours=1)
         human_plot.save()
 
         # Check for visibility

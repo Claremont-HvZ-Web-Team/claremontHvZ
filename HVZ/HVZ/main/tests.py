@@ -1,8 +1,11 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
-from django.contrib.auth.models import User
+from django.core import management
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.test.client import Client
+from django.test.utils import override_settings
 
 from HVZ.basetest import BaseTest, define_user
 from HVZ.main import models, forms
@@ -143,7 +146,7 @@ class SignupTest(BaseTest):
 
     def test_multi_game(self):
         """Ensure we register players for the newest game when multiple are available."""
-        today = date.today()
+        today = settings.NOW().date()
         t0 = today - timedelta(weeks=24)
         tf = t0 + timedelta(7)
         old_game = models.Game(start_date=t0, end_date=tf)
@@ -204,3 +207,22 @@ class SignupTest(BaseTest):
         self.assertEqual(u.first_name, d["first_name"])
         self.assertEqual(u.last_name, d["last_name"])
         self.assertNotEqual(u.password, old_password)
+
+class RandomPlayerTest(BaseTest):
+
+    @override_settings(PASSWORD_HASHERS=(
+            'django.contrib.auth.hashers.MD5PasswordHasher',))
+    def test_small(self):
+        num_players = 12
+        num_ozs = 6
+        names = "misc/names.pickle"
+        password = "fdsa"
+        management.call_command(
+            "randomplayers",
+            players=num_players,
+            ozs=num_ozs,
+            names=names,
+            password=password,
+        )
+        self.assertEqual(num_players, models.Player.objects.count())
+        self.assertEqual(num_ozs, models.Player.objects.filter(team='Z').count())

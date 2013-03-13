@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test.client import Client
 
@@ -33,7 +34,7 @@ VICTIM = define_user({
 })
 
 MEAL = {
-    "time": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
+    "time": settings.NOW().strftime("%m/%d/%Y %H:%M:%S"),
     "location": "208",
     "description": "I don't want to live on this planet anymore.",
     "feedcode": VICTIM["feed"]
@@ -114,7 +115,7 @@ class EatingTest(BaseTest):
 
     def test_invalid_time(self):
         """Ensure that eating times only occur within the game's timeline."""
-        yesterday = datetime.now() - timedelta(days=1)
+        yesterday = settings.NOW() - timedelta(days=1)
 
         m = MEAL.copy()
         m['time'] = yesterday.strftime("%m/%d/%Y %H:%M:%S")

@@ -1,0 +1,33 @@
+@import "base.scss";
+
+$good_text_width: 650px;
+
+p {
+    max-width: $good_text_width;
+    line-height: 1.25em;
+}
+
+#mainContainer {
+    ul {
+        list-style-type: disc;
+        max-width: $good_text_width;
+
+        li {
+            margin: 0.25em 0;
+        }
+    }
+    #shortcuts {
+        float: right;
+        right: 15px;
+
+        &.fixed {
+            position: fixed;
+            top: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+    }
+}
+}
+

@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% load url from future %}
+
 <header>
     <div class='barholder'>
         <div id='breakoutbar'>
@@ -14,7 +14,7 @@
                 <li><a href="{% url 'rules' %}">Rules</a></li>
                 <li><a href="">Forums</a></li>
                 <li><a href="">Players</a></li>
-                <li><a href="">Missions</a></li>
+                <li><a href="{% url 'plot_list' %}">Missions</a></li>
                 <li><a href="">Status</a></li>
                 <li><a href="">Timeline</a></li>
                 {% if request.user.isMod %}

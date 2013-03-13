@@ -19,7 +19,7 @@ ROB_ZOMBIE = define_user({
         "cell": "1234567890",
         "can_oz": "on",
         "feed": "SNEAK"
-        })
+})
 
 VICTIM = define_user({
         "first_name": "Hapless",
@@ -31,7 +31,7 @@ VICTIM = define_user({
         "grad_year": "2015",
         "cell": "1234567890",
         "feed": "EATEN"
-        })
+})
 
 MEAL = {
     "time": settings.NOW().strftime("%m/%d/%Y %H:%M:%S"),

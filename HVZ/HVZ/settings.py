@@ -5,7 +5,7 @@ import os
 
 import markdown
 
-from django.utils import html
+from django.utils import timezone, html
 
 import local_settings
 
@@ -19,6 +19,9 @@ PROJECT_PATH = local_settings.PROJECT_PATH
 
 def absolute_path(*paths):
     return os.path.join(PROJECT_PATH, *paths)
+
+# A list of hostnames from which this site can serve. Used in production.
+ALLOWED_HOSTS = local_settings.ALLOWED_HOSTS or []
 
 # Do you want the site to display a bunch of information when
 # something goes wrong? Either True or False.
@@ -203,13 +206,14 @@ INSTALLED_APPS = (
     'HVZ.main',
     'HVZ.feed',
     'HVZ.rules',
+    'HVZ.missions',
 )
 
 # App-specific settings below:
 
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
-NOW = local_settings.NOW or datetime.datetime.now
+NOW = local_settings.NOW or timezone.now
 
 # The length of a feed code.
 FEED_LEN = 5
@@ -221,3 +225,10 @@ MARKUP_FIELD_TYPES = (
     ('markdown', markdown.markdown),
     ('plain', lambda markup: html.urlize(html.linebreaks(markup))),
 )
+
+# The times corresponding to the beginning of "day" and "night". Used
+# for missions.
+START_TIMES = {
+    'D': datetime.time(hour=7),
+    'N': datetime.time(hour=17),
+}

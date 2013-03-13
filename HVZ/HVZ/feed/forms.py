@@ -11,6 +11,14 @@ import datetime
 CAL = calendar.TextCalendar(firstweekday=6)
 
 
+def get_nearest_hour():
+    now = datetime.datetime.now()
+    return datetime.datetime(
+        now.year, now.month, now.day,
+        now.hour,
+    )
+
+
 class MealForm(forms.Form):
 
     feedcode = FeedCodeField(
@@ -28,7 +36,7 @@ class MealForm(forms.Form):
             if i <= Game.imminent_game().end_date.weekday()
             and i >= Game.imminent_game().start_date.weekday()
         ),
-        initial=datetime.date.today().weekday(),
+        initial=datetime.date.today().weekday,
     )
 
     time = forms.TimeField(
@@ -37,6 +45,7 @@ class MealForm(forms.Form):
             minute_step=5,
             twelve_hr=True,
         ),
+        initial=get_nearest_hour,
     )
 
     location = forms.ModelChoiceField(
@@ -51,6 +60,7 @@ class MealForm(forms.Form):
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(MealForm, self).clean(*args, **kwargs)
+
         if not 'day' in cleaned_data:
             raise forms.ValidationError("Somehow you didn't specify the day.")
 
@@ -60,7 +70,6 @@ class MealForm(forms.Form):
 
         if feed_date < Game.imminent_game().start_date:
             raise forms.ValidationError("Can't have eaten before the game!")
-
         cleaned_data['day'] = feed_date
 
         return cleaned_data

@@ -1,6 +1,7 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
 import os
+import datetime
 
 import markdown
 
@@ -18,6 +19,9 @@ PROJECT_PATH = local_settings.PROJECT_PATH
 
 def absolute_path(*paths):
     return os.path.join(PROJECT_PATH, *paths)
+
+# A list of hostnames from which this site can serve. Used in production.
+ALLOWED_HOSTS = local_settings.ALLOWED_HOSTS or []
 
 # Do you want the site to display a bunch of information when
 # something goes wrong? Either True or False.
@@ -205,6 +209,7 @@ INSTALLED_APPS = (
     'HVZ.feed',
     'HVZ.players',
     'HVZ.rules',
+    'HVZ.missions',
 )
 
 # App-specific settings below:
@@ -219,3 +224,10 @@ MARKUP_FIELD_TYPES = (
     ('markdown', markdown.markdown),
     ('plain', lambda markup: html.urlize(html.linebreaks(markup))),
 )
+
+# The times corresponding to the beginning of "day" and "night". Used
+# for missions.
+START_TIMES = {
+    'D': datetime.time(hour=7),
+    'N': datetime.time(hour=17),
+}

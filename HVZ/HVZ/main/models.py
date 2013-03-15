@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django_localflavor_us.models import PhoneNumberField
@@ -7,7 +5,6 @@ from django.db import models
 from django.conf import settings
 
 from HVZ.main.validators import validate_chars
-from HVZ.main.exceptions import NoActiveGame
 
 
 class FeedCodeField(models.CharField):
@@ -73,7 +70,7 @@ class Game(models.Model):
     end_date = models.DateField(unique=True)
 
     def __unicode__(self):
-        if self.start_date <= date.today() <= self.end_date:
+        if self.start_date <= settings.NOW().date() <= self.end_date:
             s = u"{} {} (ongoing)"
         else:
             s = u"{} {}"
@@ -98,14 +95,14 @@ class Game(models.Model):
                                           end_date__gte=self.start_date)
 
         # But one game can overlap with itself.
-        if not overlapping.exclude(id=self.id).exists():
-            return super(Game, self).clean()
+        if overlapping.exclude(id=self.id).exists():
+            raise ValidationError("This Game overlaps with another!")
 
-        raise ValidationError("This Game overlaps with another!")
+        return super(Game, self).clean()
 
     def is_unfinished(self):
         """True iff the game is still going on."""
-        return self.end_date > date.today()
+        return self.end_date > settings.NOW().date()
 
     @classmethod
     def games(cls, **flags):
@@ -122,17 +119,18 @@ class Game(models.Model):
         """
         kwargs = {}
 
+        today = settings.NOW().date()
         if 'started' in flags:
             if flags['started']:
-                kwargs['start_date__lte'] = date.today()
+                kwargs['start_date__lte'] = today
             else:
-                kwargs['start_date__gt'] = date.today()
+                kwargs['start_date__gt'] = today
 
         if 'finished' in flags:
             if flags['finished']:
-                kwargs['end_date__lt'] = date.today()
+                kwargs['end_date__lt'] = today
             else:
-                kwargs['end_date__gte'] = date.today()
+                kwargs['end_date__gte'] = today
 
         qset = cls.objects.filter(**kwargs)
 
@@ -147,7 +145,7 @@ class Game(models.Model):
         try:
             return cls.games(finished=False, ordered=True)[0]
         except IndexError:
-            raise NoActiveGame
+            raise Game.DoesNotExist
 
     class Meta:
         get_latest_by = "start_date"
@@ -161,7 +159,9 @@ class Player(models.Model):
         "Z": "Zombies",
     }
 
-    UPGRADES = {}
+    UPGRADES = {
+        'O': "Original Zombie",
+    }
 
     user = models.ForeignKey(User)
     cell = PhoneNumberField(blank=True, null=True)

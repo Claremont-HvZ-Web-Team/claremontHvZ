@@ -1,11 +1,11 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
-import os
 import datetime
+import os
 
 import markdown
 
-from django.utils import html
+from django.utils import timezone, html
 
 import local_settings
 
@@ -197,14 +197,12 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    # 'tinymce',
     'HVZ.main',
     'HVZ.feed',
     'HVZ.players',
@@ -214,6 +212,10 @@ INSTALLED_APPS = (
 )
 
 # App-specific settings below:
+
+# Callables that return the "current" date and time.
+# Can be overridden in local_settings or tests to return a fixed point in time.
+NOW = local_settings.NOW or timezone.now
 
 # The length of a feed code.
 FEED_LEN = 5

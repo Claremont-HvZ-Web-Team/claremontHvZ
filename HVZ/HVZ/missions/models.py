@@ -5,7 +5,6 @@ from markupfield import fields
 from django.db.models import Q
 from django.conf import settings
 from django.db import models
-from django.utils import timezone
 
 from HVZ.main.models import Game
 from HVZ.main import validators
@@ -114,7 +113,7 @@ class Plot(models.Model):
     def get_visible(cls, game, team):
         """Returns all plots visible to the given team during the given game."""
         return cls.objects.filter(
-            Q(visible=True) | Q(visible__isnull=True, reveal_time__lt=timezone.now()),
+            Q(visible=True) | Q(visible__isnull=True, reveal_time__lt=settings.NOW()),
             team=team,
             mission__game=game,
         )
@@ -129,7 +128,7 @@ class Plot(models.Model):
 
     def is_visible(self):
         if self.visible == None:
-            return timezone.now() >= self.reveal_time
+            return settings.NOW() >= self.reveal_time
 
         return self.visible
 

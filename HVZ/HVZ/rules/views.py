@@ -11,5 +11,6 @@ class RulesPage(generic.TemplateView):
         context['core'] = models.CoreRule.objects.all()
         context['classes'] = models.ClassRule.objects.all()
         context['specialinfected'] = models.SpecialInfectedRule.objects.all()
+        context['locations'] = models.LocationRule.objects.all()
 
         return context

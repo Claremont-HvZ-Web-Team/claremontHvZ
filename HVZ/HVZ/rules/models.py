@@ -3,6 +3,9 @@ from markupfield import fields
 
 
 class BaseRule(models.Model):
+    def __unicode__(self):
+        return self.title
+
     class Meta:
         abstract = True
         ordering = ('position',)

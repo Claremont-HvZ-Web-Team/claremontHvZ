@@ -47,6 +47,8 @@ $container_width: 1000px;
     }
 }
 
+
+
 footer {
     padding: 1em;
 
@@ -55,3 +57,21 @@ footer {
     background-color: $dark_color;
 }
 @import "logo_styling";
+
+$table_padding_amount: .5em;
+
+th, td {
+    text-align: left;
+    padding: $table_padding_amount/2 3*$table_padding_amount/4;
+
+    &:not(:last-child) {
+        border-right: 1px solid adjust-color($bg_grey, $alpha:-0.5);
+    }
+}
+
+tr {
+    padding: $table_padding_amount;
+     &:nth-child(even) {
+        background: adjust-color($bg_grey, $alpha:-0.85);
+     }
+}

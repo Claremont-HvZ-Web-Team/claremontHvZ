@@ -169,9 +169,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'pybb.middleware.PybbMiddleware',
 )
 
 ROOT_URLCONF = 'HVZ.urls'
+AUTH_PROFILE_MODULE = 'pybb.Profile'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or
@@ -190,6 +192,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
     "HVZ.main.context_processors.inject_outbreak_percentage",
+    'pybb.context_processors.processor',
 )
 
 INSTALLED_APPS = (
@@ -205,6 +208,11 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     # 'tinymce',
+    'pybb',
+    'pytils',
+    'sorl.thumbnail',
+    'pure_pagination',
+
     'HVZ.main',
     'HVZ.feed',
     'HVZ.players',

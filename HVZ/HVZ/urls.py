@@ -13,7 +13,7 @@ urlpatterns = patterns(
     url(r'^login/', 'django.contrib.auth.views.login', name="login"),
 
     url(r'^feed/', include('HVZ.feed.urls')),
-
+    url(r'^forum/', include('pybb.urls', namespace='pybb')),
     url(r'^rules/', include('HVZ.rules.urls')),
 
     url(r'^missions/', include('HVZ.missions.urls')),

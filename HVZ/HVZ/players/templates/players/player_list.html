@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 
-{% load url from future %}
+{% load static %}
 {% load player_extras %}
 
+{% block stylein %}
+   <link rel="stylesheet" type="text/css" href="{% static 'styles/players/players_main.css' %}">
+{% endblock stylein %}
+
 {% block content %}
-<table id="player_list">
+<table id="human_list">
+<thead>
   <tr>
     <th>Name</th>
     <th>School</th>
@@ -13,7 +18,37 @@
     <th>Tags</th>
     <th>Class</th>
   </tr>
-  {% for player in player_list %}
+</thead>
+
+  {# HUMANS #}
+  {% for player in player_list|filter_by:"team,H" %}
+  <tr class="player {{ player.team }}">
+    <td class="name">{{ player.user.first_name }} {{ player.user.last_name }}</td>
+    <td class="school">{{ player.school }}</td>
+    <td class="year">{{ player.grad_year }}</td>
+    <td class="team">{{ player.team|team_name }}</td>
+    <td class="meal_count">
+      {% if player.team == 'Z' or player.meal_count > 0 %}{{ player.meal_count }}{% endif %}
+    </td>
+    <td class="upgrade">{{ player.upgrade|upgrade_name }}</td>
+  </tr>
+  {% endfor %}
+
+</table>
+
+  {# ZOMBIES #}
+<table id="zombie_list">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>School</th>
+    <th>Year</th>
+    <th>Team</th>
+    <th>Tags</th>
+    <th>Class</th>
+  </tr>
+</thead>
+  {% for player in player_list|filter_by:"team,Z" %}
   <tr class="player {{ player.team }}">
     <td class="name">{{ player.user.first_name }} {{ player.user.last_name }}</td>
     <td class="school">{{ player.school }}</td>
@@ -26,4 +61,6 @@
   </tr>
   {% endfor %}
 </table>
+
+<div class="clearer"></div>
 {% endblock %}

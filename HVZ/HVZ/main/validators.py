@@ -1,7 +1,5 @@
-from datetime import datetime
-
-from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 # Can't import specific names because circular import!
 import models
@@ -15,7 +13,7 @@ def validate_chars(feedcode):
 
 def validate_past(time):
     """Ensure that the given time is in the past."""
-    if time > datetime.now():
+    if time > settings.NOW():
         raise ValidationError(u"{} must be in the past.".format(time))
 
 

@@ -1,5 +1,6 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
 
@@ -24,7 +25,7 @@ class BaseTest(TestCase):
     def setUpClass(cls):
         """Create an initial game and tabler."""
         # Create a current Game.
-        cls._game_start = date.today()
+        cls._game_start = settings.NOW().date()
         cls.create_new_game(cls._game_start)
 
         tabler = auth_models.User.objects.create_user(
@@ -54,7 +55,7 @@ class BaseTest(TestCase):
     @staticmethod
     def last_semester():
         """Return a pair of values corresponding to a fake previous game."""
-        today = date.today()
+        today = settings.NOW().date()
         t0 = today - timedelta(weeks=26)
         tf = t0 + timedelta(7)
         return (t0, tf)
@@ -63,7 +64,7 @@ class BaseTest(TestCase):
     def create_new_game(game_start=None):
         """Create a Game starting today and lasting a week."""
         if game_start is None:
-            game_start = date.today()
+            game_start = settings.NOW().date()
 
         g = models.Game(
             start_date=game_start,

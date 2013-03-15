@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError
 from django.test.client import Client
@@ -117,7 +118,11 @@ class EatingTest(BaseTest):
 
     def test_invalid_time(self):
         """Ensure that eating times only occur within the game's timeline."""
+<<<<<<< HEAD
         yesterday = self._game_start - timedelta(days=1)
+=======
+        yesterday = settings.NOW() - timedelta(days=1)
+>>>>>>> 15bac0f76bb4d979252cf655e270b79199d39397
 
         m = MEAL.copy()
         m['day'] = yesterday.weekday()

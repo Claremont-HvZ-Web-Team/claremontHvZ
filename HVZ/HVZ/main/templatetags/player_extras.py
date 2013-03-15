@@ -22,7 +22,7 @@ def team_name(team):
 def upgrade_name(upgrade):
     if not upgrade:
         return ""
-    return Player.UPGRADES[upgrade]
+    return Player.UPGRADES.get(upgrade, '')
 
 
 @register.filter

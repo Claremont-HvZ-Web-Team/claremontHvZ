@@ -2,20 +2,57 @@
 
 $padding_amount: .5em;
 
-#human_list {
-    float: right;
-    border: 1px solid $bg_red;
+th, td {
+    text-align: left;
+    padding: $padding_amount/2 3*$padding_amount/4;
 
-    tr, th {
-        padding: $padding_amount;
+    &:not(:last-child) {
+        border-right: 1px solid adjust-color($bg_grey, $alpha:-0.5);
+    }
+}
+
+tr {
+    padding: $padding_amount;
+}
+
+.clearer {
+    height: $padding_amount*2;
+}
+
+#human_list {
+    float: left;
+
+    th.title {
+        text-align: center;
+        column-span: 4;
+
+        font-size: 1.5em;
+    }
+
+    thead tr:last-child {
+        border-bottom: 1px solid adjust-color($bg_red, $alpha:-0.5);
+    }
+
+    tbody tr:nth-child(even) {
+        background: adjust-color($bg_red, $alpha:-0.75);
     }
 }
 
 #zombie_list {
-    float: left;
-    border: 1px solid $bg_green;
+    float: right;
 
-    tr, th {
-        padding: $padding_amount;
+    th.title {
+        text-align: center;
+        column-span: 5;
+
+        font-size: 1.5em;
+    }
+
+    thead tr:last-child {
+        border-bottom: 1px solid adjust-color($bg_green, $alpha:-0.5);
+    }
+
+    tbody tr:nth-child(even) {
+        background: adjust-color($bg_green, $alpha:-0.75);
     }
 }

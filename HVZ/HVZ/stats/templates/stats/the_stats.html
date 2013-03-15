@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block scriptin %}
+   <script type="text/javascript" src="{% static 'scripts/jquery.flot.js' %}"></script>
+   <script type="text/javascript" src="{% static 'scripts/jquery.flot.stack.js' %}"></script>
+   <script type="text/javascript" src="{% static 'scripts/stats/statloader.js'%}"></script>
+{% endblock scriptin %}
+
+{% block content %}
+<div id="population_by_class" style="width:550px;height:200px;"></div>
+
+<div id="population_by_school" style="width:550px;height:200px;"></div>
+{% endblock content %}

@@ -1,0 +1,21 @@
+@import "base";
+
+$padding_amount: .5em;
+
+#human_list {
+    float: right;
+    border: 1px solid $bg_red;
+
+    tr, th {
+        padding: $padding_amount;
+    }
+}
+
+#zombie_list {
+    float: left;
+    border: 1px solid $bg_green;
+
+    tr, th {
+        padding: $padding_amount;
+    }
+}

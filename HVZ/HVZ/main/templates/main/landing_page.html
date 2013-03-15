@@ -39,7 +39,11 @@
         {% endif %}
     </div>
     <div class='intro'>
-        <p>Humans vs. Zombies is a six-day real-time simulation of a zombie apocalypse.  Humans try to survive, and zombies try to infect/tag all humans.</p>
+        <p>
+            Humans vs. Zombies is a six-day real-time simulation of a zombie
+            apocalypse.  Humans try to survive, and zombies try to infect/tag
+            all humans.
+        </p>
     </div>
 {% endblock pre_logo %}
 
@@ -51,9 +55,11 @@
         <div class='time'>
             {{meal.time|date:"h:m a"}}
         </div>
-        <div class='loc'>
-            {{meal.location}}
-        </div>
+        {% if meal.location %}
+            <div class='loc'>
+                {{meal.location}}
+            </div>
+        {% endif %}
         <div class='meal'>
             {{meal.eater}} ate {{meal.eaten}}
         </div>

@@ -1,21 +1,38 @@
+import calendar
+import datetime
+
 from django import forms
+from django.conf import settings
 
 from HVZ.main.forms import FeedCodeField
 from HVZ.main.models import Building, Game
 from HVZ.feed.validators import human_with_code
 from HVZ.feed.widgets import SelectTimeWidget
 
-import calendar
-import datetime
-
 CAL = calendar.TextCalendar(firstweekday=6)
 
 
 def get_nearest_hour():
-    now = datetime.datetime.now()
+    now = settings.NOW()
     return datetime.datetime(
         now.year, now.month, now.day,
         now.hour,
+    )
+
+def weekday_choices():
+    """Returns a list of offsets from the start of the current game."""
+    try:
+        g = Game.imminent_game()
+    except Game.DoesNotExist:
+        return xrange(7)
+
+    # Bounds on when the meal can have occurred
+    start = g.start_date
+    end = min(settings.NOW().date(), g.end_date)
+
+    return (
+        (i, CAL.formatweekday((start+datetime.timedelta(days=i)).weekday(), 3))
+        for i in range((end-start).days+1)
     )
 
 
@@ -30,13 +47,8 @@ class MealForm(forms.Form):
     # given just one week to register feeds, only need to track
     # what day of week they ate.
     day = forms.ChoiceField(
-        choices=(
-            # only show days that are between start and end of current game
-            (i, CAL.formatweekday(i, 3)) for i in CAL.iterweekdays()
-            if i <= Game.imminent_game().end_date.weekday()
-            and i >= Game.imminent_game().start_date.weekday()
-        ),
-        initial=datetime.date.today().weekday,
+        choices=weekday_choices(),
+        initial=lambda: settings.NOW().date().weekday(),
     )
 
     time = forms.TimeField(
@@ -58,32 +70,30 @@ class MealForm(forms.Form):
         required=False,
     )
 
-    def clean_time(self):
-        try:
-            super(MealForm, self).clean_time()
-        except AttributeError:
-            pass
-
-        if (
-            self.cleaned_data['time'] > datetime.datetime.now().time() or
-            int(self.cleaned_data['day']) > datetime.date.today().weekday()
-        ):
-            raise forms.ValidationError("You can't eat in the future, bro.")
-
-        return self.cleaned_data['time']
-
     def clean(self, *args, **kwargs):
         cleaned_data = super(MealForm, self).clean(*args, **kwargs)
 
+        g = Game.imminent_game()
+
+        # Check that day and time exist
         if not 'day' in cleaned_data:
             raise forms.ValidationError("Somehow you didn't specify the day.")
 
-        game_end = Game.imminent_game().end_date
-        offset = (game_end.weekday() - int(cleaned_data['day'])) % 7
-        feed_date = game_end - datetime.timedelta(days=offset)
+        if not 'time' in cleaned_data:
+            raise forms.ValidationError("Somehow you didn't select a time.")
 
-        if feed_date < Game.imminent_game().start_date:
+        feed_date = g.start_date + datetime.timedelta(days=int(cleaned_data['day']))
+
+        if feed_date < g.start_date:
             raise forms.ValidationError("Can't have eaten before the game!")
-        cleaned_data['day'] = feed_date
 
+        if feed_date > g.end_date:
+            raise forms.ValidationError("Can't have eaten after the game ended!")
+
+        feed_time = datetime.datetime.combine(feed_date, cleaned_data['time'])
+
+        if feed_time > settings.NOW():
+            raise forms.ValidationError("You can't eat in the future, bro.")
+
+        cleaned_data['time'] = feed_time
         return cleaned_data

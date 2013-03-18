@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.forms import ValidationError
 from django.test.client import Client
 
 from HVZ.basetest import BaseTest, define_user
@@ -36,8 +35,11 @@ VICTIM = define_user({
 
 MEAL = {
     # eat one hour ago
-    "time": (datetime.now() - timedelta(hours=1)).strftime("%H:%M:%S"),
-    "day": datetime.today().weekday(),
+    "time": (settings.NOW() - timedelta(hours=1)).strftime("%H:%M:%S"),
+
+    # The basetest game started today.
+    "day": 0,
+
     "location": "208",
     "description": "I don't want to live on this planet anymore.",
     "feedcode": VICTIM["feed"],
@@ -118,20 +120,21 @@ class EatingTest(BaseTest):
 
     def test_invalid_time(self):
         """Ensure that eating times only occur within the game's timeline."""
-<<<<<<< HEAD
         yesterday = self._game_start - timedelta(days=1)
-=======
-        yesterday = settings.NOW() - timedelta(days=1)
->>>>>>> 15bac0f76bb4d979252cf655e270b79199d39397
 
         m = MEAL.copy()
         m['day'] = yesterday.weekday()
 
+        num_z = Player.objects.filter(team='Z').count()
+        self.assertEqual(Meal.objects.count(), 0)
+
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)
+        c.post(reverse("feed_eat"), m)
+
+        # Ensure that no meal was created, and no new zombies have spawned.
         self.assertEqual(Meal.objects.count(), 0)
-        self.assertRaises(ValidationError, c.post, reverse("feed_eat"), m)
-        self.assertEqual(Meal.objects.count(), 0)
+        self.assertEqual(Player.objects.filter(team='Z').count(), num_z)
 
     def test_double_eating(self):
         """Ensure a zombie can't eat the same victim twice."""

@@ -4,7 +4,7 @@ from markupfield import fields
 
 class BaseRule(models.Model):
     def __unicode__(self):
-        return self.title
+        return unicode(self.title)
 
     class Meta:
         abstract = True
@@ -13,10 +13,6 @@ class BaseRule(models.Model):
     title = models.CharField(max_length=100)
     body = fields.MarkupField(default_markup_type='markdown')
     position = models.PositiveIntegerField(default=0)
-
-
-    def __unicode__(self):
-        return u"{}".format(self.title)
 
 
 class CoreRule(BaseRule):

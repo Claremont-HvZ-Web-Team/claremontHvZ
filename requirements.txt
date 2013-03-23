@@ -3,4 +3,6 @@ Markdown==2.2.1
 PIL==1.1.7
 django-localflavor-us==1.0
 django-markupfield==1.0.2
+pybb==0.1.10
+pybbm==0.12.5
 wsgiref==0.1.2

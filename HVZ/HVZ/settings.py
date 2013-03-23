@@ -1,11 +1,11 @@
 # Django settings for the Claremont Humans versus Zombies project.
 
-import os
 import datetime
+import os
 
 import markdown
 
-from django.utils import html
+from django.utils import timezone, html
 
 import local_settings
 
@@ -221,6 +221,15 @@ INSTALLED_APPS = (
 )
 
 # App-specific settings below:
+
+# Forum settings
+PYBB_DEFAULT_MARKUP = None
+PYBB_SIGNATURE_MAX_LENGTH = 50
+kPYBB_DEFAULT_TIME_ZONE = -8
+
+# Callables that return the "current" date and time.
+# Can be overridden in local_settings or tests to return a fixed point in time.
+NOW = local_settings.NOW or timezone.now
 
 # The length of a feed code.
 FEED_LEN = 5

@@ -1,18 +1,19 @@
+import calendar
+import datetime
+
 from django import forms
+from django.conf import settings
 
 from HVZ.main.forms import FeedCodeField
 from HVZ.main.models import Building, Game
 from HVZ.feed.validators import human_with_code
 from HVZ.feed.widgets import SelectTimeWidget
 
-import calendar
-import datetime
-
 CAL = calendar.TextCalendar(firstweekday=6)
 
 
 def get_nearest_hour():
-    now = datetime.datetime.now()
+    now = settings.NOW()
     return datetime.datetime(
         now.year, now.month, now.day,
         now.hour,
@@ -36,7 +37,7 @@ class MealForm(forms.Form):
             if i <= Game.imminent_game().end_date.weekday()
             and i >= Game.imminent_game().start_date.weekday()
         ),
-        initial=datetime.date.today().weekday,
+        initial=lambda: settings.NOW().date().weekday(),
     )
 
     time = forms.TimeField(
@@ -66,7 +67,7 @@ class MealForm(forms.Form):
 
         if (
             self.cleaned_data['time'] > datetime.datetime.now().time() or
-            int(self.cleaned_data['day']) > datetime.date.today().weekday()
+            int(self.cleaned_data['day']) > settings.NOW().date().weekday()
         ):
             raise forms.ValidationError("You can't eat in the future, bro.")
 
@@ -86,4 +87,5 @@ class MealForm(forms.Form):
             raise forms.ValidationError("Can't have eaten before the game!")
         cleaned_data['day'] = feed_date
 
+        cleaned_data['time'] = feed_time
         return cleaned_data

@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError
 from django.test.client import Client
@@ -35,8 +36,8 @@ VICTIM = define_user({
 
 MEAL = {
     # eat one hour ago
-    "time": (datetime.now() - timedelta(hours=1)).strftime("%H:%M:%S"),
-    "day": datetime.today().weekday(),
+    "time": (settings.NOW() - timedelta(hours=1)).strftime("%H:%M:%S"),
+    "day": settings.NOW().date().weekday(),
     "location": "208",
     "description": "I don't want to live on this planet anymore.",
     "feedcode": VICTIM["feed"],

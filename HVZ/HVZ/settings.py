@@ -169,9 +169,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'pybb.middleware.PybbMiddleware',
 )
 
 ROOT_URLCONF = 'HVZ.urls'
+AUTH_PROFILE_MODULE = 'pybb.Profile'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or
@@ -190,6 +192,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
     "HVZ.main.context_processors.inject_outbreak_percentage",
+    'pybb.context_processors.processor',
 )
 
 INSTALLED_APPS = (
@@ -197,12 +200,19 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    # 'tinymce',
+    'pybb',
+    'pytils',
+    'sorl.thumbnail',
+    'pure_pagination',
+
     'HVZ.main',
     'HVZ.feed',
     'HVZ.players',
@@ -212,6 +222,11 @@ INSTALLED_APPS = (
 )
 
 # App-specific settings below:
+
+# Forum settings
+PYBB_DEFAULT_MARKUP = None
+PYBB_SIGNATURE_MAX_LENGTH = 50
+kPYBB_DEFAULT_TIME_ZONE = -8
 
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.

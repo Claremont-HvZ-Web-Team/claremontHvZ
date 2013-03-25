@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from django.core import management
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.test.client import Client
 from django.test.utils import override_settings

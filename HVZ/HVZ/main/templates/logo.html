@@ -15,8 +15,8 @@
                 <li><a href="/forum">Forums</a></li>
                 <li><a href="{% url 'player_list' %}">Players</a></li>
                 <li><a href="{% url 'plot_list' %}">Missions</a></li>
+                <li><a href="{% url 'stats_list' %}">Stats</a></li>
               {% comment %}
-                <li><a href="">Status</a></li>
                 <li><a href="">Timeline</a></li>
               {% endcomment %}
                 {% if request.user.isMod %}

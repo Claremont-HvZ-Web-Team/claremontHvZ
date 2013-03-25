@@ -218,6 +218,7 @@ INSTALLED_APPS = (
     'HVZ.players',
     'HVZ.rules',
     'HVZ.missions',
+    'HVZ.stats',
 )
 
 # App-specific settings below:

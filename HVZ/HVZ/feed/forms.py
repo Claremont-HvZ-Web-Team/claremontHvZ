@@ -29,15 +29,18 @@ class MealForm(forms.Form):
 
     # given just one week to register feeds, only need to track
     # what day of week they ate.
-    day = forms.ChoiceField(
-        choices=(
-            # only show days that are between start and end of current game
-            (i, CAL.formatweekday(i, 3)) for i in CAL.iterweekdays()
-            if i <= Game.imminent_game().end_date.weekday()
-            and i >= Game.imminent_game().start_date.weekday()
-        ),
-        initial=datetime.date.today().weekday,
-    )
+    try:
+        day = forms.ChoiceField(
+            choices=(
+                # only show days that are between start and end of current game
+                (i, CAL.formatweekday(i, 3)) for i in CAL.iterweekdays()
+                if i <= Game.imminent_game().end_date.weekday()
+                and i >= Game.imminent_game().start_date.weekday()
+            ),
+            initial=datetime.date.today().weekday,
+        )
+    except Game.DoesNotExist:
+        pass
 
     time = forms.TimeField(
         required=True,

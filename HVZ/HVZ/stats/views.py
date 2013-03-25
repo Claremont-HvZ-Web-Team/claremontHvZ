@@ -56,3 +56,11 @@ class JSONPlayerStats(JSONResponseMixin, BaseListView):
     #     return context
     def get_queryset(self):
         return Player.objects.all().filter(game=Game.imminent_game())
+
+    def convert_context_to_json(self, context):
+
+        players = context[self.FIELD_NAME]
+
+
+
+        return super(JSONPlayerStats, self).convert_context_to_json(context)

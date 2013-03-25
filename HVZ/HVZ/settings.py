@@ -207,25 +207,28 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    # 'tinymce',
-    'pybb',
-    'pytils',
-    'sorl.thumbnail',
-    'pure_pagination',
+#    'pytils',
+#    'sorl.thumbnail',
+#    'pure_pagination',
 
     'HVZ.main',
     'HVZ.feed',
     'HVZ.players',
     'HVZ.rules',
     'HVZ.missions',
+    'HVZ.forum',
+
+    'pybb',
 )
 
 # App-specific settings below:
 
-# Forum settings
-PYBB_DEFAULT_MARKUP = None
-PYBB_SIGNATURE_MAX_LENGTH = 50
-kPYBB_DEFAULT_TIME_ZONE = -8
+# Verbose names for the teams
+VERBOSE_TEAMS = {
+    'H': "Humans",
+    'Z': "Zombies",
+    'B': "Both Teams",
+}
 
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
@@ -248,3 +251,18 @@ START_TIMES = {
     'D': datetime.time(hour=7),
     'N': datetime.time(hour=17),
 }
+
+# Forum settings!
+
+# Importing this earlier causes errors...
+import HVZ.forum.permissions
+
+# Hardcoded forums and categories. Players can only see a forum with
+# their team name (or the "both teams" forum)
+CATEGORIES = ("General",)
+FORUMS = VERBOSE_TEAMS.values()
+
+PYBB_DEFAULT_MARKUP = None
+PYBB_SIGNATURE_MAX_LENGTH = 50
+PYBB_DEFAULT_TIME_ZONE = -8
+PYBB_PERMISSION_HANDLER = HVZ.forum.permissions.ForumPermissionHandler

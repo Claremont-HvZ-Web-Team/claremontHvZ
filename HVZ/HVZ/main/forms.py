@@ -118,7 +118,6 @@ class RegisterForm(forms.ModelForm):
                   'grad_year',
                   'cell',
                   'can_oz',
-                  'can_c3',
                   'feed',
         )
 

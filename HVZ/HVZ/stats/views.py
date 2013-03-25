@@ -86,40 +86,43 @@ class JSONPlayerStats(JSONResponseMixin, BaseListView):
             ],
         }
 
+        dorms = Building.objects.filter(building_type="D").order_by("name").values('id', 'name')
+        dorm_ordering = list(b['id'] for b in dorms)
+        dorm_name_ordering = list(b['name'] for b in dorms)
         axis_lookup = {
-            'grad_year': {},
-            'dorm': dict(enumerate(Building.objects.filter(building_type='D').order_by('name').values_list('name', flat=True))),
+            'grad_year': {},  # 2013, etc.
+            'dorm': dict(enumerate(dorm_name_ordering)),  # 0: Atwood Dorm, etc.
             'school': {d['id']: d['name'] for d in School.objects.order_by('name').values('id', 'name')},
         }
 
-        dorm_id_to_axis_number = dict((t[::-1] for t in enumerate(Building.objects.filter(building_type='D').order_by('name').values_list('id', flat=True))))
-        print dorm_id_to_axis_number
+
         for item in actual:
             index = 0 if item['team'] == "Z" else 1
+
             if item['grad_year']:
                 axis_lookup['grad_year'].setdefault(item['grad_year'], str(item['grad_year']))
+
             for key in aggregates:
                 if item[key]:
                     try:
                         if key == 'dorm':
-                            aggregates[key][index]['data'][dorm_id_to_axis_number[item[key]]] += 1
+                            aggregates[key][index]['data'][dorm_ordering.index(item[key])] += 1
                         else:
                             aggregates[key][index]['data'][item[key]] += 1
                     except KeyError:
                         continue
 
-        # convert all data dicts to arrays
         aggregates['ticks'] = axis_lookup
+        # convert all data dicts to arrays
         for key in aggregates:
             if key == "ticks":
                 for tick_set in aggregates[key]:
-                    print aggregates[key][tick_set]
                     aggregates[key][tick_set] = [[int(_id), val] for _id, val in aggregates[key][tick_set].items()]
                 continue
             for data_set in aggregates[key]:
                 if key == 'dorm':
-                    data_set['data'] = [[val, key] for key, val in data_set['data'].items()]
+                    # flip dorm data series for horizontal bars
+                    data_set['data'] = [[val, dkey] for dkey, val in data_set['data'].items()]
                 else:
-                    data_set['data'] = [[key, val] for key, val in data_set['data'].items()]
-
+                    data_set['data'] = [[dkey, val] for dkey, val in data_set['data'].items()]
         return aggregates

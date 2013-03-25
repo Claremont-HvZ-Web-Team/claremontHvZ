@@ -82,13 +82,13 @@ class RegisterForm(forms.ModelForm):
 
     grad_year = forms.IntegerField(required=True)
 
-    cell = USPhoneNumberField(
-        label=_("Cell Number"),
-        required=False,
-        help_text=_("If you want to be able to text message the game's website "
-                    "enter in your phone number here. We will not use this "
-                    "number except in response to texts from you.")
-    )
+    # cell = USPhoneNumberField(
+    #     label=_("Cell Number"),
+    #     required=False,
+    #     help_text=_("If you want to be able to text message the game's website "
+    #                 "enter in your phone number here. We will not use this "
+    #                 "number except in response to texts from you.")
+    # )
 
     can_oz = forms.BooleanField(
         label=_("OZ Pool"),

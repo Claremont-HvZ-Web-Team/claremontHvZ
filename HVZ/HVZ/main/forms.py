@@ -97,13 +97,6 @@ class RegisterForm(forms.ModelForm):
                     "the zombie curse.")
     )
 
-    can_c3 = forms.BooleanField(
-        label=_("C3 Pool"),
-        required=False,
-        help_text=_("Check this box if you would like to begin as a member of "
-                    "C3.")
-    )
-
     feed = FeedCodeField(
         label="Feed Code",
         required=True,

@@ -37,7 +37,7 @@ $(function () {
             var dorm_options = {
                 series: {stack: true,
                          lines: {show: false, steps: false },
-                         bars: {show: true, barWidth: 0.9, align: 'center', horizontal:true},},
+                         bars: {show: true, barWidth: 0.8, align: 'center', horizontal:true},},
                 yaxis: {
                     ticks: data.ticks.dorm
                 }

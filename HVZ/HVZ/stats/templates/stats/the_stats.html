@@ -7,8 +7,14 @@
    <script type="text/javascript" src="{% static 'scripts/stats/statloader.js'%}"></script>
 {% endblock scriptin %}
 
-{% block content %}
-<div id="population_by_class" style="width:550px;height:200px;"></div>
 
-<div id="population_by_school" style="width:550px;height:200px;"></div>
+{% block content %}
+<h1>Population by Graduation Year</h1>
+<div id="population_by_class" style="width:100%;height:300px;"></div>
+
+<h1>Population by School</h1>
+<div id="population_by_school" style="width:100%;height:300px;"></div>
+
+<h1>Population by Dorm</h1>
+<div id="population_by_dorm" style="width:100%;height:900px;"></div>
 {% endblock content %}

@@ -18,7 +18,6 @@ HUGH_MANN = define_user({
         "dorm": "208",
         "grad_year": "2013",
         "cell": "1234567890",
-        "can_c3": "on",
         "feed": "PLANS",
 })
 

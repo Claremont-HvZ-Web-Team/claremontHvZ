@@ -18,6 +18,7 @@ urlpatterns = patterns(
 
     url(r'^missions/', include('HVZ.missions.urls')),
     url(r'^players/', include('HVZ.players.urls')),
+    url(r'^stats/', include('HVZ.stats.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -32,7 +33,7 @@ urlpatterns = patterns(
 if settings.DEBUG:
     urlpatterns += patterns(
         '',
-        url('^media/(?P<path>.*)$', 'django.views.static.serve', {
+        url('^static/(?P<path>.*)$', 'django.views.static.serve', {
                 'document_root': settings.STATIC_ROOT,
                 }),
         )

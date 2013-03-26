@@ -96,6 +96,15 @@ nav {
     z-index: 100;
 }
 
+@-moz-document url-prefix("http://") {
+    #logo.big {
+        margin-top: -158px;
+    }
+    #logo:not(.big) {
+        margin-top: -32px;
+    }
+}
+
 .spacer {
     display: block;
     height: 5px;

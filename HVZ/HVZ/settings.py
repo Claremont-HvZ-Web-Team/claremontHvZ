@@ -203,11 +203,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    # 'tinymce',
+
     'pybb',
     'pytils',
     'sorl.thumbnail',
@@ -218,6 +216,7 @@ INSTALLED_APPS = (
     'HVZ.players',
     'HVZ.rules',
     'HVZ.missions',
+    'HVZ.stats',
 )
 
 # App-specific settings below:
@@ -225,7 +224,7 @@ INSTALLED_APPS = (
 # Forum settings
 PYBB_DEFAULT_MARKUP = None
 PYBB_SIGNATURE_MAX_LENGTH = 50
-kPYBB_DEFAULT_TIME_ZONE = -8
+PYBB_DEFAULT_TIME_ZONE = -8
 
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
@@ -235,7 +234,7 @@ NOW = local_settings.NOW or timezone.now
 FEED_LEN = 5
 
 # The characters we allow in a feed code.
-VALID_CHARS = ["A", "C", "E", "L", "K", "N", "P", "Q", "S", "T", "W", "Z"]
+VALID_CHARS = ["A", "C", "E", "L", "X", "N", "P", "O", "S", "T", "W", "Z"]
 
 MARKUP_FIELD_TYPES = (
     ('markdown', markdown.markdown),

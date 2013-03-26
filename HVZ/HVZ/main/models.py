@@ -173,7 +173,6 @@ class Player(models.Model):
     grad_year = models.PositiveIntegerField(blank=True, null=True)
 
     can_oz = models.BooleanField(default=False)
-    can_c3 = models.BooleanField(default=False)
 
     feed = FeedCodeField()
 

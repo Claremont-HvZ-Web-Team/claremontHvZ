@@ -116,7 +116,6 @@ class RegisterForm(forms.ModelForm):
                   'school',
                   'dorm',
                   'grad_year',
-                  'cell',
                   'can_oz',
                   'feed',
         )

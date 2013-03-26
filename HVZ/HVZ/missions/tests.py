@@ -30,7 +30,7 @@ ROB_ZOMBIE = define_user({
         "grad_year": "2013",
         "cell": "1234567890",
         "can_oz": "on",
-        "feed": "SNEAK"
+        "feed": "SNEAX"
 })
 
 MISSION = Mission(

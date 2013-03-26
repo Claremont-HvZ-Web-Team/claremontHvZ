@@ -248,3 +248,5 @@ START_TIMES = {
     'D': datetime.time(hour=7),
     'N': datetime.time(hour=17),
 }
+
+WSGI_APPLICATION = 'passenger_wsgi.application'

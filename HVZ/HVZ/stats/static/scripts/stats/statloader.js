@@ -1,7 +1,7 @@
 $(function () {
 
     $.getJSON(
-        '/stats/json/players',
+        '/status/json/players',
         function(data, status, jqXHR) {
             abort = false;
             console.log("successful stat GET");

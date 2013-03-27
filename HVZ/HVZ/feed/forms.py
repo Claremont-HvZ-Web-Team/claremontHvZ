@@ -12,6 +12,14 @@ from HVZ.feed.widgets import SelectTimeWidget
 CAL = calendar.TextCalendar(firstweekday=6)
 
 
+def get_offset():
+    """Return the number of days since game start."""
+    try:
+        g = Game.imminent_game()
+    except Game.DoesNotExist:
+        return 0
+    return (settings.NOW().date() - g.start_date).days
+
 def get_nearest_hour():
     now = settings.NOW()
     return datetime.datetime(
@@ -48,7 +56,7 @@ class MealForm(forms.Form):
     # what day of week they ate.
     day = forms.ChoiceField(
         choices=weekday_choices(),
-        initial=lambda: settings.NOW().date().weekday(),
+        initial=get_offset
     )
 
     time = forms.TimeField(

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
@@ -30,14 +29,8 @@ class LandingPage(TemplateView):
                     eater__game=Game.games(started=True).latest(),
                 ).order_by('-time')[:20])
         except Game.DoesNotExist:
-            context['latest_meals'] = [
-                {
-                    'time': settings.NOW(),
-                    'eater': "ZombieJohn{}".format(x),
-                    'eaten': "HumanGreg{}".format(x),
-                    'location': None if x % 2 else "HOCH",
-                } for x in range(15)
-            ]
+            context['latest_meals'] = []
+
         return context
 
 

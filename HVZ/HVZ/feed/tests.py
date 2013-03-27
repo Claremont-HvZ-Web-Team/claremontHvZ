@@ -18,7 +18,7 @@ ROB_ZOMBIE = define_user({
     "grad_year": "2013",
     "cell": "1234567890",
     "can_oz": "on",
-    "feed": "SNEAK"
+    "feed": "SNEAX"
 })
 
 VICTIM = define_user({
@@ -120,13 +120,13 @@ class EatingTest(BaseTest):
 
     def test_invalid_time(self):
         """Ensure that eating times only occur within the game's timeline."""
-        yesterday = self._game_start - timedelta(days=1)
-
-        m = MEAL.copy()
-        m['day'] = yesterday.weekday()
+        g = Game.imminent_game()
 
         num_z = Player.objects.filter(team='Z').count()
         self.assertEqual(Meal.objects.count(), 0)
+
+        m = MEAL.copy()
+        m['day'] = -1
 
         c = Client()
         c.post(reverse("login"), ROB_ZOMBIE)

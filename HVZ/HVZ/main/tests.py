@@ -18,7 +18,6 @@ HUGH_MANN = define_user({
         "dorm": "208",
         "grad_year": "2013",
         "cell": "1234567890",
-        "can_c3": "on",
         "feed": "PLANS",
 })
 
@@ -92,12 +91,12 @@ class SignupTest(BaseTest):
         """Ensure feedcodes with invalid characters throw error messages."""
 
         d = HUGH_MANN.copy()
-        d["feed"] = "XKXKX"
+        d["feed"] = "XYXYX"
 
         c = Client()
         self.login_as_tabler(c)
         response = c.post(reverse("register"), d)
-        self.assertFormError(response, "form", "feed", "X is not a valid character.")
+        self.assertFormError(response, "form", "feed", "Y is not a valid character.")
 
     def test_feed_length(self):
         """Ensure a feedcode must have the correct length."""

@@ -36,6 +36,7 @@ if (window.addEventListener) {
 <div id="shortcuts">
     <ul>
         <li><h2><a href="#core">Core</a></h2></li>
+        <li><h2><a href="#location">Location</a></h2></li>
         <li><h2><a href="#class">Class</a></li>
         <li><h2><a href="#special">Special Infected</a></h2></li>
     </ul>
@@ -43,7 +44,7 @@ if (window.addEventListener) {
 
 <div class="intro">
 <p>
-    Each semester Claremont HvZ organizes a 5 day game of moderated tag called
+    Each semester, Claremont HvZ organizes a 5 day game of moderated tag called
     Humans Vs. Zombies. The game involves both “human” and “zombie” players.
     Zombies attempt to tag humans. Humans defend themselves against zombies by
     tagging zombies either with a dart fired from a foam dart blaster or a thrown
@@ -59,7 +60,7 @@ if (window.addEventListener) {
 </p>
 
 <p>
-    Non-players can identify participants by the purple colored bandanas they
+    Non-players can identify participants by the colored bandanas they
     wear on their arms/head. Participants have strict instructions not to
     interfere with non-players, and the Claremont HvZ moderation team has
     designed a rule set in conjunction with the administrations at each of the
@@ -79,6 +80,14 @@ if (window.addEventListener) {
 <a name="core"></a>
 {% for r in core %}
   <div id="core_{{r.id}}" class="corerule">
+    <h1>{{r.title}}</h1>
+    {{ r.body.rendered|safe }}
+  </div>
+{% endfor %}
+
+<a name="location"></a>
+{% for r in locations %}
+  <div id="class_{{r.id}}" class="locationrule">
     <h1>{{r.title}}</h1>
     {{ r.body.rendered|safe }}
   </div>

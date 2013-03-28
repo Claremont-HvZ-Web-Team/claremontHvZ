@@ -8,7 +8,7 @@ def create_forums(sender, **kwargs):
     for category_name in settings.CATEGORIES:
         c, created = pybb.models.Category.objects.get_or_create(name=category_name)
         if created:
-            self.stdout.write('Created category "{}"'.format(c.name))
+            print('Created category "{}"'.format(c.name))
 
         for forum_name in settings.FORUMS:
             pybb.models.Forum.objects.get_or_create(category=c, name=forum_name)

@@ -9,7 +9,7 @@ class PlayerListView(ListView):
     template_name = 'players/player_list.html'
 
     def get_queryset(self):
-        game = Game.imminent_game()
+        game = Game.nearest_game()
         return (Player.objects.filter(game=game).
                 select_related('user').
                 annotate(meal_count=Count('meal_set')))

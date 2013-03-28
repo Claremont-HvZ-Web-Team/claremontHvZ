@@ -1,9 +1,11 @@
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.conf import settings
 
 from pybb.permissions import DefaultPermissionHandler
 
 from HVZ.main.models import Player
+
 
 class ForumPermissionHandler(DefaultPermissionHandler):
 
@@ -14,11 +16,15 @@ class ForumPermissionHandler(DefaultPermissionHandler):
     """
 
     def filter_forums(self, user, qs):
-
-        return qs.filter(name="OOGA")
         """Players should not be able to see the other team's forums."""
 
-        vb_team = settings.VERBOSE_TEAMS[Player.user_to_player(user).team]
+        if not user.is_authenticated():
+            raise PermissionDenied("You are not logged in!")
+
+        try:
+            vb_team = settings.VERBOSE_TEAMS[Player.user_to_player(user).team]
+        except Player.DoesNotExist:
+            raise PermissionDenied("You are not in this game!")
 
         # Display the forums for our team or both teams.
         both_or_ours = Q(name=vb_team) | Q(name=settings.VERBOSE_TEAMS['B'])
@@ -28,7 +34,7 @@ class ForumPermissionHandler(DefaultPermissionHandler):
         """Players should not be able to access the other team's forums."""
 
         # Check if the forum allows both teams.
-        if forum.name != VERBOSE_TEAMS['B']:
+        if forum.name == settings.VERBOSE_TEAMS['B']:
             return super(ForumPermissionHandler, self).may_view_forum(user, forum)
 
         # Compare the forum's name to the player's team.

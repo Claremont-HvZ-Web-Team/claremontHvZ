@@ -9,6 +9,7 @@ from django.test.utils import override_settings
 from HVZ.basetest import BaseTest, define_user
 from HVZ.main import models, forms
 
+
 HUGH_MANN = define_user({
         "first_name": "Hugh",
         "last_name": "Mann",
@@ -205,6 +206,31 @@ class SignupTest(BaseTest):
         self.assertEqual(u.first_name, d["first_name"])
         self.assertEqual(u.last_name, d["last_name"])
         self.assertNotEqual(u.password, old_password)
+
+    def test_long_email(self):
+        """Ensure someone with a long email address can register and log in."""
+
+        LONG_EMAIL = "thisisareallylongemailaddress@scrippscollege.edu"
+
+        d = HUGH_MANN.copy()
+        d['email'] = LONG_EMAIL
+
+        # Check assumptions
+        self.assertEqual(models.Player.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 1)
+
+        # Test registration
+        c = Client()
+        self.login_as_tabler(c)
+        response = c.post(reverse('register'), d, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.Player.objects.count(), 1)
+        self.assertEqual(User.objects.count(), 2)
+
+        # Test login
+        response = c.post(reverse('login'), d, follow=True)
+        self.assertEqual(response.status_code, 200)
+
 
 class RandomPlayerTest(BaseTest):
 

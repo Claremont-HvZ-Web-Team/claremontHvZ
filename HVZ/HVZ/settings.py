@@ -172,6 +172,11 @@ MIDDLEWARE_CLASSES = (
     'pybb.middleware.PybbMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'HVZ.main.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 ROOT_URLCONF = 'HVZ.urls'
 AUTH_PROFILE_MODULE = 'pybb.Profile'
 

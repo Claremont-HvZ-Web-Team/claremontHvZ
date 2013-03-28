@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 #from django_localflavor_us.forms import USPhoneNumberField
@@ -124,7 +125,13 @@ class RegisterForm(forms.ModelForm):
         """Ensure that a user does not register twice for the same game."""
         email = self.cleaned_data['email']
 
-        if Player.current_players().filter(user__username=email).exists():
+        # Check both username and email because we're using both
+        # fields for the same purpose... slice is there because
+        # Django's builtin username field has a limit of 30
+        # characters.
+        if Player.current_players().filter(
+               Q(user__username=email[:30]) | Q(user__email=email)
+           ).exists():
             raise ValidationError(self.error_messages['duplicate_user'])
 
         return email
@@ -164,9 +171,12 @@ class RegisterForm(forms.ModelForm):
             user.set_password(password)
 
         except User.DoesNotExist:
+
+            # Slice is there because of a 30 character limit on
+            # usernames... we need a custom user model in the future.
             user = User.objects.create_user(
                 email=email,
-                username=email,
+                username=email[:30],
                 password=password,
             )
 

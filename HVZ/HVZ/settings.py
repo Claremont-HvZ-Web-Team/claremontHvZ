@@ -169,6 +169,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'HVZ.main.middleware.Http403Middleware',
     'pybb.middleware.PybbMiddleware',
 )
 

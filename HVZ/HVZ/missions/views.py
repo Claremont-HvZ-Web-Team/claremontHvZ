@@ -21,7 +21,7 @@ class PlotListView(ListView, PlayerAwareMixin):
         return super(PlotListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        game = Game.imminent_game()
+        game = Game.nearest_game()
         team = self.player.team
         return Plot.get_visible(game, team).select_related('mission')
 

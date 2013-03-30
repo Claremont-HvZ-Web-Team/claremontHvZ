@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import pre_delete
 
 from HVZ.main.models import Player, Building
 from HVZ.main import validators
@@ -39,3 +40,11 @@ class Meal(models.Model):
         self.eaten.team = "Z"
         self.eaten.save()
         return super(Meal, self).save()
+
+    @staticmethod
+    def undo(sender, instance, using, **kwargs):
+        """Turn the eaten player back into a human by deleting a meal."""
+        instance.eaten.team = "H"
+        instance.eaten.save()
+
+pre_delete.connect(Meal.undo, sender=Meal)

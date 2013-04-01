@@ -23,7 +23,7 @@ urlpatterns = patterns(
 
     url(r'^missions/', include('HVZ.missions.urls')),
     url(r'^players/', include('HVZ.players.urls')),
-    url(r'^stats/', include('HVZ.stats.urls')),
+    url(r'^status/', include('HVZ.stats.urls')),
 
     # mobile site does not exist. redirect to same page, hopefully with
     # responsive design shit.
@@ -42,7 +42,7 @@ urlpatterns = patterns(
 if settings.DEBUG:
     urlpatterns += patterns(
         '',
-        url('^media/(?P<path>.*)$', 'django.views.static.serve', {
+        url('^static/(?P<path>.*)$', 'django.views.static.serve', {
                 'document_root': settings.STATIC_ROOT,
                 }),
         )

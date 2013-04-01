@@ -18,7 +18,7 @@ ROB_ZOMBIE = define_user({
     "grad_year": "2013",
     "cell": "1234567890",
     "can_oz": "on",
-    "feed": "SNEAK"
+    "feed": "SNEAX"
 })
 
 VICTIM = define_user({
@@ -87,6 +87,24 @@ class PermissionTest(BaseTest):
         response = c.get(reverse("feed_eat"))
         self.assertEqual(response.status_code, 200)
 
+    def test_active_game_required(self):
+        """No one should access the feed page before the game has started."""
+
+        now = settings.NOW()
+
+        # Before the start of the game
+        with self.settings(NOW=lambda:now-timedelta(5)):
+
+            # Let Rob be a zombie
+            z = Player.objects.filter(user__email=ROB_ZOMBIE["email"]).get()
+            z.team = "Z"
+            z.save()
+
+            c = Client()
+            c.post(reverse("login"), ROB_ZOMBIE)
+            response = c.get(reverse("feed_eat"))
+            self.assertEqual(response.status_code, 403)
+
 
 class EatingTest(BaseTest):
     def setUp(self):
@@ -120,7 +138,6 @@ class EatingTest(BaseTest):
 
     def test_invalid_time(self):
         """Ensure that eating times only occur within the game's timeline."""
-        g = Game.imminent_game()
 
         num_z = Player.objects.filter(team='Z').count()
         self.assertEqual(Meal.objects.count(), 0)
@@ -171,6 +188,24 @@ class EatingTest(BaseTest):
         # We should have eaten the victim twice.
         self.assertEqual(Meal.objects.count(), 2)
         self.assertEqual(get_victim().team, "Z")
+
+    def test_meal_deletion(self):
+        c = Client()
+        c.post(reverse("login"), ROB_ZOMBIE)
+
+        c.post(reverse("feed_eat"), MEAL)
+
+        # Make sure the meal happened
+        self.assertEqual(Meal.objects.count(), 1)
+        self.assertEqual(Player.objects.filter(team='Z').count(), 2)
+        self.assertEqual(Player.objects.get(user__username=VICTIM['email']).team, 'Z')
+
+        # Undo the meal
+        Meal.objects.get().delete()
+
+        self.assertEqual(Meal.objects.count(), 0)
+        self.assertEqual(Player.objects.filter(team='Z').count(), 1)
+        self.assertEqual(Player.objects.get(user__username=VICTIM['email']).team, 'H')
 
 
 class MultiGame(BaseTest):

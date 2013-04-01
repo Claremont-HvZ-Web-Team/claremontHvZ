@@ -147,6 +147,14 @@ class Game(models.Model):
         except IndexError:
             raise Game.DoesNotExist
 
+    @classmethod
+    def nearest_game(cls):
+        """Returns the next Game, if one exists. Otherwise returns the last one."""
+        try:
+            return cls.imminent_game()
+        except Game.DoesNotExist:
+            return cls.objects.latest()
+
     class Meta:
         get_latest_by = "start_date"
 
@@ -173,7 +181,6 @@ class Player(models.Model):
     grad_year = models.PositiveIntegerField(blank=True, null=True)
 
     can_oz = models.BooleanField(default=False)
-    can_c3 = models.BooleanField(default=False)
 
     feed = FeedCodeField()
 

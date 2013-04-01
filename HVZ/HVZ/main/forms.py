@@ -1,8 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from django_localflavor_us.forms import USPhoneNumberField
+#from django_localflavor_us.forms import USPhoneNumberField
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
@@ -82,26 +83,19 @@ class RegisterForm(forms.ModelForm):
 
     grad_year = forms.IntegerField(required=True)
 
-    cell = USPhoneNumberField(
-        label=_("Cell Number"),
-        required=False,
-        help_text=_("If you want to be able to text message the game's website "
-                    "enter in your phone number here. We will not use this "
-                    "number except in response to texts from you.")
-    )
+    # cell = USPhoneNumberField(
+    #     label=_("Cell Number"),
+    #     required=False,
+    #     help_text=_("If you want to be able to text message the game's website "
+    #                 "enter in your phone number here. We will not use this "
+    #                 "number except in response to texts from you.")
+    # )
 
     can_oz = forms.BooleanField(
         label=_("OZ Pool"),
         required=False,
         help_text=_("Check this box if you would like to begin afflicted with "
                     "the zombie curse.")
-    )
-
-    can_c3 = forms.BooleanField(
-        label=_("C3 Pool"),
-        required=False,
-        help_text=_("Check this box if you would like to begin as a member of "
-                    "C3.")
     )
 
     feed = FeedCodeField(
@@ -123,9 +117,7 @@ class RegisterForm(forms.ModelForm):
                   'school',
                   'dorm',
                   'grad_year',
-                  'cell',
                   'can_oz',
-                  'can_c3',
                   'feed',
         )
 
@@ -133,7 +125,13 @@ class RegisterForm(forms.ModelForm):
         """Ensure that a user does not register twice for the same game."""
         email = self.cleaned_data['email']
 
-        if Player.current_players().filter(user__username=email).exists():
+        # Check both username and email because we're using both
+        # fields for the same purpose... slice is there because
+        # Django's builtin username field has a limit of 30
+        # characters.
+        if Player.current_players().filter(
+               Q(user__username=email[:30]) | Q(user__email=email)
+           ).exists():
             raise ValidationError(self.error_messages['duplicate_user'])
 
         return email
@@ -173,9 +171,12 @@ class RegisterForm(forms.ModelForm):
             user.set_password(password)
 
         except User.DoesNotExist:
+
+            # Slice is there because of a 30 character limit on
+            # usernames... we need a custom user model in the future.
             user = User.objects.create_user(
                 email=email,
-                username=email,
+                username=email[:30],
                 password=password,
             )
 

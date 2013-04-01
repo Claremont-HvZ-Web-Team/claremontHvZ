@@ -17,7 +17,6 @@ HUGH_MANN = define_user({
         "dorm": "208",
         "grad_year": "2013",
         "cell": "1234567890",
-        "can_c3": "on",
         "feed": "PLANS",
 })
 
@@ -31,7 +30,7 @@ ROB_ZOMBIE = define_user({
         "grad_year": "2013",
         "cell": "1234567890",
         "can_oz": "on",
-        "feed": "SNEAK"
+        "feed": "SNEAX"
 })
 
 MISSION = Mission(

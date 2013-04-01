@@ -27,11 +27,8 @@ textarea {
     width: 1100px;
 }
 
-
+$container_width: 1000px;
 .container {
-    @media screen and (min-width: $min_full_page_width){
-        $container_width: 1000px;
-    }
     margin: 0 auto;
     width: $container_width;
 

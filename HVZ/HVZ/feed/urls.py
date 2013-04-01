@@ -15,5 +15,5 @@ urlpatterns = patterns('HVZ.feed.views',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', EatView.as_view(), name="feed_eat"),
+    url(r'^(?P<feedcode>[A-Z]+)?$', EatView.as_view(), name="feed_eat"),
 )

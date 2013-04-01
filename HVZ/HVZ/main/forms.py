@@ -76,7 +76,7 @@ class RegisterForm(forms.ModelForm):
     )
 
     dorm = forms.ModelChoiceField(
-        queryset=Building.dorms(),
+        queryset=Building.dorms().order_by("name"),
         required=True,
         empty_label=_("Select a dorm"),
     )

@@ -57,7 +57,7 @@ class JSONPlayerStats(JSONResponseMixin, BaseListView):
     # def get_context_data(self, *args, **kwargs):
     #     context = super(JSONPlayerStats, self).get_context_data(*args, **kwargs)
 
-    #     context['objects'] = Player.objects.all().filter(game=Game.imminent_game()).values(
+    #     context['objects'] = Player.objects.all().filter(game=Game.nearest_game()).values(
     #         'team',
     #         'grad_year',
     #         'school',
@@ -66,7 +66,7 @@ class JSONPlayerStats(JSONResponseMixin, BaseListView):
 
     #     return context
     def get_queryset(self):
-        return Player.objects.all().filter(game=Game.imminent_game())
+        return Player.objects.all().filter(game=Game.nearest_game())
 
     def raw_serialization(self, context):
         actual = super(JSONPlayerStats, self).raw_serialization(context)

@@ -1,8 +1,9 @@
-from django.core.exceptions import PermissionDenied, ImproperlyConfigured
+from django.core.exceptions import PermissionDenied
 
 class NoActiveGame(PermissionDenied):
     """Raised when no Game is currently ongoing."""
     pass
 
-class NoUnfinishedGames(ImproperlyConfigured):
+class NoUnfinishedGames(PermissionDenied):
     """Raised when there are no upcoming or current Games."""
+    pass

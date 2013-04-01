@@ -169,6 +169,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'HVZ.main.middleware.Http403Middleware',
     'pybb.middleware.PybbMiddleware',
 )
 
@@ -222,18 +223,17 @@ INSTALLED_APPS = (
     'HVZ.rules',
     'HVZ.missions',
     'HVZ.stats',
+    'HVZ.forum',
 )
 
 # App-specific settings below:
 
-# Forum settings
-PYBB_DEFAULT_MARKUP = None
-PYBB_SIGNATURE_MAX_LENGTH = 50
-PYBB_DEFAULT_TIME_ZONE = -8
-
-# Callables that return the "current" date and time.
-# Can be overridden in local_settings or tests to return a fixed point in time.
-NOW = local_settings.NOW or timezone.now
+# Verbose names for the teams
+VERBOSE_TEAMS = {
+    'H': "Humans",
+    'Z': "Zombies",
+    'B': "Both Teams",
+}
 
 # The length of a feed code.
 FEED_LEN = 5
@@ -254,3 +254,19 @@ START_TIMES = {
 }
 
 WSGI_APPLICATION = 'passenger_wsgi.application'
+
+# Forum settings!
+
+# Hardcoded forums and categories. Players can only see a forum with
+# their team name (or the "both teams" forum)
+CATEGORIES = ("General",)
+FORUMS = VERBOSE_TEAMS.values()
+
+PYBB_DEFAULT_MARKUP = None
+PYBB_SIGNATURE_MAX_LENGTH = 50
+PYBB_DEFAULT_TIME_ZONE = -8
+PYBB_PERMISSION_HANDLER = "HVZ.forum.permissions.ForumPermissionHandler"
+
+# Callables that return the "current" date and time.
+# Can be overridden in local_settings or tests to return a fixed point in time.
+NOW = local_settings.NOW or timezone.now

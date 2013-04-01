@@ -38,8 +38,19 @@ class ForumPermissionHandler(DefaultPermissionHandler):
             return super(ForumPermissionHandler, self).may_view_forum(user, forum)
 
         # Compare the forum's name to the player's team.
-        vb_team = settings.VERBOSE_TEAMS[Player.user_to_player(user).team]
+        try:
+            team = Player.user_to_player(user).team
+        except Player.DoesNotExist:
+            return False
+
+        vb_team = settings.VERBOSE_TEAMS[team]
         if forum.name != vb_team:
             return False
 
         return super(ForumPermissionHandler, self).may_view_forum(user, forum)
+
+    def may_view_topic(self, user, topic):
+        if not self.may_view_forum(user, topic.forum):
+            return False
+
+        return super(ForumPermissionHandler, self).may_view_topic(user, topic)

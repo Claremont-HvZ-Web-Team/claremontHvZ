@@ -8,9 +8,10 @@
 {% endblock stylein %}
 
 {% block content %}
+{% with player_list|filter_by:"team,H" as humans %}
 <table id="human_list">
 <thead>
-  <tr><th class='title' colspan=4>Humans</th></tr>
+  <tr><th class='title' colspan=4>Humans: {{humans.count}}</th></tr>
   <tr>
     <th>Name</th>
     <th>School</th>
@@ -20,7 +21,7 @@
 </thead>
 
   {# HUMANS #}
-  {% for player in player_list|filter_by:"team,H" %}
+  {% for player in humans %}
   <tr class="player {{ player.team }}">
     <td class="name">{{ player.user.first_name }} {{ player.user.last_name }}</td>
     <td class="school">{{ player.school }}</td>
@@ -32,11 +33,14 @@
   {% endfor %}
 
 </table>
+{% endwith %}
 
   {# ZOMBIES #}
+{% with player_list|filter_by:"team,Z" as zombies %}
+
 <table id="zombie_list">
 <thead>
-  <tr><th class='title' colspan=5>Zombies</th></tr>
+  <tr><th class='title' colspan=5>Zombies: {{zombies.count}}</th></tr>
   <tr>
     <th>Name</th>
     <th>School</th>
@@ -45,7 +49,7 @@
     <th>Class</th>
   </tr>
 </thead>
-  {% for player in player_list|filter_by:"team,Z" %}
+  {% for player in zombies %}
   <tr class="player {{ player.team }}">
     <td class="name">{{ player.user.get_full_name }}</td>
     <td class="school">{{ player.school }}</td>
@@ -59,6 +63,7 @@
   <tr><td colspan=5>There aren't any zombies!</td></tr>
   {% endfor %}
 </table>
+{% endwith %}
 
 <div class="clearer"></div>
 {% endblock %}

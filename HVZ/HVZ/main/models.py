@@ -169,6 +169,14 @@ class Player(models.Model):
 
     UPGRADES = {
         'O': "Original Zombie",
+        'P': "Pacifist",
+        'n': "Noodler",
+        'N': "Noodler II",
+        'B': "Black Ops",
+        'C': "Charger",
+        "D": "Double Tap",
+        "S": "Screamer",
+        "E": "Bone Zombie",
     }
 
     user = models.ForeignKey(User)

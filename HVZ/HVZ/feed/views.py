@@ -19,6 +19,11 @@ class EatView(FormView):
     def dispatch(self, *args, **kwargs):
         return super(EatView, self).dispatch(*args, **kwargs)
 
+    def get_form(self, form_class):
+        form = super(FormView, self).get_form(form_class)
+        form.initial = self.kwargs
+        return form
+
     def get_success_url(self):
         return reverse("main_landing")
 

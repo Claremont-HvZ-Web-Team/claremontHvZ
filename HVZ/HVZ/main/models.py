@@ -229,6 +229,9 @@ class Player(models.Model):
         player to retrieve by passing a Game.
 
         """
+        if u.is_anonymous():
+            raise Player.DoesNotExist
+
         game = game or Game.imminent_game()
         return cls.objects.get(game=game, user=u)
 

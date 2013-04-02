@@ -11,6 +11,9 @@
         </div>
         <nav>
             <ul>
+              {% if player and player.team == 'Z' %}
+                <li><a href="{% url 'feed_eat' %}">Feed</a></li>
+              {% endif %}
                 <li><a href="{% url 'rules' %}">Rules</a></li>
                 <li><a href="/forum">Forums</a></li>
                 <li><a href="{% url 'player_list' %}">Players</a></li>

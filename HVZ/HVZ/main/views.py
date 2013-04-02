@@ -1,10 +1,11 @@
-from django.core.urlresolvers import reverse
-from django.utils.decorators import method_decorator
+from django.conf import settings
 from django.contrib.auth.decorators import permission_required
-from django.views.generic import TemplateView
+from django.core.urlresolvers import reverse
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
+from django.utils.decorators import method_decorator
 
-from HVZ.main.models import Game
+from HVZ.main.models import Game, ModSchedule
 from HVZ.feed.models import Meal
 from HVZ.main.forms import PrettyAuthForm, RegisterForm
 from HVZ.main.decorators import require_unfinished_game
@@ -49,3 +50,26 @@ class Register(FormView):
     def form_valid(self, form):
         form.save()
         return super(Register, self).form_valid(form)
+
+
+class TwilioCallHandler(View):
+    template_name = "main/call.xml"
+
+    def render_to_response(self, context, **kwargs):
+        return super(TwilioCallHandler, self).render_to_response(
+            context,
+            content_type='text/xml',
+            **kwargs
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TwilioCallHandler, self).get_context_data(*args, **kwargs)
+
+        on_duty = ModSchedule.objects.filter(start_time__lte=settings.NOW(), end_time__gte=settings.NOW())
+        if on_duty.exists():
+            on_duty = on_duty[0]
+            context["name"] = on_duty.mod.user.first_name
+            context["cell"] = on_duty.mod.cell
+        else:
+            # this should NOT HAPPEN
+            pass

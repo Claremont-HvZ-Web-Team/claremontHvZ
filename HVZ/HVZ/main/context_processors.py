@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from HVZ.main.models import Player, Game
+from HVZ.main.models import Player, Game, ModSchedule
 
 
 def inject_outbreak_percentage(request):
@@ -33,6 +33,6 @@ def inject_current_player(request):
 
 def inject_mod_info(request):
     return {
-        'CURRENT_MOD': None,
+        'CURRENT_MOD': ModSchedule.get_current_mod(),
         'MOD_PHONE_NUMBER': settings.MOD_PHONE_NUMBER,
     }

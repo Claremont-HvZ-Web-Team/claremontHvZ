@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django_localflavor_us.models import PhoneNumberField
@@ -265,10 +266,17 @@ class ModSchedule(models.Model):
 
     def __unicode__(self):
         return u"{}: {} until {}".format(
-                self.mod.user.first_name,
-                self.start_time.strftime("%a %I:%M %p"),
-                self.end_time.strftime("%a %I:%M %p"),
+            self.mod.user.first_name,
+            self.start_time.strftime("%a %I:%M %p"),
+            self.end_time.strftime("%a %I:%M %p"),
         )
+
+    @classmethod
+    def get_current_mod(cls):
+        sched = cls.objects.filter(start_time__lte=settings.NOW(), end_time__gte=settings.NOW())
+        if sched:
+            return sched.mod
+        return None
 
 
 class MonolithController(models.Model):

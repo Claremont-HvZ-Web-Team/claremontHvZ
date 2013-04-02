@@ -65,11 +65,10 @@ class TwilioCallHandler(View):
     def get_context_data(self, *args, **kwargs):
         context = super(TwilioCallHandler, self).get_context_data(*args, **kwargs)
 
-        on_duty = ModSchedule.objects.filter(start_time__lte=settings.NOW(), end_time__gte=settings.NOW())
-        if on_duty.exists():
-            on_duty = on_duty[0]
-            context["name"] = on_duty.mod.user.first_name
-            context["cell"] = on_duty.mod.cell
+        on_duty = ModSchedule.get_current_mod()
+        if on_duty:
+            context["name"] = on_duty.user.first_name
+            context["cell"] = on_duty.cell
         else:
             # this should NOT HAPPEN
             pass

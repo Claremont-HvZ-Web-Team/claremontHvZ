@@ -199,6 +199,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "HVZ.main.context_processors.inject_outbreak_percentage",
     "HVZ.main.context_processors.inject_current_player",
+    "HVZ.main.context_processors.inject_mod_info",
     'pybb.context_processors.processor',
 )
 
@@ -269,3 +270,4 @@ PYBB_PERMISSION_HANDLER = "HVZ.forum.permissions.ForumPermissionHandler"
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
 NOW = local_settings.NOW or timezone.now
+MOD_PHONE_NUMBER = local_settings.MOD_PHONE_NUMBER

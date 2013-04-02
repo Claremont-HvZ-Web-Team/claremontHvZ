@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from HVZ.main.models import Player, Game
 
 
@@ -20,9 +22,17 @@ def inject_outbreak_percentage(request):
 
     return {'outbreak_percent': min(96, percent)}
 
+
 def inject_current_player(request):
     try:
         player = Player.user_to_player(request.user)
     except Player.DoesNotExist:
         player = None
     return {'player': player}
+
+
+def inject_mod_info(request):
+    return {
+        'CURRENT_MOD': None,
+        'MOD_PHONE_NUMBER': settings.MOD_PHONE_NUMBER,
+    }

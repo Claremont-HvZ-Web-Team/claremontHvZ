@@ -273,7 +273,10 @@ class ModSchedule(models.Model):
 
     @classmethod
     def get_current_mod(cls):
-        sched = cls.objects.filter(start_time__lte=settings.NOW(), end_time__gte=settings.NOW())
+        sched = cls.objects.filter(
+            start_time__lte=settings.NOW(),
+            end_time__gte=settings.NOW(),
+        )
         if sched.exists():
             return sched[0].mod
         return None

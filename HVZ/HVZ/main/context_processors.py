@@ -19,3 +19,10 @@ def inject_outbreak_percentage(request):
         percent = 100
 
     return {'outbreak_percent': min(96, percent)}
+
+def inject_current_player(request):
+    try:
+        player = Player.user_to_player(request.user)
+    except Player.DoesNotExist:
+        player = None
+    return {'player': player}

@@ -7,7 +7,7 @@
             <div id="zombieproglead"></div>
         </div>
         <div class='modcall'>
-            Mod on Call: {% firstof current_mod.first_name.lower "nobody" %} {% firstof settings.MOD_PHONE_NUMBER "(123) 456-7890" %}
+            Mod on Call: {% firstof CURRENT_MOD.first_name.lower "nobody" %} {% firstof MOD_PHONE_NUMBER "(123) 456-7890" %}
         </div>
         <nav>
             <ul>

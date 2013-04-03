@@ -273,14 +273,13 @@ class ModSchedule(models.Model):
 
     @classmethod
     def get_current_mod(cls):
-        try:
-            sched = cls.objects.get(start_time__lte=settings.NOW(), end_time__gte=settings.NOW())
-        except cls.DoesNotExist:
-            return None
-        except cls.MultipleObjectsReturned:
-            return None
-
-        return sched.mod
+        sched = cls.objects.filter(
+            start_time__lte=settings.NOW(),
+            end_time__gte=settings.NOW(),
+        )
+        if sched.exists():
+            return sched[0].mod
+        return None
 
 
 class MonolithController(models.Model):

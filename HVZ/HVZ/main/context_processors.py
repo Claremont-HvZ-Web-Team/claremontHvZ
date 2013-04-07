@@ -32,6 +32,7 @@ def inject_current_player(request):
 
 
 def inject_mod_info(request):
+    print ModSchedule.get_current_mod()
     return {
         'CURRENT_MOD': ModSchedule.get_current_mod(),
         'MOD_PHONE_NUMBER': settings.MOD_PHONE_NUMBER,

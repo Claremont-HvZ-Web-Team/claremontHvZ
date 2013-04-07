@@ -1,7 +1,6 @@
-from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
 
@@ -52,7 +51,7 @@ class Register(FormView):
         return super(Register, self).form_valid(form)
 
 
-class TwilioCallHandler(View):
+class TwilioCallHandler(TemplateView):
     template_name = "main/call.xml"
 
     def render_to_response(self, context, **kwargs):
@@ -64,7 +63,6 @@ class TwilioCallHandler(View):
 
     def get_context_data(self, *args, **kwargs):
         context = super(TwilioCallHandler, self).get_context_data(*args, **kwargs)
-
         on_duty = ModSchedule.get_current_mod()
         if on_duty:
             context["name"] = on_duty.user.first_name
@@ -72,3 +70,5 @@ class TwilioCallHandler(View):
         else:
             # this should NOT HAPPEN
             pass
+
+        return context

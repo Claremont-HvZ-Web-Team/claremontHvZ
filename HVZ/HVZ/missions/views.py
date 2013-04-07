@@ -15,7 +15,6 @@ class PlotListView(ListView, PlayerAwareMixin):
     """Show a list of missions to the player."""
 
     @method_decorator(login_required)
-    @method_decorator(require_unfinished_game)
     def dispatch(self, request, *args, **kwargs):
         super(PlotListView, self).set_player(request)
         return super(PlotListView, self).dispatch(request, *args, **kwargs)

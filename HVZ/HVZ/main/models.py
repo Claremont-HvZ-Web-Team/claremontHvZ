@@ -233,7 +233,7 @@ class Player(models.Model):
         if u.is_anonymous():
             raise Player.DoesNotExist
 
-        game = game or Game.imminent_game()
+        game = game or Game.nearest_game()
         return cls.objects.get(game=game, user=u)
 
     class Meta:

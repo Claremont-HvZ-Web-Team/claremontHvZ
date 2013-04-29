@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django_localflavor_us.models import PhoneNumberField

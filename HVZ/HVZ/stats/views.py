@@ -4,9 +4,10 @@ from django import http
 from django.core import serializers
 import django.utils.simplejson as json
 from django.views.generic import TemplateView
-from django.views.generic.list import BaseListView
+from django.views.generic.list import BaseListView, ListView
 
 from HVZ.main.models import Building, Game, Player, School
+from HVZ.feed.models import Meal
 
 
 class FullStatPage(TemplateView):
@@ -16,6 +17,15 @@ class FullStatPage(TemplateView):
         context = super(FullStatPage, self).get_context_data(*args, **kwargs)
 
         return context
+
+
+class MealLog(ListView):
+    template_name = 'stats/meal_log.html'
+
+    def get_queryset(self, *args, **kwargs):
+        return Meal.objects.filter(eater__game=Game.nearest_game()).select_related(
+                       'eater__user__first_name', 'eater__user__last_name',
+                       'eaten__user__first_name', 'eaten__user__last_name').order_by('time')
 
 
 class JSONResponseMixin(object):

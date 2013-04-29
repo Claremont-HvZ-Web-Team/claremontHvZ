@@ -93,7 +93,7 @@ class Command(BaseCommand):
                 dorm=random.choice(DORMS),
                 grad_year=self.year+random.randint(0, 4),
                 can_oz=random.random()>0.5,
-                feed=FEEDS.next(),
+                feed=''.join(FEEDS.next()),
             )
 
     def pick_ozs(self, num_ozs):

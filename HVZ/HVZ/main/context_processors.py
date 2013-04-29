@@ -26,7 +26,7 @@ def inject_outbreak_percentage(request):
 def inject_current_player(request):
     try:
         player = Player.user_to_player(request.user)
-    except Player.DoesNotExist:
+    except (Player.DoesNotExist, Game.DoesNotExist):
         player = None
     return {'player': player}
 

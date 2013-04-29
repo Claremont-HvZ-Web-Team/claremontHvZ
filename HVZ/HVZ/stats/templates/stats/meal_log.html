@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table>
+  <thead>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Location</th>
+    <th>Eater</th>
+    <th>Eaten</th>
+  </thead>
+  {% for m in meal_list %}
+    <tr>
+      <td>{{ m.time|date }}</td>
+      <td>{{ m.time|time }}</td>
+      <td>{{ m.location }}</td>
+      <td>{{ m.eater.user.first_name }} {{ m.eater.user.last_name}}</td>
+      <td>{{ m.eaten.user.first_name }} {{ m.eaten.user.last_name}}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

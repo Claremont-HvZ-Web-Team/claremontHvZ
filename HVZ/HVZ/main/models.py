@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django_localflavor_us.models import PhoneNumberField
@@ -233,7 +232,7 @@ class Player(models.Model):
         if u.is_anonymous():
             raise Player.DoesNotExist
 
-        game = game or Game.imminent_game()
+        game = game or Game.nearest_game()
         return cls.objects.get(game=game, user=u)
 
     class Meta:

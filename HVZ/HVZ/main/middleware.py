@@ -1,8 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from django.template import RequestContext, loader
-from django.http import HttpResponseForbidden
 from django.shortcuts import render
-from django.conf import settings
 
 
 class Http403Middleware(object):

@@ -185,7 +185,7 @@ class Player(models.Model):
     game = models.ForeignKey(Game)
 
     school = models.ForeignKey(School)
-    dorm = models.ForeignKey(Building)
+    dorm = models.ForeignKey(Building, limit_choices_to={'building_type': "D"})
     grad_year = models.PositiveIntegerField(blank=True, null=True)
 
     can_oz = models.BooleanField(default=False)

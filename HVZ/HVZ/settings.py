@@ -248,6 +248,8 @@ START_TIMES = {
     'N': datetime.time(hour=17),
 }
 
+WSGI_APPLICATION = 'passenger_wsgi.application'
+
 # Forum settings!
 
 # Hardcoded forums and categories. Players can only see a forum with

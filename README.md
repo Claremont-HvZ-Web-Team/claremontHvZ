@@ -57,11 +57,12 @@ And install the site's dependencies.
 
 Some of the dependencies (like `django-localflavor-us`) exist in repos
 on GitHub. You'll need to track these down and tell pip where they
-are. For example, to install `django-localflavor-us`. If anyone
-figures out how to specify these in a requirements file, that would be
-sweet.
+are. For example, to install `django-localflavor-us`:
 
     pip install git+git://github.com/django/django-localflavor-us.git
+
+If anyone figures out how to specify these in a requirements file,
+that would be sweet.
 
 To compile stylesheets, we use Compass.
 

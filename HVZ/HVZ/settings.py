@@ -106,11 +106,9 @@ TIME_ZONE = local_settings.TIME_ZONE
 # Ours is "en-us"
 LANGUAGE_CODE = local_settings.LANGUAGE_CODE
 
-### We're done here! ###
-
 CACHES = local_settings.CACHES
 
-MANAGERS = ADMINS
+### We're done here! ###
 
 SITE_ID = 1
 
@@ -127,6 +125,7 @@ USE_L10N = True
 MEDIA_ROOT = absolute_path('upload-media')
 HUMAN_PICS = os.path.join(MEDIA_ROOT, 'human_pics')
 ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -154,12 +153,6 @@ TEMPLATE_LOADERS = (
         ),
     ),
 )
-
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',
-#     'django.template.loaders.app_directories.Loader',
-# #     'django.template.loaders.eggs.Loader',
-# )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',

@@ -81,6 +81,17 @@ for you:
     cd ~/programming/claremonthvz.org/site/claremontHvZ/HVZ/HVZ
     cp sample_local_settings.py local_settings.py
 
+Moving passenger_wsgi.py
+------------------------
+
+Django relies on a file called `passenger_wsgi.py` to locate and load
+the HVZ settings module and web specification library. Our production
+server runs a more complicated one provided by DreamHost, but you can
+just copy the simple development sample in the root directory:
+
+    cd ~/programming/claremonthvz.org/site/claremontHvZ/HVZ
+    cp sample_passenger_wsgi.py passenger_wsgi.py
+
 Running the site
 ----------------
 

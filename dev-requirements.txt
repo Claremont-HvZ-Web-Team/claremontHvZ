@@ -1,7 +1,7 @@
-Django==1.5
-Markdown==2.2.1
+Django==1.5.2
+Markdown==2.3.1
 PIL==1.1.7
-South==0.7.6
+South==0.8.2
 coverage==3.6
 django-annoying==0.7.7
 django-common==0.1.51
@@ -9,6 +9,8 @@ django-localflavor-us==1.0
 django-mailer==0.1.0
 django-markupfield==1.0.2
 django-pure-pagination==0.2.1
+lxml==3.2.3
+mock==1.0.1
 postmarkup==1.2.0
 pybb==0.1.10
 pybbm==0.12.5

@@ -15,6 +15,7 @@ SCHOOLS = School.objects.all()
 DORMS = Building.dorms()
 FEEDS = itertools.permutations(settings.VALID_CHARS, r=settings.FEED_LEN)
 
+NUM_PLAYERS = 200
 NUM_OZS = 7
 
 
@@ -54,10 +55,17 @@ class Command(BaseCommand):
         try:
             self.game = Game.imminent_game()
         except Game.DoesNotExist:
-            self.stderr.write("No currently-running game found.")
+            self.stderr.write("No currently-running game found. Create a game at /admin/ first.")
             return
 
-        num_players = options.get('players')
+        if not SCHOOLS or not DORMS:
+            self.stderr.write(
+                '\n'.join(["You have not initialized the site with data about the campus.",
+                           "To solve this problem, run",
+                           "    ./manage.py loaddata HVZ/main/fixtures/production.json"]))
+            return
+
+        num_players = options.get('players') or NUM_PLAYERS
         num_ozs = options.get('ozs') or NUM_OZS
 
         self.password = options.get('password') or PASSWORD

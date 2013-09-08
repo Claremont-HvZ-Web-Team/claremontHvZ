@@ -11,31 +11,30 @@
 {% block pre_logo %}
     <div class="logo_holder">
         {% if not request.user.is_authenticated %}
-            <form method="POST" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div>{{login_form.username}}</div>
-                <div>{{login_form.password}}</div>
-                <input class="button-submit" type="submit" value="Log In!"/>
-            </form>
-
+          <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div>{{login_form.username}}</div>
+            <div>{{login_form.password}}</div>
+            <input class="button-submit" type="submit" value="Log In!"/>
+          </form>
         {% else %}
-            {% with request.user|as_player as player  %}
-
-            <div>{% if player.team == "H" %}
+          {% with request.user|as_player as player  %}
+            <div>
+              {% if player.team == "H" %}
                 Good luck, {{user.first_name}}!
-            {% else %}
+              {% else %}
                 Brrrrains! (amirite, {{user.first_name}}?)
-            {% endif %}
-            {% endwith %}
-        </div>
-        <div>
+              {% endif %}
+            </div>
+          {% endwith %}
+          <div>
             <ul>
-                <li><a href="{% url 'logout' %}">logout</a></li>
+              <li><a href="{% url 'logout' %}">logout</a></li>
                 {% if request.user.player.team == 'Z' %}
-                <li><a href="{% url 'feed_eat' %}">feed</a></li>
+                  <li><a href="{% url 'feed_eat' %}">feed</a></li>
                 {% endif %}
             </ul>
-        </div>
+          </div>
         {% endif %}
     </div>
     <div class='intro'>
@@ -55,12 +54,12 @@
     {% for meal in latest_meals %}
       <li>
         <div class='time'>
-            {{meal.time|date:"h:m a"}}
+          {{meal.time|date:"h:m a"}}
         </div>
         {% if meal.location %}
-            <div class='loc'>
-                {{meal.location}}
-            </div>
+          <div class='loc'>
+            {{meal.location}}
+          </div>
         {% endif %}
         <div class='meal'>
           <p>
@@ -69,9 +68,11 @@
             {{meal.eaten.user.first_name}}
             {{meal.eaten.user.last_name}}.
           </p>
-          <p>
-            {{meal.description}}
-          </p>
+	  {% if meal.description %}
+            <p>
+              {{meal.description}}
+            </p>
+          {% endif %}
         </div>
       </li>
     {% endfor %}

@@ -8,6 +8,7 @@
 {% endblock stylein %}
 
 {% block content %}
+<h1>Players in the {{ game_season }} Game</h1>
 {% with player_list|filter_by:"team,H" as humans %}
 <table id="human_list">
 <thead>

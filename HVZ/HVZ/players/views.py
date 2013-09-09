@@ -8,6 +8,11 @@ class PlayerListView(ListView):
     model = Player
     template_name = 'players/player_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(PlayerListView, self).get_context_data(**kwargs)
+        context['game_season'] = Game.nearest_game().season()
+        return context
+
     def get_queryset(self):
         game = Game.nearest_game()
         return (Player.objects.filter(game=game).

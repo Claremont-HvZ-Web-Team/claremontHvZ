@@ -71,10 +71,12 @@ class Game(models.Model):
 
     def __unicode__(self):
         if self.start_date <= settings.NOW().date() <= self.end_date:
-            s = u"{} {} (ongoing)"
+            return u"{} (ongoing)".format(self.season())
         else:
-            s = u"{} {}"
-        return s.format(
+            return self.season()
+
+    def season(self):
+        return u"{} {}".format(
             self.semester(),
             self.start_date.year,
         )

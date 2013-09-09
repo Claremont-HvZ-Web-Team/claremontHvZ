@@ -28,5 +28,4 @@ def upgrade_name(upgrade):
 @register.filter
 def filter_by(qs, keyvalue):
     key, value = keyvalue.split(',')
-    print "filtering by {}: {}".format(key, value)
     return qs.filter(**{key: value})

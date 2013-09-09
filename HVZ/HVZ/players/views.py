@@ -12,7 +12,8 @@ class PlayerListView(ListView):
         game = Game.nearest_game()
         return (Player.objects.filter(game=game).
                 select_related('user').
-                annotate(meal_count=Count('meal_set')))
+                annotate(meal_count=Count('meal_set')).
+                order_by('-meal_count'))
 
 
 class PlayerEmailView(ListView):

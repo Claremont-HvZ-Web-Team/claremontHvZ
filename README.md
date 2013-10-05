@@ -12,10 +12,8 @@ get) all of these, feel free to skip this section.
 
 First off, install [pip] [1] using your favorite package manager. If
 you're developing on a Mac, I recommend installing/using [homebrew]
-[2] as your package manager of choice. Then you can install pip with a
-command like
-
-    brew install pip
+[2] as your package manager of choice. Then `brew install python` will
+install pip.
 
 Using pip, you should have an easy time installing virtualenv:
 

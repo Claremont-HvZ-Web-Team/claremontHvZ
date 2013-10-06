@@ -283,6 +283,15 @@ class ModSchedule(models.Model):
         return None
 
 
+class TemplateSubstitution(models.Model):
+    """Allows mods to programmatically insert strings into content."""
+    from_word = models.CharField(max_length=32)
+    to_word = models.CharField(max_length=32)
+
+    def __unicode__(self):
+        return "{} -> {}".format(self.from_word, self.to_word)
+
+
 class MonolithController(models.Model):
     admin = models.BooleanField(default=False)
     forcefield = models.BooleanField(default=True)

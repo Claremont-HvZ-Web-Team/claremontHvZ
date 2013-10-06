@@ -2,6 +2,7 @@
 
 import datetime
 import os
+import string
 
 import markdown
 
@@ -236,7 +237,17 @@ FEED_LEN = 5
 # The characters we allow in a feed code.
 VALID_CHARS = ["A", "C", "E", "L", "X", "N", "P", "O", "S", "T", "W", "Z"]
 
+def hvz_substitution(markup):
+    import HVZ.main.models as models
+
+    for subst in models.TemplateSubstitution.objects.all():
+        markup = string.Template(markup).safe_substitute(
+            {subst.from_word: subst.to_word}
+        )
+        return markdown.markdown(markup)
+
 MARKUP_FIELD_TYPES = (
+    ('hvz', hvz_substitution),
     ('markdown', markdown.markdown),
     ('plain', lambda markup: html.urlize(html.linebreaks(markup))),
 )

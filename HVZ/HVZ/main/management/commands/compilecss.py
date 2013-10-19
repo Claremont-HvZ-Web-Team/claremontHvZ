@@ -1,3 +1,4 @@
+import glob
 import os
 import subprocess
 
@@ -12,27 +13,38 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.old_dir = os.getcwd()
 
-        try:
-            for app in get_apps():
-                static_dir = os.path.join(settings.PROJECT_PATH, 'HVZ', app, 'static')
-
-                if not os.path.exists(static_dir):
+        os.chdir(os.path.join(settings.PROJECT_PATH, '..', '..', 'static'))
+        subprocess.call(['compass', 'compile',
+                         '--sass-dir', 'sass',
+                         '--css-dir', 'styles'])
+        
+        for app in get_apps():
+            try:
+                if not os.path.exists(os.path.join('styles', app)):
                     continue
 
-                if not os.path.exists(os.path.join(static_dir, 'sass')):
-                    continue
+                target_parent_dir = os.path.join(settings.PROJECT_PATH, 'HVZ', app, 'static', 'styles')
+                if not os.path.exists(target_parent_dir):
+                    os.mkdir(target_parent_dir, 755)
 
-                self.stdout.write("Compiling {}".format(app))
-                os.chdir(os.path.join(settings.PROJECT_PATH, 'HVZ', app, 'static'))
-                if not os.path.exists('styles'):
-                    os.mkdir('styles')
-                subprocess.call(['compass', 'compile',
-                                 '--sass-dir', 'sass',
-                                 '--css-dir', 'styles'])
-        except OSError:
-            self.stderr.write("Unable to access the '{}' subapp.".format(app))
-        except CalledProcessError as e:
-            self.stderr.write("Error writing css in the '{}' subapp\n".format(app))
-        finally:
-            os.chdir(self.old_dir)
-            return
+                target_dir = os.path.join(target_parent_dir, app)
+                if not os.path.exists(target_dir):
+                    os.mkdir(target_dir, 755)
+
+                for source_path in glob.glob(os.path.join('styles', app, '*')):
+                    subprocess.call([
+                        'cp', '-R',
+                        source_path,
+                        os.path.join(settings.PROJECT_PATH, 'HVZ', app, 'static', 'styles', app),
+                    ])
+
+                subprocess.call([
+                    'chmod', '-R', '755',
+                    os.path.join(settings.PROJECT_PATH, 'HVZ', app, 'static', 'styles', app),
+                ])
+            except OSError:
+                self.stderr.write("Unable to access the '{}' subapp.".format(app))
+                continue
+
+        os.chdir(self.old_dir)
+        return

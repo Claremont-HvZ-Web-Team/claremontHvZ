@@ -75,3 +75,7 @@ tr {
         background: adjust-color($bg_grey, $alpha:-0.85);
      }
 }
+
+.scriptonly {
+    display: none;
+}

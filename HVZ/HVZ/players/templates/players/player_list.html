@@ -7,12 +7,44 @@
    <link rel="stylesheet" type="text/css" href="{% static 'styles/players/players_main.css' %}">
 {% endblock stylein %}
 
+{% block scriptin %}
+   <script src="{% static 'scripts/player_list.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <h1>Players in the {{ game_season }} Game</h1>
+<div id="filter_container">
+  <h2>Filter players</h2>
+  <form id="filter_form">
+    <select id="school" name="school">
+      <option value="">Select a school</option>
+      {% for s in schools %}
+        <option
+           value="{{s.name}}"
+           {% if s.name == school %}selected="selected"{% endif %}>
+          {{s.name}}
+        </option>
+      {% endfor %}
+    </select>
+    <select id="gradyear" name="gradyear">
+      <option value="">Select a class year</option>
+      {% for y in years %}
+      <option
+         value="{{y}}" ooga="{{gradyear}}"
+         {% if y == gradyear %}selected="selected"{% endif %}>
+        {{y}}
+      </option>
+      {% endfor %}
+    </select>
+    <button action="submit" class="noscript">Go!</button>
+  </form>
+</div>
+<div id="tables">
+{# HUMANS #}
 {% with player_list|filter_by:"team,H" as humans %}
-<table id="human_list">
+<table id="human_list" class="player_list">
 <thead>
-  <tr><th class='title' colspan=4>Humans: {{humans.count}}</th></tr>
+  <tr><th class='title' colspan=4>Humans: <span id="human_count">{{humans.count}}</span></th></tr>
   <tr>
     <th>Name</th>
     <th>School</th>
@@ -20,8 +52,7 @@
     <th>Class</th>
   </tr>
 </thead>
-
-  {# HUMANS #}
+<tbody>
   {% for player in humans %}
   <tr class="player {{ player.team }}">
     <td class="name">{{ player.user.first_name }} {{ player.user.last_name }}</td>
@@ -32,16 +63,16 @@
   {% empty %}
   <tr><td colspan=4>There aren't any humans!</td></tr>
   {% endfor %}
-
+</tbody>
 </table>
 {% endwith %}
 
-  {# ZOMBIES #}
+{# ZOMBIES #}
 {% with player_list|filter_by:"team,Z" as zombies %}
 
-<table id="zombie_list">
+<table id="zombie_list" class="player_list">
 <thead>
-  <tr><th class='title' colspan=5>Zombies: {{zombies.count}}</th></tr>
+  <tr><th class='title' colspan=5>Zombies: <span id="zombie_count">{{zombies.count}}</span></th></tr>
   <tr>
     <th>Name</th>
     <th>School</th>
@@ -50,6 +81,7 @@
     <th>Class</th>
   </tr>
 </thead>
+<tbody>
   {% for player in zombies %}
   <tr class="player {{ player.team }}">
     <td class="name">{{ player.user.get_full_name }}</td>
@@ -63,8 +95,9 @@
   {% empty %}
   <tr><td colspan=5>There aren't any zombies!</td></tr>
   {% endfor %}
+</tbody>
 </table>
 {% endwith %}
-
+</div>
 <div class="clearer"></div>
 {% endblock %}

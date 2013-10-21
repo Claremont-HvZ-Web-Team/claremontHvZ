@@ -19,13 +19,33 @@ tr {
     height: $padding_amount*2;
 }
 
+#filter_container {
+    padding: $padding_amount;
+    background: adjust-color($bg_grey, $alpha:-0.875);
+    display: table;
+    width: 100%;
+
+    h2 {
+        display: table-cell;
+    }
+
+    #filter_form {
+        display: table-cell;
+        float: right;
+    }
+}
+
+.player_list {
+    th.title {
+        text-align: center;
+        column-span: 4;
+    }
+}
+
 #human_list {
     float: left;
 
     th.title {
-        text-align: center;
-        column-span: 4;
-
         font-size: 1.5em;
     }
 
@@ -42,9 +62,6 @@ tr {
     float: right;
 
     th.title {
-        text-align: center;
-        column-span: 5;
-
         font-size: 1.5em;
     }
 

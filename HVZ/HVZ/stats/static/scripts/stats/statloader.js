@@ -51,4 +51,7 @@ $(function () {
             $.plot($(dorm_holder), data.dorm, dorm_options);
         }
     );
+
+    $('.noscript').remove();
+    $('.scriptonly').show();
 });

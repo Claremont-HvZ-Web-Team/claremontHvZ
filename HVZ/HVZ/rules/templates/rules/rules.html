@@ -42,6 +42,7 @@ if (window.addEventListener) {
     </ul>
 </div>
 
+<a name="core"></a>
 <div class="intro">
 <p>
     Each semester, Claremont HvZ organizes a 5 day game of moderated tag called
@@ -77,7 +78,6 @@ if (window.addEventListener) {
 </p>
 </div>
 
-<a name="core"></a>
 {% for r in core %}
   <div id="core_{{r.id}}" class="corerule">
     <h1>{{r.title}}</h1>
@@ -93,7 +93,7 @@ if (window.addEventListener) {
   </div>
 {% endfor %}
 
-<a name="class"></a>
+<a name="class"><h1>Human Classes</h1></a>
 {% for r in classes %}
   <div id="class_{{r.id}}" class="classrule">
     <h1>{{r.title}}</h1>
@@ -101,7 +101,7 @@ if (window.addEventListener) {
   </div>
 {% endfor %}
 
-<a name="special"></a>
+<a name="special"><h1>Special Infected</h1></a>
 {% for r in specialinfected %}
   <div id="infected_{{r.id}}" class="specialinfectedrule">
     <h1>{{r.title}}</h1>

@@ -53,4 +53,16 @@
     width: 250px;
     background-color: $bg_grey;
     color: white;
+
+    ul {
+        padding: 0;
+
+        li {
+            padding: 0.125em;
+        }
+
+        li:nth-child(even) {
+            background: adjust-color(rgb(255, 255, 255), $alpha: -0.875);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from HVZ.main.models import Player, Game, ModSchedule, MonolithController
+from HVZ.main.models import Player, Game, ModSchedule, MonolithController, TemplateSubstitution
 
 class MonolithControllerAdmin(admin.ModelAdmin):
     list_display = ('__unicode__','admin', 'forcefield')
@@ -20,3 +20,4 @@ admin.site.register(Player, PlayerAdmin)
 admin.site.register(Game)
 admin.site.register(MonolithController, MonolithControllerAdmin)
 admin.site.register(ModSchedule)
+admin.site.register(TemplateSubstitution)

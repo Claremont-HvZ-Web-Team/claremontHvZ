@@ -64,17 +64,7 @@ class JSONResponseMixin(object):
 
 class JSONPlayerStats(JSONResponseMixin, BaseListView):
     FIELDS = ('team', 'grad_year', 'school', 'dorm')
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(JSONPlayerStats, self).get_context_data(*args, **kwargs)
 
-    #     context['objects'] = Player.objects.all().filter(game=Game.nearest_game()).values(
-    #         'team',
-    #         'grad_year',
-    #         'school',
-    #         'dorm',
-    #     )
-
-    #     return context
     def get_queryset(self):
         return Player.objects.all().filter(game=Game.nearest_game())
 

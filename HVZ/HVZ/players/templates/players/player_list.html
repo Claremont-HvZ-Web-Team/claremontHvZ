@@ -30,13 +30,13 @@
       <option value="">Select a class year</option>
       {% for y in years %}
       <option
-         value="{{y}}" ooga="{{gradyear}}"
+         value="{{y}}"
          {% if y == gradyear %}selected="selected"{% endif %}>
         {{y}}
       </option>
       {% endfor %}
     </select>
-    <button action="submit" class="noscript">Go!</button>
+    <button class="noscript">Go!</button>
   </form>
 </div>
 <div id="tables">

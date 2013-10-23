@@ -32,7 +32,7 @@ def weekday_choices():
     try:
         g = Game.imminent_game()
     except Game.DoesNotExist:
-        return xrange(7)
+        return [(i, CAL.formatweekday(i, 3)) for i in xrange(7)]
 
     # Bounds on when the meal can have occurred
     start = g.start_date

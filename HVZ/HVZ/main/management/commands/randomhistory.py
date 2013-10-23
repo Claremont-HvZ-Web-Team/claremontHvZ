@@ -1,3 +1,4 @@
+from datetime import datetime, time
 import random
 from optparse import make_option
 
@@ -55,23 +56,32 @@ class Command(BaseCommand):
         
         g = Game.imminent_game()
 
-        t = g.start_date
-        dt = (g.end_date - g.start_date) / num_meals
+        days = (g.end_date - g.start_date).days
 
-        for i in xrange(num_meals):
-            z = int(random.random() * len(zombies))
-            h = int(random.random() * len(humans))
+        import pdb; pdb.set_trace()
+        day = g.start_date
+        while day < g.end_date:
 
-            Meal(
-                eater=zombies[z],
-                eaten=humans[h],
-                time=t,
-                location=random.choice(Building.objects.all()),
-            ).save()
+            meals_per_hour = [0 for i in xrange(24)]
+            for i in xrange(int(num_meals / days)):
+                meals_per_hour[int(random.gauss(13, 4)) % 24] += 1
 
-            t += dt
+            for hour in xrange(24):
 
-            # Instead of retrieving the entire zombie and human lists
-            # again, why don't we just add the human to the zombie
-            # horde ourselves?
-            zombies.append(humans.pop(h))
+                for meal in xrange(meals_per_hour[hour]):
+                    z = int(random.random() * len(zombies))
+                    h = int(random.random() * len(humans))
+
+                    Meal(
+                        eater=zombies[z],
+                        eaten=humans[h],
+                        time=datetime.combine(day, time(hour=hour)),
+                        location=random.choice(Building.objects.all()),
+                    ).save()
+
+                    # Instead of retrieving the entire zombie and human lists
+                    # again, why don't we just add the human to the zombie
+                    # horde ourselves?
+                    zombies.append(humans.pop(h))
+
+            day += timedelta(days=1)

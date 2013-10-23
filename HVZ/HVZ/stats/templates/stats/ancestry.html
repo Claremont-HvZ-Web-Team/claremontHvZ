@@ -1,0 +1,28 @@
+{% extends "stats/the_stats.html" %}
+
+{% load staticfiles %}
+
+{% block morehead %}
+  <style type="text/css">
+    path.link {
+        fill: none;
+        stroke: rgba(128, 0, 0, 0.26);
+        stroke-width: 1.5px;
+    }
+  </style>
+{% endblock morehead %}
+
+{% block scriptin %}
+   <script type="text/javascript" src="{% static 'scripts/d3.min.js' %}"></script>
+   <script type="text/javascript" src="{% static 'scripts/d3.layout.js' %}"></script>
+   <script type="text/javascript" src="{% static 'scripts/stats/ancestry.js'%}"></script>
+{% endblock scriptin %}
+
+
+{% block currenttab %}
+<p class="noscript">You need a JavaScript-enabled browser to see this stats page.</p>
+<div id="ancestry_tab" class="scriptonly">
+  <h1>Zombie Ancestry</h1>
+  <svg id="ancestry_chart"></svg>
+</div>
+{% endblock currenttab %}

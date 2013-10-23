@@ -1,3 +1,4 @@
+from datetime import datetime, time, timedelta
 from collections import defaultdict
 
 from django import http
@@ -5,18 +6,14 @@ from django.core import serializers
 import django.utils.simplejson as json
 from django.views.generic import TemplateView
 from django.views.generic.list import BaseListView, ListView
+from django.conf import settings
 
 from HVZ.main.models import Building, Game, Player, School
 from HVZ.feed.models import Meal
 
 
-class FullStatPage(TemplateView):
-    template_name = 'stats/the_stats.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(FullStatPage, self).get_context_data(*args, **kwargs)
-
-        return context
+class PopStatPage(TemplateView):
+    template_name = 'stats/pop_stats.html'
 
 
 class MealLog(ListView):
@@ -25,7 +22,16 @@ class MealLog(ListView):
     def get_queryset(self, *args, **kwargs):
         return Meal.objects.filter(eater__game=Game.nearest_game()).select_related(
                        'eater__user__first_name', 'eater__user__last_name',
-                       'eaten__user__first_name', 'eaten__user__last_name').order_by('time')
+                       'eaten__user__first_name', 'eaten__user__last_name',
+            'argabarga').order_by('time')
+
+
+class AncestryPage(TemplateView):
+    template_name = 'stats/ancestry.html'
+
+
+class OutbreakPage(TemplateView):
+    template_name = 'stats/outbreak.html'
 
 
 class JSONResponseMixin(object):
@@ -62,11 +68,115 @@ class JSONResponseMixin(object):
         return json.dumps(self.raw_serialization(context))
 
 
+class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
+    def get_queryset(self):
+        return Meal.objects.filter(eater__game=Game.nearest_game())
+
+    def raw_serialization(self, context):
+        game = Game.nearest_game()
+
+        t0, tf = time_endpoints(game)
+
+        num_zombies = Player.current_players().filter(upgrade='O').count()
+        num_humans = Player.current_players().count() - num_zombies
+
+        human_tally = []
+        zombie_tally = []
+
+        meals_vs_hours = meals_per_hour(game, self.get_queryset())
+        for hour in xrange(len(meals_vs_hours)):
+            meal_count = meals_vs_hours[hour]
+
+            num_humans -= meal_count
+            num_zombies += meal_count
+
+            human_tally.append([hour, num_humans])
+            zombie_tally.append([hour, num_zombies])
+
+        return [
+            {'label': 'humans', 'data': human_tally, 'color': 'rgb(128, 0, 0)'},
+            {'label': 'zombies', 'data': zombie_tally, 'color': 'rgb(0, 128, 0)'},
+        ]
+
+
+def time_endpoints(game):
+    """Return the start and end times of the game.
+
+    Assume we start at 8am and finish at 11pm.
+
+    """
+    t0 = datetime.combine(game.start_date, time(hour=8))
+    tf = datetime.combine(game.end_date, time(hour=23))
+
+    return t0, tf
+
+class JSONOutbreak(JSONResponseMixin, BaseListView):
+    def get_queryset(self):
+        return Meal.objects.filter(eater__game=Game.nearest_game())
+
+    def raw_serialization(self, context):
+        return meals_per_hour(Game.nearest_game(), self.get_queryset())
+
+
+def meals_per_hour(game, meals):
+    """Return the number of meals in each hour between now and the game's end."""
+    # If we got a queryset, evaluate it now.
+    meals = list(meals)
+
+    t0, tf = time_endpoints(game)
+    dt = timedelta(hours=1)
+
+    meals_vs_hours = defaultdict(int)
+    for m in meals:
+        num_hours = hours_between(m.time, t0)
+        meals_vs_hours[num_hours] += 1
+
+    num_hours = hours_between(tf, t0)
+    aggregates = []
+    for hour in xrange(num_hours):
+        aggregates.append(meals_vs_hours[hour])
+
+    if settings.DEBUG:
+        assert(sum(aggregates) == len(meals))
+
+    return aggregates
+
+
+def hours_between(t1, t2):
+    dt = abs(t2 - t1)
+    return dt.days*24 + dt.seconds/3600
+
+
+class JSONZombieAncestry(JSONResponseMixin, BaseListView):
+    def get_queryset(self):
+        return (Player.current_players().filter(team='Z')
+                .select_related('user', 'meal_set'))
+
+    def raw_serialization(self, context):
+        return {
+            "name": "Subject Zero",
+            "children": map(traverse, list(self.get_ozs())),
+        }
+
+    def get_ozs(self):
+        return self.get_queryset().filter(upgrade='O')
+
+
+def traverse(zombie):
+    """Return a nested tree of the given zombie and all its children"""
+    children = [m.eaten for m in zombie.meal_set.get_query_set()]
+
+    return {
+        "name": zombie.user.get_full_name(),
+        "children": [traverse(c) for c in children] if children else None
+    }
+
+
 class JSONPlayerStats(JSONResponseMixin, BaseListView):
     FIELDS = ('team', 'grad_year', 'school', 'dorm')
 
     def get_queryset(self):
-        return Player.objects.all().filter(game=Game.nearest_game())
+        return Player.current_players()
 
     def raw_serialization(self, context):
         actual = super(JSONPlayerStats, self).raw_serialization(context)

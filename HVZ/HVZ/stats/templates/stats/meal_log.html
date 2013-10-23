@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "stats/the_stats.html" %}
 
-{% block content %}
+{% block currenttab %}
 <table>
   <thead>
     <th>Date</th>
@@ -8,6 +8,7 @@
     <th>Location</th>
     <th>Eater</th>
     <th>Eaten</th>
+    <th>Description</th>
   </thead>
   {% for m in meal_list %}
     <tr>
@@ -16,7 +17,8 @@
       <td>{{ m.location }}</td>
       <td>{{ m.eater.user.first_name }} {{ m.eater.user.last_name}}</td>
       <td>{{ m.eaten.user.first_name }} {{ m.eaten.user.last_name}}</td>
+      <td>{% if m.description %}{{ m.description }}{% endif %}</td>
     </tr>
   {% endfor %}
 </table>
-{% endblock %}
+{% endblock currenttab %}

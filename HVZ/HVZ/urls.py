@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.conf.urls import patterns, include, url
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -39,10 +40,5 @@ urlpatterns = patterns(
     url(r'', include('HVZ.main.urls')),
 )
 
-if settings.DEBUG:
-    urlpatterns += patterns(
-        '',
-        url('^static/(?P<path>.*)$', 'django.views.static.serve', {
-                'document_root': settings.STATIC_ROOT,
-                }),
-        )
+# Serving static files in development
+urlpatterns += staticfiles_urlpatterns()

@@ -1,7 +1,7 @@
 $(function () {
 
     $.getJSON(
-        '/status/json/players',
+        '/status/json/players.json',
         function(data, status, jqXHR) {
             abort = false;
             console.log("successful stat GET");
@@ -34,6 +34,7 @@ $(function () {
                 }
 
             };
+
             var dorm_options = {
                 series: {stack: true,
                          lines: {show: false, steps: false },
@@ -42,10 +43,7 @@ $(function () {
                     ticks: data.ticks.dorm
                 }
             };
-            console.log(data.grad_year);
-            console.log(data.school);
-            console.log(data.dorm);
-            console.log(data.ticks);
+
             $.plot($(class_holder), data.grad_year, class_options);
             $.plot($(school_holder), data.school, school_options);
             $.plot($(dorm_holder), data.dorm, dorm_options);

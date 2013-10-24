@@ -55,7 +55,7 @@
 <tbody>
   {% for player in humans %}
   <tr class="player {{ player.team }}">
-    <td class="name">{{ player.user.first_name }} {{ player.user.last_name }}</td>
+    <td class="name">{{ player.user.get_full_name }}</td>
     <td class="school">{{ player.school }}</td>
     <td class="year">{{ player.grad_year }}</td>
     <td class="upgrade">{{ player.upgrade|upgrade_name }}</td>
@@ -87,9 +87,7 @@
     <td class="name">{{ player.user.get_full_name }}</td>
     <td class="school">{{ player.school }}</td>
     <td class="year">{{ player.grad_year }}</td>
-    <td class="meal_count">
-      {% if player.team == 'Z' or player.meal_count > 0 %}{{ player.meal_count }}{% endif %}
-    </td>
+    <td class="meal_count">{{ player.meal_count }}</td>
     <td class="upgrade">{{ player.upgrade|upgrade_name }}</td>
   </tr>
   {% empty %}

@@ -15,32 +15,31 @@ class PlayerListView(ListView):
 
     def get_context_data(self, **kwargs):
         players = kwargs.get('object_list')
-        game = Game.nearest_game()
 
         context = super(PlayerListView, self).get_context_data(**kwargs)
-        context['game_season'] = game.season()
+        context['game_season'] = Game.nearest_game().season()
+
         context['schools'] = School.objects.all().annotate(
             num_players=Count('player_set')
         ).order_by('-num_players')
-        context['years'] = map(str, sorted(set([p.grad_year for p in players])))
 
+        context['years'] = map(str, sorted(set([p.grad_year for p in Player.current_players()])))
         context['school'] = self.kwargs.get('school', '')
         context['gradyear'] = self.kwargs.get('gradyear', '')
 
         return context
 
     def get_queryset(self):
-        game = Game.nearest_game()
-        queryset = Player.objects.filter(game=game)
-
-        if self.kwargs.get('school'):
-            queryset = queryset.filter(school__name__istartswith=self.kwargs['school'])
+        queryset = Player.current_players()
 
         if self.kwargs.get('gradyear'):
             queryset = queryset.filter(grad_year=self.kwargs['gradyear'])
 
+        if self.kwargs.get('school'):
+            queryset = queryset.filter(school__name__istartswith=self.kwargs['school'])
+
         return (queryset.
-                select_related('user').
+                select_related('user', 'school__name').
                 annotate(meal_count=Count('meal_set')).
                 order_by('-meal_count'))
 

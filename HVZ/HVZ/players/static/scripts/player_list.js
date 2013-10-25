@@ -69,10 +69,10 @@ $(document).ready(function() {
         }
 
         var $body = $table.children('tbody');
-        $body.fadeOut(function() {
-            $(this).children().detach();
-            $(this).append(html);
-            $(this).fadeIn();
+        $table.fadeOut(function() {
+            $body.children().detach();
+            $body.append(html);
+            $table.fadeIn();
         });
 
         return $table;

@@ -61,7 +61,9 @@
     <td class="upgrade">{{ player.upgrade|upgrade_name }}</td>
   </tr>
   {% empty %}
-  <tr><td colspan=4>There aren't any humans!</td></tr>
+  <tr class="placeholder">
+    <td colspan="4">There aren't any humans!</td>
+  </tr>
   {% endfor %}
 </tbody>
 </table>
@@ -91,7 +93,9 @@
     <td class="upgrade">{{ player.upgrade|upgrade_name }}</td>
   </tr>
   {% empty %}
-  <tr><td colspan=5>There aren't any zombies!</td></tr>
+  <tr class="placeholder">
+    <td colspan="5">There aren't any zombies!</td>
+  </tr>
   {% endfor %}
 </tbody>
 </table>

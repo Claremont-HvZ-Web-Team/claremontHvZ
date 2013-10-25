@@ -4,12 +4,11 @@ $(document).ready(function() {
     var SCHOOL_COLUMN = 1;
     var YEAR_COLUMN = 2;
 
-    function getChosenSchool() {
-        return $('#school :selected').val();
-    }
-
-    window.filterPlayers = function(players, text, column) {
-        var selects = [[SCHOOL_COLUMN, $('#school')], [YEAR_COLUMN, $('#gradyear')]];
+    function filterPlayers(players, text, column) {
+        var selects = [
+            [SCHOOL_COLUMN, $('#school')],
+            [YEAR_COLUMN, $('#gradyear')],
+        ];
 
         for (var i = 0; i < selects.length; ++i) {
             var column = selects[i][0];
@@ -32,6 +31,12 @@ $(document).ready(function() {
 
         var data = [];
         for (var i = 0; i < $rows.length; ++i) {
+
+            // Don't include the "no humans/zombies!" placeholder
+            if ($rows[i].classList.contains("placeholder")) {
+                continue;
+            }
+
             var row_data = [];
             for (var j = 0; j < $rows[i].children.length; ++j) {
                 row_data.push($rows[i].children[j].textContent);
@@ -42,7 +47,7 @@ $(document).ready(function() {
         return data;
     }
 
-    function renderTable($table, data) {
+    function renderTable($table, data, placeholder) {
         var html = document.createDocumentFragment();
 
         for (var i = 0; i < data.length; ++i) {
@@ -58,23 +63,57 @@ $(document).ready(function() {
             html.appendChild(row);
         }
 
+        // If data is empty, instead append the placeholder
+        if (data.length === 0) {
+            html.appendChild(placeholder);
+        }
+
         var $body = $table.children('tbody');
-        $body.children().detach();
-        $body.append(html);
+        $body.fadeOut(function() {
+            $(this).children().detach();
+            $(this).append(html);
+            $(this).fadeIn();
+        });
 
         return $table;
     }
 
     function update(new_human_data, new_zombie_data) {
-        renderTable($('#human_list'), new_human_data);
-        renderTable($('#zombie_list'), new_zombie_data);
+        renderTable($('#human_list'), new_human_data, human_placeholder);
+        renderTable($('#zombie_list'), new_zombie_data, zombie_placeholder);
 
-        $('#human_count').text(new_human_data.length);
-        $('#zombie_count').text(new_zombie_data.length);
+        $('#human_count').fadeOut(function() {
+            $(this).text(new_human_data.length);
+            $(this).fadeIn();
+        });
+        $('#zombie_count').fadeOut(function() {
+            $(this).text(new_zombie_data.length);
+            $(this).fadeIn();
+        });
     }
 
-    window.human_data = parseTable($('#human_list'));
-    window.zombie_data = parseTable($('#zombie_list'));
+    var human_data = parseTable($('#human_list'));
+    var zombie_data = parseTable($('#zombie_list'));
+
+    var human_cols = human_data[0].length;
+    var zombie_cols = zombie_data[0].length;
+
+    var placeholders = [
+        [human_cols, "There aren't any humans!"],
+        [zombie_cols, "There aren't any zombies!"],
+    ].map(function(pair) {
+        var placeholder = document.createElement('tr');
+        placeholder.classList.add('placeholder');
+
+        var td = document.createElement('td');
+        td.setAttribute('colspan', pair[0]);
+        td.textContent = pair[1];
+        placeholder.appendChild(td);
+        return placeholder;
+    });
+
+    var human_placeholder = placeholders[0];
+    var zombie_placeholder = placeholders[1];
 
     $('#school').change(function(event) {
         var new_human_data = filterPlayers(human_data);

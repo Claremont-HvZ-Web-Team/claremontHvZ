@@ -85,6 +85,9 @@ class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
 
         meals_vs_hours = meals_per_hour(game, self.get_queryset())
         for hour in xrange(len(meals_vs_hours)):
+            if t0 + timedelta(hours=hour) > settings.NOW():
+                continue
+
             meal_count = meals_vs_hours[hour]
 
             num_humans -= meal_count
@@ -92,6 +95,12 @@ class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
 
             human_tally.append([hour, num_humans])
             zombie_tally.append([hour, num_zombies])
+
+        if not human_tally:
+            human_tally = [[0, num_humans]]
+
+        if not zombie_tally:
+            zombie_tally = [[0, num_zombies]]
 
         return [
             {'label': 'humans', 'data': human_tally, 'color': 'rgb(128, 0, 0)'},

@@ -46,7 +46,7 @@ class JSONResponseMixin(object):
     def get_json_response(self, content, **httpresponse_kwargs):
         "Construct an `HttpResponse` object."
         return http.HttpResponse(content,
-                                 content_type='application/json',
+                                 content_type='application/json;charset=UTF-8',
                                  **httpresponse_kwargs)
 
     def raw_serialization(self, context):
@@ -158,27 +158,33 @@ def hours_between(t1, t2):
 
 class JSONZombieAncestry(JSONResponseMixin, BaseListView):
     def get_queryset(self):
-        return (Player.current_players().filter(team='Z')
-                .select_related('user', 'meal_set'))
+        return None
 
     def raw_serialization(self, context):
+        self.players = Player.current_players().select_related('user')
+        self.names = {p: p.user.get_full_name() for p in self.players}
+        self.meals = (Meal.objects.filter(eater__game=Game.nearest_game())
+                      .select_related('eater', 'eaten'))
+
+        self.children = defaultdict(list)
+        for m in self.meals:
+            self.children[m.eater].append(m.eaten)
+
+        ozs = [p for p in self.players if p.upgrade == 'O']
+
         return {
             "name": "Subject Zero",
-            "children": map(traverse, list(self.get_ozs())),
+            "children": map(self.traverse, ozs),
         }
 
-    def get_ozs(self):
-        return self.get_queryset().filter(upgrade='O')
+    def traverse(self, zombie):
+        """Return a nested tree of the given zombie and all its children"""
+        children = self.children[zombie]
 
-
-def traverse(zombie):
-    """Return a nested tree of the given zombie and all its children"""
-    children = [m.eaten for m in zombie.meal_set.get_query_set()]
-
-    return {
-        "name": zombie.user.get_full_name(),
-        "children": [traverse(c) for c in children] if children else None
-    }
+        return {
+            "name": self.names[zombie],
+            "children": [self.traverse(c) for c in children] if children else None,
+        }
 
 
 class JSONPlayerStats(JSONResponseMixin, BaseListView):

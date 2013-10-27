@@ -4,6 +4,9 @@ $(document).ready(function() {
     var SCHOOL_COLUMN = 1;
     var YEAR_COLUMN = 2;
 
+    var HUMAN_COLS = 4;
+    var ZOMBIE_COLS = 5;
+
     function filterPlayers(players, text, column) {
         var selects = [
             [SCHOOL_COLUMN, $('#school')],
@@ -95,8 +98,9 @@ $(document).ready(function() {
     var human_data = parseTable($('#human_list'));
     var zombie_data = parseTable($('#zombie_list'));
 
-    var human_cols = human_data[0].length;
-    var zombie_cols = zombie_data[0].length;
+    // Magic values to handle the empty case
+    var human_cols = human_data.length > 0 ? human_data[0].length : HUMAN_COLS;
+    var zombie_cols = zombie_data.length > 0 ? zombie_data[0].length : ZOMBIE_COLS;
 
     var placeholders = [
         [human_cols, "There aren't any humans!"],

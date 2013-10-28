@@ -1,10 +1,11 @@
 import calendar
 from datetime import datetime, time, timedelta
 from collections import defaultdict
+import json
 
 from django import http
 from django.core import serializers
-import django.utils.simplejson as json
+from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views.generic.list import BaseListView, ListView
 from django.conf import settings
@@ -70,7 +71,12 @@ class JSONResponseMixin(object):
 
 def json_format_time(datetime_object):
     """Convert a Python datetime object to a JS timestamp"""
-    return calendar.timegm(datetime_object.timetuple()) * 1000
+    # We really need to store our times in UTC. Until then, we can at
+    # least understand our mistakes.
+    if timezone.is_naive(datetime_object):
+        datetime_object = timezone.make_aware(datetime_object, timezone.get_default_timezone())
+
+    return calendar.timegm(datetime_object.utctimetuple()) * 1000
 
 
 class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):

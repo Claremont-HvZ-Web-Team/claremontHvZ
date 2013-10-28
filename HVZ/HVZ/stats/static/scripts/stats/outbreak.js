@@ -11,7 +11,7 @@ $(function () {
             var population_options = {
                 xaxis: {
                     mode: "time",
-                    timezone: null,
+                    timezone: "browser",
                 },
             };
 

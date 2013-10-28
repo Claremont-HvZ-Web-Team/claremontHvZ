@@ -19,6 +19,25 @@ $(function () {
         }
     );
 
+    $.getJSON(
+        '/status/json/taghistogram.json',
+        function(data, status, jqXHR) {
+            console.log("successful stat GET");
+            console.log(data);
+
+            var $tag_histogram = $("#tag_histogram");
+            var tag_histogram_options = {
+                bars: {show: true},
+                 xaxis: {
+                     mode: "time",
+                     timezone: "browser",
+                 },
+            };
+
+            $.plot($tag_histogram, data, tag_histogram_options);
+        }
+    );
+
     $('.noscript').remove();
     $('.scriptonly').show();
 });

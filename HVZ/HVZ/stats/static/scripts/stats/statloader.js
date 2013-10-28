@@ -25,6 +25,7 @@ $(function () {
                     ticks: data.ticks.grad_year
                 }
             };
+
             var school_options = {
                 series: {stack: true,
                          lines: {show: false, steps: false },

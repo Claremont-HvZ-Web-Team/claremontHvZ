@@ -133,13 +133,34 @@ def time_endpoints(game):
 
     return t0, tf
 
-class JSONOutbreak(JSONResponseMixin, BaseListView):
+class JSONTagHistogram(JSONResponseMixin, BaseListView):
     def get_queryset(self):
         return Meal.objects.filter(eater__game=Game.nearest_game())
 
     def raw_serialization(self, context):
-        return meals_per_hour(Game.nearest_game(), self.get_queryset())
+        game = Game.nearest_game()
+        t0, tf = time_endpoints(game)
 
+        meals_vs_hours = meals_per_hour(Game.nearest_game(), self.get_queryset())
+
+        histogram = []
+        for hour in xrange(len(meals_vs_hours)):
+            t = t0 + timedelta(hours=hour)
+
+            # Stop at the current time
+            if t > settings.NOW():
+                break
+
+            histogram.append([json_format_time(t), meals_vs_hours[hour]])
+
+        # Pre-game case
+        if not histogram:
+            histogram = [[json_format_time(t0), 0]]
+
+        return [{
+            "data": histogram,
+            "color": "rgb(0, 128, 0)",
+        }]
 
 def meals_per_hour(game, meals):
     """Return the number of meals in each hour between now and the game's end."""

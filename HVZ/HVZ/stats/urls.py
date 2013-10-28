@@ -7,7 +7,7 @@ from views import (
     MealLog,
     JSONPlayerStats,
     JSONZombieAncestry,
-    JSONOutbreak,
+    JSONTagHistogram,
     JSONPopulationTimeSeries,
 )
 
@@ -19,7 +19,7 @@ urlpatterns = patterns('HVZ.stats.views',
     url(r'^ancestry', AncestryPage.as_view(), name='stats_ancestry'),
     url(r'^json/players.json', JSONPlayerStats.as_view(), name="data_players"),
     url(r'^json/ancestry.json', JSONZombieAncestry.as_view(), name="data_ancestry"),
-    url(r'^json/taghistogram.json', JSONOutbreak.as_view(), name="data_meal_histogram"),
+    url(r'^json/taghistogram.json', JSONTagHistogram.as_view(), name="data_tag_histogram"),
     url(r'^json/poptimeseries.json',
         JSONPopulationTimeSeries.as_view(),
         name="data_pop_time_series"),

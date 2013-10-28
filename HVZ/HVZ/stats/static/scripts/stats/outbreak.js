@@ -7,9 +7,15 @@ $(function () {
             console.log("successful stat GET");
             console.log(data);
 
-            var population_holder = "#population_time_series";
+            var $population = $("#population_time_series");
+            var population_options = {
+                xaxis: {
+                    mode: "time",
+                    timezone: null,
+                },
+            };
 
-            $.plot($(population_holder), data, {});
+            $.plot($population, data, population_options);
         }
     );
 

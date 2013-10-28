@@ -1,3 +1,4 @@
+import calendar
 from datetime import datetime, time, timedelta
 from collections import defaultdict
 
@@ -67,6 +68,10 @@ class JSONResponseMixin(object):
 
         return json.dumps(self.raw_serialization(context))
 
+def json_format_time(datetime_object):
+    """Convert a Python datetime object to a JS timestamp"""
+    return calendar.timegm(datetime_object.timetuple()) * 1000
+
 
 class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
     def get_queryset(self):
@@ -85,22 +90,25 @@ class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
 
         meals_vs_hours = meals_per_hour(game, self.get_queryset())
         for hour in xrange(len(meals_vs_hours)):
-            if t0 + timedelta(hours=hour) > settings.NOW():
-                continue
+            t = t0 + timedelta(hours=hour)
+
+            # Stop the graph at the current time
+            if t > settings.NOW():
+                break
 
             meal_count = meals_vs_hours[hour]
 
             num_humans -= meal_count
             num_zombies += meal_count
 
-            human_tally.append([hour, num_humans])
-            zombie_tally.append([hour, num_zombies])
+            human_tally.append([json_format_time(t), num_humans])
+            zombie_tally.append([json_format_time(t), num_zombies])
 
         if not human_tally:
-            human_tally = [[0, num_humans]]
+            human_tally = [[json_format_time(t0), num_humans]]
 
         if not zombie_tally:
-            zombie_tally = [[0, num_zombies]]
+            zombie_tally = [[json_format_time(t0), num_zombies]]
 
         return [
             {'label': 'humans', 'data': human_tally, 'color': 'rgb(128, 0, 0)'},

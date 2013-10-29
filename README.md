@@ -120,6 +120,24 @@ Haak wrote [a script] [7] to automatically compile the stylesheets
 whenever new changes are merged in (Git will automatically run any
 script `claremontHvZ/.git/hooks/post-merge` after every merge).
 
+Unfortunately, Django's development server is unreasonably finicky
+here and will only serve static files from within each subapp's static
+folders. If you find that the development server isn't serving the
+stylesheets you've compiled, copy all the css from
+`site/static/styles` to the
+`site/claremontHvZ/HVZ/HVZ/main/static/styles` folder. I wrote a
+half-baked script that simplified things for me, but may or may not
+work on your machine.
+
+    python manage.py collectstatic
+    python manage.py compilecss
+
+should be all you need to run to both compile all the sass into css
+and copy all the css files into the static folders of the subapps,
+ready for Django's dev server to find them. Sometimes you need to
+delete old css files from the subapp static directories. It's
+imperfect.
+
 ### Running a development version of the server
 
 To run a development version of the server:

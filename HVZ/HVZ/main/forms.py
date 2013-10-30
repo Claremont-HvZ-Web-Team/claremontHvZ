@@ -167,7 +167,7 @@ class RegisterForm(forms.ModelForm):
         password = grab('password1')
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.select_for_update().get(email=email)
             user.set_password(password)
 
         except User.DoesNotExist:

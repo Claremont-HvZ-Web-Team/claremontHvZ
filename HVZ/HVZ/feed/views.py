@@ -33,7 +33,8 @@ class EatView(FormView):
 
         m = Meal(
             eater=Player.logged_in_player(self.request),
-            eaten=Player.current_players().get(feed=grab("feedcode")),
+            eaten=(Player.current_players().select_for_update()
+                   .get(feed=grab("feedcode"))),
             time=grab('time'),
             location=grab("location"),
             description=grab("description"),

@@ -180,11 +180,10 @@ class RegisterForm(forms.ModelForm):
                 password=password,
             )
 
-        finally:
-            user.first_name = grab("first_name")
-            user.last_name = grab("last_name")
-            user.full_clean()
-            user.save()
+        user.first_name = grab("first_name")
+        user.last_name = grab("last_name")
+        user.full_clean()
+        user.save()
 
         player.user = user
         player.game = Game.imminent_game()

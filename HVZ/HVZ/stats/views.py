@@ -22,10 +22,11 @@ class MealLog(ListView):
     template_name = 'stats/meal_log.html'
 
     def get_queryset(self, *args, **kwargs):
-        return Meal.objects.filter(eater__game=Game.nearest_game()).select_related(
-                       'eater__user__first_name', 'eater__user__last_name',
-                       'eaten__user__first_name', 'eaten__user__last_name',
-            'argabarga').order_by('time')
+        return (Meal.objects.filter(eater__game=Game.nearest_game())
+                .select_related(
+                    'eater__user__first_name', 'eater__user__last_name',
+                    'eaten__user__first_name', 'eaten__user__last_name',
+                ).order_by('time'))
 
 
 class AncestryPage(TemplateView):

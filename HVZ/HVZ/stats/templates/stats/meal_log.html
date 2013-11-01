@@ -3,13 +3,16 @@
 {% block currenttab %}
 <table>
   <thead>
-    <th>Date</th>
-    <th>Time</th>
-    <th>Location</th>
-    <th>Eater</th>
-    <th>Eaten</th>
-    <th>Description</th>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Location</th>
+      <th>Eater</th>
+      <th>Eaten</th>
+      <th>Description</th>
+    </tr>
   </thead>
+  <tbody>
   {% for m in meal_list %}
     <tr>
       <td>{{ m.time|date }}</td>
@@ -20,5 +23,6 @@
       <td>{% if m.description %}{{ m.description }}{% endif %}</td>
     </tr>
   {% endfor %}
+  </tbody>
 </table>
 {% endblock currenttab %}

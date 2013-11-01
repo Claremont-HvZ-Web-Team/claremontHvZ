@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import pre_delete
+from django.conf import settings
 
 from HVZ.main.models import Player, Building
 from HVZ.main import validators
@@ -33,11 +34,15 @@ class Meal(models.Model):
         if self.time:
             validators.validate_past(self.time)
             validators.DateValidator(self.eater.game)(self.time.date())
+        else:
+            self.time = settings.NOW()
 
         return super(Meal, self).clean()
 
     def save(self):
         self.eaten.team = "Z"
+        if not self.time:
+            self.time = settings.NOW()
         self.eaten.save()
         return super(Meal, self).save()
 

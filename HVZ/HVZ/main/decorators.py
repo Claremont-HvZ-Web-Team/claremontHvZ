@@ -12,7 +12,7 @@ def require_active_game(view_func):
     @wraps(view_func)
     def wrapper(*args, **kwargs):
         if not Game.games(started=True, finished=False).exists():
-            raise NoActiveGame
+            raise NoActiveGame("There is no game in progress!")
         return view_func(*args, **kwargs)
 
     return wrapper

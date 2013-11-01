@@ -82,7 +82,7 @@ def json_format_time(datetime_object):
 
 class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
     def get_queryset(self):
-        return Meal.objects.filter(eater__game=Game.nearest_game())
+        return Meal.objects.filter(eater__game=Game.nearest_game(), time__isnull=False)
 
     def raw_serialization(self, context):
         game = Game.nearest_game()
@@ -136,7 +136,7 @@ def time_endpoints(game):
 
 class JSONTagHistogram(JSONResponseMixin, BaseListView):
     def get_queryset(self):
-        return Meal.objects.filter(eater__game=Game.nearest_game())
+        return Meal.objects.filter(eater__game=Game.nearest_game(), time__isnull=False)
 
     def raw_serialization(self, context):
         game = Game.nearest_game()
@@ -180,9 +180,6 @@ def meals_per_hour(game, meals):
     aggregates = []
     for hour in xrange(num_hours):
         aggregates.append(meals_vs_hours[hour])
-
-    if settings.DEBUG:
-        assert(sum(aggregates) == len(meals))
 
     return aggregates
 

@@ -105,12 +105,7 @@ class Command(BaseCommand):
             )
 
     def pick_ozs(self, num_ozs):
-        num_candidates = Player.objects.count()
-        oz_ids = random.sample(
-            xrange(1, num_candidates),
-            min(num_ozs, num_candidates),
-        )
-        ozs = Player.objects.filter(id__in=oz_ids)
+        ozs = Player.current_players().order_by('?')[:num_ozs]
         for p in ozs:
             # Retroactively volunteer the mock player
             p.can_oz = True

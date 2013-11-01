@@ -54,7 +54,7 @@
     {% for meal in latest_meals %}
       <li>
         <div class='time'>
-          {{meal.time|date:"h:m a"}}
+          {{meal.time|date:"l g:i a"}}
         </div>
         {% if meal.location %}
           <div class='loc'>

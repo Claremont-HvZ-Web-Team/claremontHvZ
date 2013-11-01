@@ -1,9 +1,10 @@
 $(function () {
 
+    "use strict";
+
     $.getJSON(
         '/status/json/players.json',
         function(data, status, jqXHR) {
-            abort = false;
             console.log("successful stat GET");
             console.log(data);
 

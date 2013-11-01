@@ -284,6 +284,8 @@ class JSONPlayerStats(JSONResponseMixin, BaseListView):
                 if key == 'dorm':
                     # flip dorm data series for horizontal bars
                     data_set['data'] = [[val, dkey] for dkey, val in data_set['data'].items()]
+                    data_set['data'].sort(cmp=(lambda x, y: x[1] - y[1]))
                 else:
                     data_set['data'] = [[dkey, val] for dkey, val in data_set['data'].items()]
+
         return aggregates

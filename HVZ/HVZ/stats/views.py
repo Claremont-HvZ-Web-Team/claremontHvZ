@@ -194,16 +194,18 @@ class JSONZombieAncestry(JSONResponseMixin, BaseListView):
         return None
 
     def raw_serialization(self, context):
-        self.players = Player.current_players().select_related('user')
+        self.players = Player.current_players().filter(team='Z').select_related('user')
         self.names = {p: p.user.get_full_name() for p in self.players}
         self.meals = (Meal.objects.filter(eater__game=Game.nearest_game())
                       .select_related('eater', 'eaten'))
 
+        self.possible_ozs = set(self.players)
         self.children = defaultdict(list)
         for m in self.meals:
             self.children[m.eater].append(m.eaten)
+            self.possible_ozs.remove(m.eaten)
 
-        ozs = [p for p in self.players if p.upgrade == 'O']
+        ozs = [p for p in self.players if p in self.possible_ozs]
 
         return {
             "name": "Subject Zero",

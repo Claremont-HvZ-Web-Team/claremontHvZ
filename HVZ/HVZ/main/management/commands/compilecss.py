@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.old_dir = os.getcwd()
 
-        os.chdir(os.path.join(settings.PROJECT_PATH, '..', '..', 'static'))
+        os.chdir(settings.STATIC_ROOT)
         subprocess.call(['compass', 'compile',
                          '--sass-dir', 'sass',
                          '--css-dir', 'styles'])

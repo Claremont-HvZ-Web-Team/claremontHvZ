@@ -1,5 +1,11 @@
 {% extends "stats/the_stats.html" %}
 
+{% load static %}
+
+{% block morehead %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/stats/meal_log.css' %}">
+{% endblock %}
+
 {% block currenttab %}
 <table>
   <thead>
@@ -17,7 +23,7 @@
     <tr>
       <td>{{ m.time|date }}</td>
       <td>{{ m.time|time }}</td>
-      <td>{{ m.location }}</td>
+      <td>{% if m.location %}{{ m.location }}{% endif %}</td>
       <td>{{ m.eater.user.first_name }} {{ m.eater.user.last_name}}</td>
       <td>{{ m.eaten.user.first_name }} {{ m.eaten.user.last_name}}</td>
       <td>{% if m.description %}{{ m.description }}{% endif %}</td>

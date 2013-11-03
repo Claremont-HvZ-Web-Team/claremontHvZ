@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import random
 from optparse import make_option
 
@@ -58,7 +58,6 @@ class Command(BaseCommand):
 
         days = (g.end_date - g.start_date).days
 
-        import pdb; pdb.set_trace()
         day = g.start_date
         while day < g.end_date:
 

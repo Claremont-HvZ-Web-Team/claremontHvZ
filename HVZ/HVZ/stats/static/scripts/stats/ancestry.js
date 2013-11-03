@@ -85,6 +85,18 @@ function update(source) {
         .text(function(d) { return d.name; })
         .style("fill-opacity", 1e-6);
 
+    nodeEnter.append("svg:text")
+        .attr("class", "descendants")
+        .attr("x", 10)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .text(function(d) {
+            return d.children || d._children
+                ? '(' + (subtreeSize(d)) + ')'
+                : "";
+        })
+        .style("fill-opacity", 1e-6);
+
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
         .duration(duration)
@@ -96,6 +108,9 @@ function update(source) {
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
+
+    nodeUpdate.select("text.descendants")
+        .style("fill-opacity", function(d) { return d === root ? 0 : 0.25; });
 
     // Transition exiting nodes to the parent's new position.
     var nodeExit = node.exit().transition()
@@ -299,6 +314,21 @@ function switchTo(zombieName) {
 
     update(root);
     return root;
+}
+
+function subtreeSize(node) {
+    var children = node.children || node._children;
+
+    if (!children) {
+        return 1;
+    }
+
+    var count = 0;
+    for (var i = 0; i < children.length; ++i) {
+        count += subtreeSize(children[i]);
+    }
+
+    return count;
 }
 
 (function() {

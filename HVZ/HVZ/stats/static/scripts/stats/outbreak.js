@@ -9,6 +9,14 @@ $(function () {
 
             var $population = $("#population_time_series");
             var population_options = {
+                series: {
+                    stack: true,
+                    lines: {
+                        show: true,
+                        steps: false,
+                        fill: true,
+                    },
+                },
                 xaxis: {
                     mode: "time",
                     timezone: "browser",
@@ -27,11 +35,11 @@ $(function () {
 
             var $tag_histogram = $("#tag_histogram");
             var tag_histogram_options = {
-                bars: {show: true},
-                 xaxis: {
-                     mode: "time",
-                     timezone: "browser",
-                 },
+                bars: {show: true, barWidth: 1000, align: 'center',},
+                xaxis: {
+                    mode: "time",
+                    timezone: "browser",
+                },
             };
 
             $.plot($tag_histogram, data, tag_histogram_options);

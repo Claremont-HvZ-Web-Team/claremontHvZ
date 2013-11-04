@@ -92,7 +92,7 @@ function update(source) {
         .attr("text-anchor", "start")
         .text(function(d) {
             return d.children || d._children
-                ? '(' + (subtreeSize(d)) + ')'
+                ? '(' + (subtreeSize(d) - 1) + ')'
                 : "";
         })
         .style("fill-opacity", 1e-6);
@@ -268,10 +268,14 @@ function initTypeahead(json) {
     }).on('typeahead:autocompleted', function(e, datum, id) {
         switchTo(datum.value);
     }).on('keypress', function(e) {
+        // Enter key
         if (e.which === 13 &&
             $.inArray($('.typeahead').val(), player_names) !== -1) {
 
             switchTo($('.typeahead').val());
+
+            // Close suggestions
+            $('.typeahead').trigger('blur');
         }
     });
 }
@@ -323,7 +327,7 @@ function subtreeSize(node) {
         return 1;
     }
 
-    var count = 0;
+    var count = 1;
     for (var i = 0; i < children.length; ++i) {
         count += subtreeSize(children[i]);
     }

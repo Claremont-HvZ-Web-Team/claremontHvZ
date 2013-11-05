@@ -202,6 +202,8 @@ class JSONZombieAncestry(JSONResponseMixin, BaseListView):
         self.possible_ozs = set(self.players)
         self.children = defaultdict(list)
         for m in self.meals:
+            if m.eaten not in self.players:
+                continue
             self.children[m.eater].append(m.eaten)
             self.possible_ozs.remove(m.eaten)
 

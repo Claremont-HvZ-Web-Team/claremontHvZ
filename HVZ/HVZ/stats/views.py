@@ -89,27 +89,34 @@ class JSONPopulationTimeSeries(JSONResponseMixin, BaseListView):
 
         t0, tf = time_endpoints(game)
 
-        num_zombies = Player.current_players().filter(upgrade='O').count()
+        zombies = Player.current_players().filter(team='Z').all()
+        meals = (Meal.objects.select_related('eater', 'eaten')
+                 .filter(eater__game=game).order_by('time'))
+
+        eaten_zombies = set([m.eaten for m in meals])
+
+        ozs = [z for z in zombies if z not in eaten_zombies]
+
+        num_zombies = len(ozs)
         num_humans = Player.current_players().count() - num_zombies
 
         human_tally = []
         zombie_tally = []
 
-        meals_vs_hours = meals_per_hour(game, self.get_queryset())
-        for hour in xrange(len(meals_vs_hours)):
-            t = t0 + timedelta(hours=hour)
+        for m in meals:
+            if not m.time:
+                continue
 
             # Stop the graph at the current time
-            if t > settings.NOW():
+            if m.time > settings.NOW():
                 break
 
-            meal_count = meals_vs_hours[hour]
+            num_humans -= 1
+            num_zombies += 1
 
-            num_humans -= meal_count
-            num_zombies += meal_count
+            human_tally.append([json_format_time(m.time), num_humans])
+            zombie_tally.append([json_format_time(m.time), num_zombies])
 
-            human_tally.append([json_format_time(t), num_humans])
-            zombie_tally.append([json_format_time(t), num_zombies])
 
         if not human_tally:
             human_tally = [[json_format_time(t0), num_humans]]

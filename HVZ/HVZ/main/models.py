@@ -216,7 +216,7 @@ class Player(models.Model):
     @classmethod
     def current_players(cls):
         """Return all Players in the current Game."""
-        return cls.objects.filter(game=Game.imminent_game())
+        return cls.objects.filter(game=Game.nearest_game())
 
     @classmethod
     def logged_in_player(cls, request):

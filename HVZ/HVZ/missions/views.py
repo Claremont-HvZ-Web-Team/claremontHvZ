@@ -32,6 +32,7 @@ class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
     """Show a particular mission to the player."""
     model = Plot
 
+    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(PlotDetailView, self).dispatch(request, *args, **kwargs)
 
@@ -44,7 +45,9 @@ class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
         team = plot.team
         if self.player.team != team and plot.mission.game.is_unfinished():
             team_name = "human" if team == 'H' else "zombie"
-            raise PermissionDenied("You must be a {} to view this page.".format(team_name))
+            raise PermissionDenied(
+                "You must be a {} to view this page.".format(team_name)
+            )
 
         if not plot.is_visible():
             raise Http404

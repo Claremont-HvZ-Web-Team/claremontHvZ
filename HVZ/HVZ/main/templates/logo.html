@@ -1,55 +1,59 @@
 {% load staticfiles %}
 
-<header>
-    <div class='barholder'>
-        <div id='breakoutbar'>
-            <div id="zombieprog" style="width: {{outbreak_percent}}%;"></div>
-            <div id="zombieproglead"></div>
-        </div>
-        <div class='modcall'>
-            Mod on Call: {% firstof CURRENT_MOD.user.first_name.lower "nobody" %} {% firstof MOD_PHONE_NUMBER "(123) 456-7890" %}
-        </div>
-        <nav>
-            <ul>
-              {% if player and player.team == 'Z' %}
-                <li><a href="{% url 'feed_eat' %}">Feed</a></li>
-              {% endif %}
-                <li><a href="{% url 'rules' %}">Rules</a></li>
-                <li><a href="/forum">Forums</a></li>
-                <li><a href="{% url 'player_list' %}">Players</a></li>
-                <li><a href="{% url 'plot_list' %}">Missions</a></li>
-                <li><a href="{% url 'stats_list' %}">Stats</a></li>
-              {% comment %}
-                <li><a href="">Timeline</a></li>
-              {% endcomment %}
-                {% if request.user.isMod %}
-                    <li><a href="/attendance/">Attendance</a></li>
-                    <li><a href="/email/">Email</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+<header class="bar-logo">
+  <div class="barholder">
+    <a href="/">
+      <div id="breakoutbar">
+        <div id="zombieprog" style="width: {{outbreak_percent}}%;"></div>
+        <div id="zombieproglead"></div>
+      </div>
+    </a>
+    <div class="modcall">
+      Mod on Call:
+      {% firstof CURRENT_MOD.user.first_name.lower "nobody" %}
+      {% firstof MOD_PHONE_NUMBER "(123) 456-7890" %}
     </div>
-    <div id='logo' {% if is_landing_page %}
-        class="big"
-    {% endif %}>
-        <a href="{% url 'main_landing' %}"><img src="{% spaceless %}
-            {% if is_landing_page %}
-            {% static 'images/logo.png' %}
-            {% else %}
-            {% static 'images/square_logo.png' %}
-            {% endif %}
-        {% endspaceless %}" alt="Humans vs. Zombies: Claremont"/></a>
-
-    </div>
-    {% if not is_landing_page %}
-    <div class='spacer'></div>
-    <div class="login_holder">
-        {% if not request.user.is_authenticated %}
-            <a href="{% url 'login' %}">log in</a>
-        {% else %}
-            logged in as {{request.user.first_name}}<br/>
-            <a href="{% url 'logout' %}">logout</a>
+    <nav id="main_nav" class="navbar navbar-inverse" role="navigation">
+      <ul class="nav navbar-nav">
+        {% if player and player.team == 'Z' %}
+        <li><a href="{% url 'feed_eat' %}">Feed</a></li>
         {% endif %}
-    </div>
-    {% endif %}
+        <li><a href="{% url 'rules' %}">Rules</a></li>
+        <li><a href="/forum">Forums</a></li>
+        <li><a href="{% url 'player_list' %}">Players</a></li>
+        <li><a href="{% url 'plot_list' %}">Missions</a></li>
+        <li><a href="{% url 'stats_list' %}">Stats</a></li>
+        {% if request.user.isMod %}
+        <li><a href="/attendance/">Attendance</a></li>
+        <li><a href="/email/">Email</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  <div id="logo" class="{% if is_landing_page %}big{% endif %}">
+    <a href="{% url 'main_landing' %}">
+      <img src="{% spaceless %}
+                {% if is_landing_page %}
+                {% static 'images/logo.png' %}
+                {% else %}
+                {% static 'images/square_logo.png' %}
+                {% endif %}
+                {% endspaceless %}"
+           alt="Humans vs. Zombies: Claremont"/>
+    </a>
+  </div>
 </header>
+{% if not is_landing_page %}
+<div class="row">
+  <div class="login_holder col-sm-offset-9 col-sm-3">
+    {% if request.user.is_authenticated %}
+      logged in as {{request.user.first_name}}<br/>
+      <a href="{% url 'logout' %}" class="login btn">logout</a>
+    {% elif '/login' not in request.path %}
+      <a class="login btn" href="{% url 'login' %}">Log In!</a>
+      {% elif request.user.is_authenticated %}
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+

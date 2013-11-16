@@ -6,7 +6,7 @@ from HVZ.main.models import Player
 from HVZ.forum.models import Thread, Post
 
 
-class ForumTestCase(BaseTest):
+class CurrentGameThreadsTestCase(BaseTest):
     def setUp(self):
         c = Client()
         self.login_as_tabler(c)
@@ -18,7 +18,33 @@ class ForumTestCase(BaseTest):
 
         c.post(reverse('register'), HUGH_MANN)
 
-    def test_get_invalid_form(self):
+    def test_logged_out(self):
+        c = Client()
+        uri = reverse('current_game_threads')
+        r = c.get(uri)
+        self.assertRedirects(r, 'login/?next=%s' % uri)
+
+    def test_empty(self):
+        c = Client()
+        c.post(reverse('login'), HUGH_MANN)
+
+        r = c.get(reverse('current_game_threads'))
+        self.assertEqual(r.status_code, 200)
+
+
+class ThreadDetailTestCase(BaseTest):
+    def setUp(self):
+        c = Client()
+        self.login_as_tabler(c)
+
+        c.post(reverse('register'), ROB_ZOMBIE)
+        z = Player.objects.get()
+        z.team = 'Z'
+        z.save()
+
+        c.post(reverse('register'), HUGH_MANN)
+
+    def test_get_invalid_thread(self):
         c = Client()
         c.post(reverse('login'), HUGH_MANN)
 
@@ -29,7 +55,7 @@ class ForumTestCase(BaseTest):
 
         self.assertEqual(r.status_code, 404)
 
-    def test_not_logged_in(self):
+    def test_logged_out(self):
         c = Client()
         c.post(reverse('login'), HUGH_MANN)
 

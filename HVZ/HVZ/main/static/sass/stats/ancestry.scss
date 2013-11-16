@@ -1,0 +1,41 @@
+path.link {
+    fill: none;
+    stroke: rgba(128, 0, 0, 0.26);
+    stroke-width: 1.5px;
+}
+
+#ancestry_tab h1 {
+    float: left;
+}
+
+.twitter-typeahead {
+    float: right;
+    margin: 1.5em;
+}
+
+.tt-hint {
+    opacity: 0.5;
+}
+
+.tt-is-under-cursor {
+    color: rgb(0, 128, 0);
+}
+
+.tt-suggestion {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 225px;
+}
+
+.tt-suggestion p {
+    margin: 0.25em;
+}
+
+#ancestry_container {
+    margin-left: auto;
+    margin-right: auto;
+
+    text {
+        font-size: 14px;
+    }
+}

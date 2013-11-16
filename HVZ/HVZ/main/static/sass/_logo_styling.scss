@@ -1,29 +1,41 @@
-
-$header_width: 1000px;
-header {
-    width: $header_width;
-    margin-top: 144px;
-    margin-left: ($header_width - $container_width)/2;
-    div {
-        display: inline-block;
-    }
-
-}
 $logo_width: 271px;
+$logo_height: 284px;
+
+.bar-logo {
+    display: table;
+    width: 100%;
+}
 
 .barholder {
-    width: $header_width - $logo_width;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.login_holder {
+    padding-top: 15px;
+
+    div {
+        padding-bottom: 0.5em;
+    }
+
+    input {
+        font-size: 20px;
+        width: 100%;
+        border-radius: 4px;
+    }
+
+    .login {
+        width: 100%;
+    }
 }
 
 #breakoutbar {
-    margin-top: 10px;
     height: 40px;
     background-color: $bg_green;
     background-image: url(/static/images/green_grunge.jpg);
     background-position: 0px;
 
-    margin-left: 2.1%;
-    width: 98%;
+    margin-left: 2%;
 
     @include rounded_corner(top-left);
     @include rounded_corner(bottom-left);
@@ -37,6 +49,7 @@ $logo_width: 271px;
     background-repeat: no-repeat;
     float: right;
 }
+
 #zombieprog {
     height: 100%;
     float: right;
@@ -44,9 +57,7 @@ $logo_width: 271px;
     background-color: $bg_red;
 }
 
-
 .modcall {
-    width: 400px;
     margin: 0.5em auto;
     display: block;
     text-transform: uppercase;
@@ -56,64 +67,42 @@ $logo_width: 271px;
     }
 }
 
-nav {
-    display: inline-block;
-    width: 100%;
-    font-size: 1.45em;
-    background-color: $dark_color;
+#main_nav {
+    background-color: black;
     color: $link_color;
+    border-radius: 0;
 
-    ul {
-        padding: 0.5em;
-        list-style-type: none;
-        width: 94%;
-        margin: 0 auto;
-    }
-    li {
-        display: inline;
-
-        &:not(:first-child):before {
-            content: "| ";
-        }
-    }
+    margin-bottom: 0;
+    border: 0;
 
     a {
+        font-size: 23px;
         text-transform: uppercase;
     }
 
+    .navbar-nav {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 #logo {
-    float: right;
-    &.big {
-        margin-top: -283px;
-    }
+    display: table-cell;
+    width: $logo_width;
+
     &:not(.big) {
-        margin-top: -156px;
         @include box-shadow(5px, -1px, 10px, rgba(0, 0, 0, 0.5));
     }
 
     z-index: 100;
+
+    @media (max-width: 992px) {
+        display: none;
+    }
 }
 
 @-moz-document url-prefix("http://") {
-    #logo.big {
-        margin-top: -158px;
-    }
     #logo:not(.big) {
         margin-top: -32px;
     }
 }
-
-.spacer {
-    display: block;
-    height: 5px;
-}
-
-.login_holder {
-    padding: 0.25em 0.5em;
-    float: right;
-    text-align: right;
-    display: block;
-}
-

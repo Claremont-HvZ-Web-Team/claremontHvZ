@@ -7,12 +7,13 @@ from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-from HVZ.main.models import Player, Game
+from HVZ.main.models import Player
+from HVZ.main.mixins import PlayerAwareMixin, CurrentGameMixin
 from HVZ.forum.models import Thread, Post
 from HVZ.forum.forms import ThreadCreateForm, PostCreateForm
 
 
-class CurrentGameThreadsView(TemplateView):
+class CurrentGameThreadsView(TemplateView, PlayerAwareMixin, CurrentGameMixin):
     template_name = "forum/current-game-threads.html"
 
     @method_decorator(login_required)
@@ -20,11 +21,6 @@ class CurrentGameThreadsView(TemplateView):
         return super(CurrentGameThreadsView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        try:
-            self.game = Game.nearest_game()
-        except Game.DoesNotExist:
-            raise PermissionDenied("There are no ongoing games!")
-
         context = (
             super(CurrentGameThreadsView, self).get_context_data(*args, **kwargs)
         )

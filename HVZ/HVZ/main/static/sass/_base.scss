@@ -1,4 +1,4 @@
-@import "reset";
+@import "bootstrap";
 @import "constants";
 @import "functions";
 @import "inputs";
@@ -14,6 +14,11 @@ a {
     color: $link_color;
 }
 
+a:hover {
+    text-decoration: none;
+    color: $link_color;
+}
+
 html,
 button,
 input,
@@ -22,22 +27,20 @@ textarea {
     color: $text_color;
 }
 
-.supercontainer {
-    margin: 0 auto;
-    width: 1100px;
-}
-
-$container_width: 1000px;
-.container {
-    margin: 0 auto;
-    width: $container_width;
-
+#supercontainer {
     background-color: white;
     background-image: url(/static/images/subtle_grunge.png);
     @include box-shadow(0, 15px, 15px, rgba(0, 0, 0, 1));
+    padding-left: 0;
+    padding-right: 0;
 
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
+$container_width: 1000px;
 #contentContainer {
     min-height: 250px;
     padding: 1em;
@@ -46,8 +49,6 @@ $container_width: 1000px;
         background-color: rgba(255, 255, 255, 0.5);
     }
 }
-
-
 
 footer {
     padding: 1em;
@@ -74,6 +75,10 @@ tr {
      &:nth-child(even) {
         background: adjust-color($bg_grey, $alpha:-0.85);
      }
+}
+
+.disclaimers p {
+    font-size: 12px;
 }
 
 .scriptonly {

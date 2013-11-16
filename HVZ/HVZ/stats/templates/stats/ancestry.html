@@ -1,63 +1,41 @@
-{% extends "stats/the_stats.html" %}
+{% extends "base.html" %}
 
 {% load staticfiles %}
 
 {% block morehead %}
-  <style type="text/css">
-    path.link {
-        fill: none;
-        stroke: rgba(128, 0, 0, 0.26);
-        stroke-width: 1.5px;
-    }
-
-    #ancestry_tab h1 {
-        float: left;
-    }
-
-    .twitter-typeahead {
-        float: right;
-        margin: 1.5em;
-    }
-
-    .tt-hint {
-        opacity: 0.5;
-    }
-
-    .tt-is-under-cursor {
-        color: rgb(0, 128, 0);
-    }
-
-    .tt-suggestion {
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 225px;
-    }
-
-    .tt-suggestion p {
-        margin: 0.25em;
-    }
-
-  </style>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/stats/ancestry.css' %}">
 {% endblock morehead %}
 
 {% block scriptin %}
-  <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
-  <script type="text/javascript" src="{% static 'scripts/d3.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'scripts/d3.layout.js' %}"></script>
-  <script type="text/javascript" src="{% static 'scripts/typeahead.js' %}"></script>
-  <script type="text/javascript" src="{% static 'scripts/stats/ancestry.js'%}"></script>
+<script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/d3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/d3.layout.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/typeahead.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/stats/ancestry.js'%}"></script>
 {% endblock scriptin %}
 
 
-{% block currenttab %}
+{% block content %}
+<nav>
+  <ul class="nav nav-tabs">
+    <li><a href="{% url 'stats_list' %}">Population</a></li>
+    <li><a href="{% url 'stats_outbreak' %}">Outbreak</a></li>
+    <li class="active"><a href="{% url 'stats_ancestry' %}">Ancestry</a></li>
+    <li><a href="{% url 'stats_meal_log' %}">Tags</a></li>
+  </ul>
+</nav>
 <p class="noscript">You need a JavaScript-enabled browser to see this stats page.</p>
 <div id="ancestry_tab" class="scriptonly">
-  <div>
-    <h1>Zombie Ancestry</h1>
-    <input id="player_typeahead"
-           class="typeahead scriptonly"
-           type="text" placeholder="Find a zombie..." />
+  <div class="container">
+    <div class="row">
+      <h1>Zombie Ancestry</h1>
+      <input id="player_typeahead"
+             class="typeahead scriptonly"
+             type="text" placeholder="Find a zombie..." />
+    </div>
+    <div id="ancestry_container">
+      <svg id="ancestry_chart"></svg>
+    </div>
   </div>
-  <svg id="ancestry_chart"></svg>
 </div>
-{% endblock currenttab %}
+{% endblock content %}

@@ -2,54 +2,61 @@
 {% load staticfiles %}
 {% load player_extras %}
 
-
 {% block stylein %}
-<link rel="stylesheet" href="{% static 'styles/main/landing_page.css' %}" />
+<link rel="stylesheet" type="text/css"
+      href="{% static 'styles/main/landing_page.css' %}" />
 {% endblock stylein %}
 
-
 {% block pre_logo %}
-    <div class="logo_holder">
-        {% if not request.user.is_authenticated %}
-          <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div>{{login_form.username}}</div>
-            <div>{{login_form.password}}</div>
-            <input class="button-submit" type="submit" value="Log In!"/>
-          </form>
+<div id="intro" class="row">
+  <div class="login_holder form-group col-md-3 col-md-push-9">
+    {% if not request.user.is_authenticated %}
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div>{{login_form.username}}</div>
+        <div>{{login_form.password}}</div>
+        <input class="login btn" type="submit" value="Log In!"/>
+      </form>
+    {% else %}
+      {% with request.user|as_player as player %}
+      <div>
+        {% if player.team == "H" %}
+          Good luck, {{user.first_name}}!
         {% else %}
-          {% with request.user|as_player as player  %}
-            <div>
-              {% if player.team == "H" %}
-                Good luck, {{user.first_name}}!
-              {% else %}
-                Brrrrains! (amirite, {{user.first_name}}?)
-              {% endif %}
-            </div>
-          {% endwith %}
-          <div>
-            <ul>
-              <li><a href="{% url 'logout' %}">logout</a></li>
-                {% if request.user.player.team == 'Z' %}
-                  <li><a href="{% url 'feed_eat' %}">feed</a></li>
-                {% endif %}
-            </ul>
-          </div>
+          Brrrrains! (amirite, {{user.first_name}}?)
         {% endif %}
-    </div>
-    <div class='intro'>
-        <p>
-            Humans vs. Zombies is a six-day real-time simulation of a zombie
-            apocalypse.  Humans try to survive, and zombies try to infect/tag
-            all humans.
-        </p>
-    </div>
+      </div>
+      {% endwith %}
+      <a class="btn" href="{% url 'logout' %}">logout</a>
+    {% endif %}
+  </div>
+  <div class="jumbotron col-md-9 col-md-pull-3">
+    <p>
+      Humans vs. Zombies is a five-day real-time simulation of a
+      zombie apocalypse. Zombies try to tag all humans, and
+      humans try to survive by stunning zombies with
+      projectiles.
+    </p>
+  </div>
+</div>
 {% endblock pre_logo %}
 
 {% block content %}
 
+<section class="well col-md-8">
+ <p>
+   Each semester, students at the Claremont Colleges organize a game
+   of tag called Humans vs. Zombies (HvZ). At the beginning of the
+   game, most players identify as &ldquo;humans&rdquo; while a small
+   number of &ldquo;zombie&rdquo; players try to tag them. Tagged
+   humans become zombies, who in turn tag more humans. As the zombie
+   ranks increase, surviving human players must remain vigilant,
+   defending themselves with socks and dart blasters to avoid joining
+   their former comrades in the ever-growing horde.
+ </p>
+</section>
 {% if latest_meals %}
-<section class='ticker'>
+<section class="ticker panel col-md-offset-1 col-md-3">
   <ul>
     {% for meal in latest_meals %}
       <li>
@@ -57,11 +64,11 @@
           {{meal.time|date:"l g:i a"}}
         </div>
         {% if meal.location %}
-          <div class='loc'>
+          <div class="loc">
             {{meal.location}}
           </div>
         {% endif %}
-        <div class='meal'>
+        <div class="meal">
           <p>
             {{meal.eater.user.first_name}}
             {{meal.eater.user.last_name}} ate
@@ -79,18 +86,5 @@
   </ul>
 </section>
 {% endif %}
-
-<section class='mission text'>
-{% if not request.user.is_authenticated %}
-
-{% endif %}
- <p>
-   Each semester, Claremont HvZ organizes a 5 day game of moderated
-   tag called Humans Vs. Zombies. The game involves both “human” and
-   “zombie” players.  Zombies attempt to tag humans. Humans defend
-   themselves against zombies by tagging zombies either with a dart
-   fired from a foam dart blaster or a thrown balled-up sock.
-</p>
-</section>
-<div class='clearer'></div>
+<div class="clearfix"></div>
 {% endblock content %}

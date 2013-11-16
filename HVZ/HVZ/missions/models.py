@@ -134,3 +134,4 @@ class Plot(models.Model):
 
     class Meta:
         unique_together = (('mission', 'team'),)
+        get_latest_by = 'reveal_time'

@@ -10,7 +10,7 @@ register = Library()
 def as_player(user):
     try:
         return Player.user_to_player(user)
-    except:
+    except Player.DoesNotExist:
         return ""
 
 

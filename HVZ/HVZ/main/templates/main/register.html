@@ -1,36 +1,42 @@
 {% extends "base.html" %}
 
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block stylein %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles/main/register.css' %}"/>
 {% endblock stylein %}
 
 {% block content %}
-{% if form.errors %}
-<div class="error">There were some problems with your submission</div>
-{{form.non_field_errors}}
-{% endif %}
-
-<form class='register_form' method="post" action="{% url 'register' %}">
-  {% csrf_token %}
-  {% for field in form  %}
-  <div class='row'>
-    <div>
-        <label for="{{field.id_for_label}}">{{ field.label }}</label>
-    </div>
-    <div>
-        <div>{{field}}</div>
-       {% if field.errors %}
-            <div><div class="errors">
-                {{field.errors}}
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    <div>{{field.help_text}}</div>
+<div class="panel {% if form.errors %}panel-danger{% else %}panel-default{% endif %}">
+  <div class="panel-heading">
+    {% if form.errors %}
+      <h2 class="panel-title">There were some problems</h2>
+      {{form.non_field_errors}}
+    {% else %}
+      <h2 class="panel-title">Register!</h2>
+    {% endif %}
   </div>
-  {% endfor %}
-  <input type="submit" class='button-submit' />
-</form>
+  <form
+     class="register_form panel-body"
+     method="post"
+     action="{% url 'register' %}">
+    {% csrf_token %}
+    {% for field in form  %}
+    <div class="form-group">
+      <label for="{{field.id_for_label}}">{{ field.label }}</label>
+      {{field|attr:"class:form-control"}}
+      <p class="help-block">{{field.help_text}}</p>
+      {% if field.errors %}
+      <div class="panel panel-danger">
+        <div class="panel-body">
+          {{field.errors}}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <input type="submit" class="btn" />
+  </form>
+</div>
 {% endblock %}

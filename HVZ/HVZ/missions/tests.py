@@ -82,6 +82,19 @@ class SingleMissionTest(BaseTest):
         Mission.objects.all().delete()
         Plot.objects.all().delete()
 
+    def test_logged_out(self):
+        c = Client()
+        uri = reverse('plot_detail', args=(HUMAN_PLOT.id, HUMAN_PLOT.slug))
+        r = c.get(uri)
+        self.assertRedirects(r, '/login/?next=%s' % uri)
+
+    def test_invalid_url(self):
+        c = Client()
+        c.post(reverse('login'), HUGH_MANN)
+        r = c.get(reverse('plot_detail', args=(42, 'totes-invalid')))
+
+        self.assertEqual(r.status_code, 404)
+
     def test_list_perspectives(self):
         """Check that each team sees a different list of missions."""
         c = Client()

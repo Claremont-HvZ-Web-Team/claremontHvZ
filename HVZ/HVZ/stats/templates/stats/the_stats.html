@@ -1,14 +1,2 @@
 {% extends "base.html" %}
 
-{% block content %}
-<nav>
-  <ul id="stattabs">
-    <li><a href="{% url 'stats_list' %}">Population</a></li>
-    <li><a href="{% url 'stats_outbreak' %}">Outbreak</a></li>
-    <li><a href="{% url 'stats_ancestry' %}">Ancestry</a></li>
-    <li><a href="{% url 'stats_meal_log' %}">Tags</a></li>
-  </ul>
-</nav>
-{% block currenttab %}
-{% endblock currenttab %}
-{% endblock content %}

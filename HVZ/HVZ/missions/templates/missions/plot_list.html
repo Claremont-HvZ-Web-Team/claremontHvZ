@@ -3,20 +3,34 @@
 {% load mission_extras %}
 
 {% block content %}
+<h1>Missions</h1>
 <table id="mission_list">
-  {% for plot in plot_list %}
-  {% with victor=plot.mission.victor %}
-  <tr class="{% if not victor %}unfinished{% elif victor == 'B' %}{{ player.team }}_won{% else %}{{ victor }}_won{% endif %}">
-    <td class="mission_time">
-      {{ plot.mission|mission_time }}
-    </td>
-    <td class="mission_title">
-      <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">
-        {{ plot.title }}
-      </a>
-    </td>
-  </tr>
-  {% endwith %}
-  {% endfor %}
-</table>
+  {% if plot_list %}
+    <div class="row">
+      {% with plot_list.latest as next_plot %}
+      <div class="col-md-9">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">
+              {{ next_plot.mission|mission_time }}: {{ next_plot.title }}
+            </h2>
+          </div>
+          <div class="panel-body">
+            {{ next_plot.before_story }}
+          </div>
+        </div>
+      </div>
+      {% endwith %}
+      <div class="col-md-3">
+        <ul>
+          {% for plot in plot_list %}
+            <li>
+              <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">
+                {{ plot.mission|mission_time }}: {{ plot.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+  {% endif %}
 {% endblock %}

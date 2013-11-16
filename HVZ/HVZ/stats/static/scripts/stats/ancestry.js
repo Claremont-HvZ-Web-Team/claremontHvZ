@@ -6,13 +6,14 @@
 
 "use strict";
 
-var m = [20, 120, 20, 360],
-w = 850 - m[1] - m[3],
-h = 850 - m[0] - m[2],
-i = 0,
-parents = [],
-selectedNode = null,
-root;
+var dx = 20,
+    dy = 0,
+    w = 290,
+    h = 830,
+    i = 0,
+    parents = [],
+    selectedNode = null,
+    root;
 
 var tree = d3.layout.tree()
     .size([h, w]);
@@ -20,11 +21,15 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
+d3.select("#ancestry_container")
+    .style("width", w + "px")
+    .style("height", h + "px");
+
 var vis = d3.select("#ancestry_chart")
-    .attr("width", w + m[1] + m[3])
-    .attr("height", h + m[0] + m[2])
+    .attr("width", w)
+    .attr("height", h)
     .append("svg:g")
-    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+    .attr("transform", "translate(" + 90 + "," + 0 + ")");
 
 d3.json("json/ancestry.json", function(json) {
     window.jsondata = json;
@@ -78,17 +83,19 @@ function update(source) {
         .attr("r", 1e-6)
         .style("fill", fillNode);
 
+    // name
     nodeEnter.append("svg:text")
-        .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-        .attr("dy", ".35em")
-        .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+        .attr("x", 5)
+        .attr("dy", "-1em")
+        .attr("text-anchor", "end")
         .text(function(d) { return d.name; })
         .style("fill-opacity", 1e-6);
 
+    // number of descendants
     nodeEnter.append("svg:text")
         .attr("class", "descendants")
-        .attr("x", 10)
-        .attr("dy", ".35em")
+        .attr("x", -8)
+        .attr("dy", "1.5em")
         .attr("text-anchor", "start")
         .text(function(d) {
             return d.children || d._children
@@ -107,6 +114,7 @@ function update(source) {
         .style("fill", fillNode);
 
     nodeUpdate.select("text")
+        .attr("x", function(d) { return d === root ? 40 : 5; })
         .style("fill-opacity", 1);
 
     nodeUpdate.select("text.descendants")

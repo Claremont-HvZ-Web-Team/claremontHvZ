@@ -2,48 +2,58 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Humans Versus Zombies at the Claremont Colleges</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Humans Versus Zombies at the Claremont Colleges</title>
 
-        <!-- Load css -->
-        {% block stylein %}
-        <link rel="stylesheet" type="text/css" href="{% static 'styles/main/core.css' %}">
-        {% endblock stylein %}
-        <!-- Load javascript -->
-        <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
-        <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
-        {% block morehead %}{% endblock %}
-    </head>
-    <body>
-        <div class="supercontainer">
-            <div class="container">
-                {% block pre_logo %}
+    {% block stylein %}
+      <link rel="stylesheet" type="text/css"
+            href="{% static 'styles/main/core.css' %}">
+     {% endblock stylein %}
+      <script type="text/javascript" src="{% static 'scripts/jquery.js' %}">
+      </script>
+      <script type="text/javascript" src="{% static 'scripts/bootstrap.js' %}">
+      </script>
+      <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
+      {% block morehead %}{% endblock %}
+  </head>
+  <body>
+    <div id="supercontainer" class="container">
+      <div>
+        {% block pre_logo %}
+        {% endblock pre_logo %}
 
-                {% endblock pre_logo %}
+        {% include "logo.html" %}
 
-                {% include "logo.html" %}
-                {% block post_header %}
-                    <div id="contentContainer">
-                        <div id="mainContainer" class="background" >
-                        {% block content %}{% endblock %}
-                        </div>
-                    </div>
-                {% endblock post_header %}
-                <footer>
-                    <div class="disclaimers left">
-                        <p>For game questions contact the mod team at <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a></p>
-                        <p>For problems on the website, contact the web team at <a href="mailto:web@claremonthvz.org">web@claremonthvz.org</a></p>
-                    </div>
-                    <div class="disclaimers right">
-                        <p>Humans vs Zombies and HvZ are property of <a href="http://gnarwhalstudios.com/">Gnarwhal Studios</a></p>
-                    </div>
-                    <div class="clearer"></div>
-                </footer>
-            </div>
+        {% block post_header %}
+        <div id="contentContainer">
+          {% block content %}{% endblock %}
         </div>
-        {% block scriptin %}
-
-        {% endblock scriptin %}
-    </body>
+        {% endblock post_header %}
+      </div>
+      <footer class="row">
+        <div class="disclaimers pull-left">
+          <p>
+            For game questions contact the mod team
+            at <a href="mailto:mod@claremonthvz.org">mod@claremonthvz.org</a>
+          </p>
+          <p>
+            For problems on the website, contact the web team
+            at <a href="mailto:web@claremonthvz.org">web@claremonthvz.org</a>
+          </p>
+        </div>
+        <div class="disclaimers pull-right">
+          <p>
+            Humans vs Zombies and HvZ are property
+            of <a href="http://gnarwhalstudios.com/">Gnarwhal
+              Studios</a>
+          </p>
+        </div>
+        <div class="clearfix"></div>
+      </footer>
+    </div>
+    {% block scriptin %}
+    {% endblock scriptin %}
+  </body>
 </html>

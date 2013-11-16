@@ -8,7 +8,11 @@ from HVZ.forum.models import Thread, Post
 
 class ThreadCreateForm(forms.Form):
     title = forms.CharField(required=True)
-    post_body = forms.CharField(widget=forms.Textarea(), required=True)
+
+    post_body = forms.CharField(
+        widget=forms.Textarea(),
+        required=True
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs['user']
@@ -50,7 +54,10 @@ class ThreadCreateForm(forms.Form):
         return self.thread
 
 class PostCreateForm(forms.Form):
-    body = forms.CharField(widget=forms.Textarea(), required=True)
+    body = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        required=True
+    )
 
     def __init__(self, *args, **kwargs):
         self.player = kwargs['player']

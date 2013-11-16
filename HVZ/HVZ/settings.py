@@ -203,6 +203,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
 
+    'widget_tweaks',
+
     'pytils',
     'sorl.thumbnail',
     'pure_pagination',

@@ -18,6 +18,10 @@ class ForumPermissionHandler(DefaultPermissionHandler):
     def filter_forums(self, user, qs):
         """Players should not be able to see the other team's forums."""
 
+        # Always allow mods
+        if user.is_staff:
+            return qs
+
         if not user.is_authenticated():
             raise PermissionDenied("You are not logged in!")
 
@@ -32,6 +36,10 @@ class ForumPermissionHandler(DefaultPermissionHandler):
 
     def may_view_forum(self, user, forum):
         """Players should not be able to access the other team's forums."""
+
+        # Always allow mods
+        if user.is_staff:
+            return True
 
         # Check if the forum allows both teams.
         if forum.name == settings.VERBOSE_TEAMS['B']:

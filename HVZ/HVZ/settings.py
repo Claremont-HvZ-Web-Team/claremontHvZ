@@ -163,7 +163,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'HVZ.main.middleware.Http403Middleware',
-    'pybb.middleware.PybbMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -172,7 +171,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ROOT_URLCONF = 'HVZ.urls'
-AUTH_PROFILE_MODULE = 'pybb.Profile'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or
@@ -193,7 +191,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "HVZ.main.context_processors.inject_outbreak_percentage",
     "HVZ.main.context_processors.inject_current_player",
     "HVZ.main.context_processors.inject_mod_info",
-    'pybb.context_processors.processor',
 )
 
 INSTALLED_APPS = (
@@ -201,13 +198,11 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
-    'pybb',
     'pytils',
     'sorl.thumbnail',
     'pure_pagination',
@@ -237,7 +232,7 @@ FEED_LEN = 5
 VALID_CHARS = ["A", "C", "E", "L", "X", "N", "P", "O", "S", "T", "W", "Z"]
 
 MARKUP_FIELD_TYPES = (
-    ('markdown', markdown.markdown),
+    ('markdown', lambda markup: markdown.markdown(html.urlize(markup))),
     ('plain', lambda markup: html.urlize(html.linebreaks(markup))),
 )
 
@@ -249,18 +244,6 @@ START_TIMES = {
 }
 
 WSGI_APPLICATION = 'passenger_wsgi.application'
-
-# Forum settings!
-
-# Hardcoded forums and categories. Players can only see a forum with
-# their team name (or the "both teams" forum)
-CATEGORIES = ("General",)
-FORUMS = VERBOSE_TEAMS.values()
-
-PYBB_DEFAULT_MARKUP = None
-PYBB_SIGNATURE_MAX_LENGTH = 50
-PYBB_DEFAULT_TIME_ZONE = -8
-PYBB_PERMISSION_HANDLER = "HVZ.forum.permissions.ForumPermissionHandler"
 
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.

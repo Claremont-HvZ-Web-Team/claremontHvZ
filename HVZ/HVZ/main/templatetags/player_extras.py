@@ -1,4 +1,5 @@
 from django.template import Library
+from django.conf import settings
 
 from HVZ.main.models import Player
 
@@ -15,7 +16,7 @@ def as_player(user):
 
 @register.filter
 def team_name(team):
-    return Player.TEAMS[team]
+    return settings.VERBOSE_TEAMS[team]
 
 
 @register.filter

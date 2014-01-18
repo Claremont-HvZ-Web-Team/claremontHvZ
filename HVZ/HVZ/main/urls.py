@@ -1,10 +1,10 @@
-from django.contrib.auth.views import login, logout_then_login, password_reset, password_reset_done, password_reset_confirm, password_reset_complete
+from django.contrib.auth.views import (
+    login, logout_then_login, password_reset, password_reset_done,
+    password_reset_confirm, password_reset_complete
+)
 from django.conf.urls import patterns, url
 
 from views import LandingPage, Register, TwilioCallHandler
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
 
 urlpatterns = patterns('HVZ.main.views',
     url(r'^login', login,  name="login"),

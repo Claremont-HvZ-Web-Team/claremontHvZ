@@ -4,34 +4,9 @@ from django.core.urlresolvers import reverse
 from django.test.client import Client
 from django.conf import settings
 
-from HVZ.basetest import BaseTest, define_user
+from HVZ.basetest import BaseTest, HUGH_MANN, ROB_ZOMBIE
 from HVZ.main.models import Player, Game
 from HVZ.missions.models import Mission, Plot
-
-HUGH_MANN = define_user({
-        "first_name": "Hugh",
-        "last_name": "Mann",
-        "email": "hmann@hmc.edu",
-        "password": "hunter2",
-        "school": "4",
-        "dorm": "208",
-        "grad_year": "2013",
-        "cell": "1234567890",
-        "feed": "PLANS",
-})
-
-ROB_ZOMBIE = define_user({
-        "first_name": "Rob",
-        "last_name": "Zombie",
-        "email": "rzed@cmc.edu",
-        "password": "hunter2",
-        "school": "4",
-        "dorm": "208",
-        "grad_year": "2013",
-        "cell": "1234567890",
-        "can_oz": "on",
-        "feed": "SNEAX"
-})
 
 MISSION = Mission(
     day=settings.NOW().date(),

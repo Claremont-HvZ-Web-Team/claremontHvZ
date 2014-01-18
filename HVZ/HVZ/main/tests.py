@@ -6,21 +6,9 @@ from django.contrib.auth.models import User
 from django.test.client import Client
 from django.test.utils import override_settings
 
-from HVZ.basetest import BaseTest, define_user
+from HVZ.basetest import BaseTest, HUGH_MANN
 from HVZ.main import models, forms
 
-
-HUGH_MANN = define_user({
-        "first_name": "Hugh",
-        "last_name": "Mann",
-        "email": "hmann@hmc.edu",
-        "password": "hunter2",
-        "school": "4",
-        "dorm": "208",
-        "grad_year": "2013",
-        "cell": "1234567890",
-        "feed": "PLANS",
-})
 
 class SignupTest(BaseTest):
 

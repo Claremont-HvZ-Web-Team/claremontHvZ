@@ -174,7 +174,6 @@ def meals_per_hour(game, meals):
     meals = list(meals)
 
     t0, tf = time_endpoints(game)
-    dt = timedelta(hours=1)
 
     meals_vs_hours = defaultdict(int)
     for m in meals:

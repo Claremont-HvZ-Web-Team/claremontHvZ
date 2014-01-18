@@ -16,6 +16,32 @@ def define_user(d):
     d["username"] = d["email"]
     return d
 
+HUGH_MANN = define_user({
+        "first_name": "Hugh",
+        "last_name": "Mann",
+        "email": "hmann@hmc.edu",
+        "password": "hunter2",
+        "school": "4",
+        "dorm": "208",
+        "grad_year": "2013",
+        "cell": "1234567890",
+        "feed": "PLANS",
+})
+
+ROB_ZOMBIE = define_user({
+        "first_name": "Rob",
+        "last_name": "Zombie",
+        "email": "rzed@cmc.edu",
+        "password": "hunter2",
+        "school": "4",
+        "dorm": "208",
+        "grad_year": "2013",
+        "cell": "1234567890",
+        "can_oz": "on",
+        "feed": "SNEAX"
+})
+
+
 class BaseTest(TestCase):
     """Commonly used code and convenience functions for other TestCases."""
 

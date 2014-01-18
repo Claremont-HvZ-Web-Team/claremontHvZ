@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block stylein %}
+  <link
+     rel="stylesheet"
+     type="text/css"
+     href="{% static 'styles/main/core.css' %}">
+{% endblock stylein %}
+
+{% block content %}
+<h1>{{ thread.title }}</h1>
+<ul class="{{ thread.team }}-thread">
+  {% for post in posts %}
+  <table class="post">
+    <thead><tr><th colspan="2">{{ post.created|date:"l g:i a" }}</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>{{ post.author.user.first_name }} {{ post.author.user.last_name }}</td>
+        <td class="body">{{ post.body }}</td>
+      </tr>
+    </tbody>
+  </table>
+  {% endfor %}
+</ul>
+
+<form method="post" action="{% url 'thread_detail' thread.pk thread.slug %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" class="button-submit" />
+</form>
+{% endblock content %}

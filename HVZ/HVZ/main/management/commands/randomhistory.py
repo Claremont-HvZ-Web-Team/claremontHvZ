@@ -3,8 +3,6 @@ import random
 from optparse import make_option
 
 from django.core.management.base import BaseCommand
-from django.conf import settings
-from django.contrib.auth.models import User
 
 from HVZ.main.models import Player, Game, Building
 from HVZ.feed.models import Meal

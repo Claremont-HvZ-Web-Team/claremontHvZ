@@ -14,8 +14,6 @@ class PlayerListView(ListView):
         return super(PlayerListView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        players = kwargs.get('object_list')
-
         context = super(PlayerListView, self).get_context_data(**kwargs)
         context['game_season'] = Game.nearest_game().season()
 

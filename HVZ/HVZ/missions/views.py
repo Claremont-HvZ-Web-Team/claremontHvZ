@@ -5,24 +5,22 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.utils.decorators import method_decorator
 
-from HVZ.main.models import Game
-from HVZ.main.mixins import PlayerAwareMixin
-from HVZ.main.decorators import require_unfinished_game
+from HVZ.main.mixins import PlayerAwareMixin, CurrentGameMixin
 from HVZ.missions.models import Plot
 
 
-class PlotListView(ListView, PlayerAwareMixin):
+class PlotListView(ListView, PlayerAwareMixin, CurrentGameMixin):
     """Show a list of missions to the player."""
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        super(PlotListView, self).set_player(request)
         return super(PlotListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        game = Game.nearest_game()
-        team = self.player.team
-        return Plot.get_visible(game, team).select_related('mission')
+        return Plot.get_visible(
+            self.game,
+            self.player.team
+        ).select_related('mission')
 
     def get_context_data(self, **kwargs):
         context = super(PlotListView, self).get_context_data(**kwargs)
@@ -30,12 +28,11 @@ class PlotListView(ListView, PlayerAwareMixin):
         return context
 
 
-class PlotDetailView(DetailView, PlayerAwareMixin):
+class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
     """Show a particular mission to the player."""
     model = Plot
 
     def dispatch(self, request, *args, **kwargs):
-        self.set_player(request)
         return super(PlotDetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

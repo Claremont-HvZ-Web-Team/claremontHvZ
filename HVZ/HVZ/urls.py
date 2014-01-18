@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -19,7 +18,7 @@ urlpatterns = patterns(
     url(r'^login/', 'django.contrib.auth.views.login', name="login"),
 
     url(r'^eat/', include('HVZ.feed.urls')),
-    url(r'^forum/', include('pybb.urls', namespace='pybb')),
+    url(r'^forum/', include('HVZ.forum.urls')),
     url(r'^rules/', include('HVZ.rules.urls')),
 
     url(r'^missions/', include('HVZ.missions.urls')),

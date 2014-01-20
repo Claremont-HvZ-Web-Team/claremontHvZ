@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load mission_extras %}
+
+{% block stylein %}
+<link rel="stylesheet" type="text/css" href="{% static "styles/missions/missions.css" %}">
+{% endblock stylein %}
 
 {% block content %}
 <h1>{{ plot.mission|mission_time }}: {{ plot.title }}</h1>
@@ -10,13 +15,13 @@
     <p>{{ story.rendered|safe }}</p>
   </div>
   <div class="col-md-3">
-    <ul class="well nav nav-stacked">
-      {% for plot in plot_list %}
-      <li>
-        <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">
-          {{ plot.mission|mission_time }}: {{ plot.title }}
-        </a>
-      </li>
+    <ul id="mission-sidenav" class="well nav nav-stacked nav-pills">
+      {% for other_plot in plot_list %}
+        <li{% if other_plot.id == plot.id %} class="active"{% endif %}>
+          <a href="{% url 'plot_detail' pk=other_plot.id slug=other_plot.slug %}">
+            {{ other_plot.mission|mission_time }}: {{ other_plot.title }}
+          </a>
+        </li>
       {% endfor %}
     </ul>
   </div>

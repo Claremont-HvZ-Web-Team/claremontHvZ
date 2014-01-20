@@ -39,6 +39,10 @@ class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
     def get_context_data(self, **kwargs):
         context = super(PlotDetailView, self).get_context_data(**kwargs)
         context['story'] = context['plot'].get_story(self.player.team)
+        context['plot_list'] = Plot.get_visible(
+            self.game,
+            self.player.team
+        ).select_related('mission')
 
         # Check that the player is authorized to see the object
         plot = context['plot']

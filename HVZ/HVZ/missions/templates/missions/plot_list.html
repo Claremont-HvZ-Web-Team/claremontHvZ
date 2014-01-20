@@ -22,7 +22,7 @@
       </div>
       {% endwith %}
       <div class="col-md-3">
-        <ul>
+        <ul class="well nav nav-stacked">
           {% for plot in plot_list %}
             <li>
               <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">

@@ -3,7 +3,22 @@
 {% load mission_extras %}
 
 {% block content %}
-<h1>{{ plot.title }}</h1>
+<h1>{{ plot.mission|mission_time }}: {{ plot.title }}</h1>
 
-<p>{{ story.rendered|safe }}</p>
+<div class="row">
+  <div class="col-md-9 well">
+    <p>{{ story.rendered|safe }}</p>
+  </div>
+  <div class="col-md-3">
+    <ul class="well nav nav-stacked">
+      {% for plot in plot_list %}
+      <li>
+        <a href="{% url 'plot_detail' pk=plot.id slug=plot.slug %}">
+          {{ plot.mission|mission_time }}: {{ plot.title }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}

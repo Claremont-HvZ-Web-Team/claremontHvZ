@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 
@@ -76,6 +77,14 @@ class Post(models.Model):
 
     def __unicode__(self):
         return u"{:<30} ({})".format(self.author, self.created)
+
+    def clean(self):
+        if not self.thread.visible_to_player(self.author):
+            raise ValidationError(
+                "Author is not allowed to see the thread they want to post in!"
+            )
+
+        return super(self, Post).clean()
 
     class Meta(object):
         get_latest_by = "updated"

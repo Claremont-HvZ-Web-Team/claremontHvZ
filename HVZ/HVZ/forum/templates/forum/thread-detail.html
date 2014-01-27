@@ -30,16 +30,18 @@
   {% endfor %}
   </div>
   <div class="col-md-5">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Make a post</h3>
+    <div class="affixer" data-spy="affix" data-offset-top="300">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Make a post</h3>
+        </div>
+        <form method="post" class="panel-body" action="{% url 'thread_detail' thread.pk thread.slug %}">
+          {% csrf_token %}
+          {{ form.body }}
+          <input type="submit" class="btn form-control" value="Post" />
+          <p class="help-block">(We use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> for formatting)</p>
+        </form>
       </div>
-      <form method="post" class="panel-body" action="{% url 'thread_detail' thread.pk thread.slug %}">
-        {% csrf_token %}
-        {{ form.body }}
-        <input type="submit" class="btn form-control" value="Post" />
-        <p class="help-block">(We use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> for formatting)</p>
-      </form>
     </div>
   </div>
 </div>

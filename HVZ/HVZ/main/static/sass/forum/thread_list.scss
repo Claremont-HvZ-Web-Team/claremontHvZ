@@ -27,7 +27,6 @@
 }
 
 .mod.panel>.panel-heading {
-    color: #8a6d3b;
     background-color: #fcf8e3;
     border-color: #faebcc;
 }
@@ -37,7 +36,6 @@
 }
 
 .H.panel>.panel-heading {
-    color: #a94442;
     background: adjust-color($bg_red, $alpha:-0.75);
     border-color: #ebccd1;
 }
@@ -47,7 +45,6 @@
 }
 
 .Z.panel>.panel-heading {
-    color: #3c763d;
     background: adjust-color($bg_green, $alpha:-0.75);
     border-color: #d6e9c6;
 }
@@ -60,4 +57,17 @@
     color: #555555;
     background: adjust-color($dark_color, $alpha:-0.75);
     border-color:#555555;
+}
+
+.affixer.affix {
+    top: 8px;
+    @media (max-width: 991px) {
+        position: static;
+    }
+    @media (min-width: 992px) {
+        width: 360.5px;
+    }
+    @media (min-width: 1200px) {
+        width: 445.828px;
+    }
 }

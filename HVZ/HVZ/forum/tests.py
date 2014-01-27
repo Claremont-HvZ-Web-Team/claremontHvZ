@@ -1,8 +1,10 @@
-from django.test.client import Client
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.test.client import Client
+from django.conf import settings
 
 from HVZ.basetest import BaseTest, HUGH_MANN, ROB_ZOMBIE
-from HVZ.main.models import Player
+from HVZ.main.models import Player, Game
 from HVZ.forum.models import Thread, Post
 
 
@@ -125,6 +127,30 @@ class ThreadDetailTestCase(BaseTest):
         r = c.get(reverse('thread_detail', kwargs={'pk': t.pk, 'slug': t.slug}))
         self.assertEqual(r.status_code, 403)
 
+        self.assertEqual(Post.objects.count(), 1)
+
+        r = c.post(
+            reverse('thread_detail', kwargs={'pk': t.pk, 'slug': t.slug}),
+            { 'body': 'brans' }
+        )
+
+        self.assertEqual(r.status_code, 403)
+        self.assertEqual(Post.objects.count(), 1)
+
+    def test_illegal_thread_creation(self):
+        self.assertEqual(Thread.objects.count(), 0)
+
+        c = Client()
+        c.post(reverse('login'), ROB_ZOMBIE)
+        r = c.post(reverse('thread_create'), {
+            'title': "It's safe, guys!",
+            'team': 'H',
+            'post_body': 'Really.',
+        })
+
+        self.assertEqual(len(r.context[0].get('form').errors), 1)
+        self.assertEqual(Thread.objects.count(), 0)
+
     def test_public_thread(self):
         c = Client()
         c.post(reverse('login'), HUGH_MANN)
@@ -154,3 +180,28 @@ class ThreadDetailTestCase(BaseTest):
         z = Player.objects.get(team='Z')
         p = Post.objects.get(author=z)
         self.assertEqual(p.body.raw, 'dolor sit amet')
+
+    def test_illegal_posting(self):
+        game = Game.objects.get()
+        human_thread = Thread(
+            game=game,
+            title="Humans Only",
+            slug="humans-only",
+            team="H"
+        )
+
+        human_thread.full_clean()
+        human_thread.save()
+
+        zombie = Player.objects.get(team='Z')
+
+        self.assertEqual(Post.objects.count(), 0)
+
+        post = Post(
+            thread=human_thread,
+            author=zombie,
+            created=settings.NOW(),
+            body="H4%0R3D"
+        )
+
+        self.assertRaises(ValidationError, post.full_clean)

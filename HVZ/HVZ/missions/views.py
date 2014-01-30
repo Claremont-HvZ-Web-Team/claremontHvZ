@@ -29,8 +29,11 @@ class PlotListView(ListView, PlayerAwareMixin, CurrentGameMixin):
         context['player'] = self.player
         context['plots_sorted'] = sorted(
             list(context['plot_list']),
-            key=lambda plot: plot.mission.start_time
+            key=lambda plot: plot.mission.start_time(),
+            reverse=True
         )
+        print context['plots_sorted']
+
         return context
 
 
@@ -53,7 +56,8 @@ class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
 
         context['plots_sorted'] = sorted(
             list(context['plot_list']),
-            key=lambda plot: plot.mission.start_time
+            key=lambda plot: plot.mission.start_time(),
+            reverse=True
         )
 
         # Check that the player is authorized to see the object

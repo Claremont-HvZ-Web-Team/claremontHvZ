@@ -11,6 +11,8 @@ from HVZ.missions.models import Plot
 
 class PlotListView(ListView, PlayerAwareMixin, CurrentGameMixin):
     """Show a list of missions to the player."""
+    model = Plot
+    template_name = 'missions/plot_list.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -20,17 +22,22 @@ class PlotListView(ListView, PlayerAwareMixin, CurrentGameMixin):
         return Plot.get_visible(
             self.game,
             self.player.team
-        ).select_related('mission')
+        ).select_related('mission').all()
 
     def get_context_data(self, **kwargs):
         context = super(PlotListView, self).get_context_data(**kwargs)
         context['player'] = self.player
+        context['plots_sorted'] = sorted(
+            list(context['plot_list']),
+            key=lambda plot: plot.mission.start_time
+        )
         return context
 
 
 class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
     """Show a particular mission to the player."""
     model = Plot
+    template_name = 'missions/plot_detail.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -42,7 +49,12 @@ class PlotDetailView(DetailView, CurrentGameMixin, PlayerAwareMixin):
         context['plot_list'] = Plot.get_visible(
             self.game,
             self.player.team
-        ).select_related('mission')
+        ).select_related('mission').all()
+
+        context['plots_sorted'] = sorted(
+            list(context['plot_list']),
+            key=lambda plot: plot.mission.start_time
+        )
 
         # Check that the player is authorized to see the object
         plot = context['plot']

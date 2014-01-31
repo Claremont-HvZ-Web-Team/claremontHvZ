@@ -10,26 +10,6 @@ class Command(BaseCommand):
         old_dir = os.getcwd()
 
         try:
-            print("Installing dependencies...")
-            delimit()
-
-            subprocess.call([
-                'pip',
-                'install',
-                '-r',
-                os.path.join(
-                    os.path.dirname(settings.PROJECT_PATH),
-                    'dev-requirements.txt'
-                ),
-            ])
-
-            delimit()
-            print("Installation successful!")
-
-        finally:
-            os.chdir(old_dir)
-
-        try:
             print("Copying template files...")
             delimit()
 

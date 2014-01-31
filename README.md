@@ -29,9 +29,28 @@ Note that I'm going to refer to `~/programming` everywhere. If your
 root directory is in a different place, use your imagination and
 substitute accordingly.
 
+### Setting up the Virtual Environment
+
 Now build a virtualenv in the root directory, which for me was
 
     virtualenv ~/programming/claremonthvz.org
+
+A virtualenv provides a wrapper between the site and your machine. As
+long as the site only interacts with code from within this wrapper, we
+ensure that the site will work on anyone's machine.
+
+You won't actually be _using_ the virtualenv until you activate it:
+
+    source ~/programming/claremonthvz.org/bin/activate
+
+This needs to be run every time you start up a terminal to work on the
+site. I recommend you add the following alias to your .bashrc:
+
+    alias hvz="cd ~/personal-projects/claremonthvz.org && source bin/activate && cd claremontHvZ/HVZ"
+
+Then you can just type `hvz` when you want to start hacking away.
+
+### Git clone!
 
 Clone your forked GitHub repo (you don't have to use the command line
 for this):
@@ -46,17 +65,6 @@ And install the site's dependencies.
 To compile stylesheets, we use Compass.
 
     gem install compass
-
-Moving passenger_wsgi.py
-------------------------
-
-Django relies on a file called `passenger_wsgi.py` to locate and load
-the HVZ settings module and web specification library. Our production
-server runs a more complicated one provided by DreamHost, but you can
-just copy the simple development sample in the root directory:
-
-    cd ~/programming/claremonthvz.org/claremontHvZ/HVZ
-    cp sample_passenger_wsgi.py passenger_wsgi.py
 
 Specifying settings
 -------------------
@@ -106,6 +114,15 @@ If you're working on the style files, keep a terminal running
 `compass watch`. This will continually check for changes to
 your stylesheets.
 
+### Running unit tests
+
+If you've followed all of the above steps, all unit tests should pass:
+
+    python manage.py test HVZ
+
+These tests check registration, feeding, and permission scenarios ---
+they've saved my ass many a time. Run them before committing code!
+
 ### Running a development version of the server
 
 To run a development version of the server:
@@ -113,14 +130,6 @@ To run a development version of the server:
     python manage.py runserver
 
 You can then access the site by directing your browser to `localhost:8000`.
-
-### Running unit tests
-
-To run our unit tests:
-
-    python manage.py test HVZ
-
-These tests will check registration, feeding, and permission scenarios.
 
 
 [1]: http://www.pip-installer.org/ "PyPI Package Manager"

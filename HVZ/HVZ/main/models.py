@@ -207,9 +207,6 @@ class Player(models.Model):
         null=True,
     )
 
-    profile_pic = models.ImageField(upload_to=settings.HUMAN_PICS,
-                                    blank=True, null=True)
-
     def __unicode__(self):
         return u"Player: {}".format(self.user)
 

@@ -3,6 +3,8 @@
 import datetime
 import os
 
+from root import VIRTUALENV_DIR
+
 ALLOWED_HOSTS = ['localhost']
 
 # Do you want the site to display a bunch of information when
@@ -49,7 +51,7 @@ DATABASES = {
                                                 # 'mysql', 'sqlite3'
                                                 # or 'oracle'.
 
-        'NAME': os.path.join(VIRTUALENV_DIR, 'site', 'hvz.sqlite3'),
+        'NAME': os.path.join(VIRTUALENV_DIR, 'hvz.sqlite3'),
     }
 }
 

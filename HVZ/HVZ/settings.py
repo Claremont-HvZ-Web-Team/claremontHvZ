@@ -197,10 +197,6 @@ INSTALLED_APPS = (
 
     'widget_tweaks',
 
-    'pytils',
-    'sorl.thumbnail',
-    'pure_pagination',
-
     'HVZ.main',
     'HVZ.feed',
     'HVZ.players',

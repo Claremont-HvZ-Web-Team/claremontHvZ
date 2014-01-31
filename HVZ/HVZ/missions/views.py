@@ -32,8 +32,6 @@ class PlotListView(ListView, PlayerAwareMixin, CurrentGameMixin):
             key=lambda plot: plot.mission.start_time(),
             reverse=True
         )
-        print context['plots_sorted']
-
         return context
 
 

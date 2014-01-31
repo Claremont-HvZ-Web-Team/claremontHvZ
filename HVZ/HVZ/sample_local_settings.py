@@ -3,14 +3,7 @@
 import datetime
 import os
 
-# The absolute root of your app's home directory, something like
-# "/home/claremontHvZ/claremonthvz.org/"
-VIRTUALENV_DIR = os.path.join("/", "home", "MYUSERNAME", "MYPATH", "claremonthvz.org")
-
-# The directory containing manage.py.
-PROJECT_PATH = os.path.join(VIRTUALENV_DIR, "site", "claremontHvZ", "HVZ")
-
-ALLOWED_HOSTS = None
+ALLOWED_HOSTS = ['localhost']
 
 # Do you want the site to display a bunch of information when
 # something goes wrong?
@@ -60,23 +53,6 @@ DATABASES = {
     }
 }
 
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-
-# We live in Claremont, so ours is "America/Los_Angeles".
-TIME_ZONE = "America/Los_Angeles"
-
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-
-LANGUAGE_CODE = "en-us"
-
 # Specify your caching solution here. For development, the DummyCache
 # class is fine.
 CACHES = {
@@ -85,12 +61,6 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     },
 }
-
-# Specify where images, scripts, and compiled stylesheets should go.
-STATIC_ROOT = os.path.join(VIRTUALENV_DIR, "site", "static")
-
-# Specify the root URL for images, scripts, and compiled stylesheets.
-STATIC_URL = "/static/"
 
 # The phone number associated with our phone service.
 MOD_PHONE_NUMBER = "909-555-5555"

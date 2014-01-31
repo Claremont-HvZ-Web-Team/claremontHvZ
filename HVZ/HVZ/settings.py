@@ -7,18 +7,11 @@ import markdown
 
 from django.utils import timezone, html
 
+from root import PROJECT_PATH
 import local_settings
 
 ### The following settings should all be defined in a file called
 ### "local_settings.py".
-
-# The absolute root of your app's home directory, something like
-# "/home/claremontHvZ/claremonthvz.org/"
-PROJECT_PATH = local_settings.PROJECT_PATH
-
-
-def absolute_path(*paths):
-    return os.path.join(PROJECT_PATH, *paths)
 
 # A list of hostnames from which this site can serve. Used in production.
 ALLOWED_HOSTS = local_settings.ALLOWED_HOSTS or []
@@ -95,16 +88,12 @@ DATABASES = local_settings.DATABASES
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-
-# We live in Claremont, so ours is "America/Los_Angeles".
-TIME_ZONE = local_settings.TIME_ZONE
+TIME_ZONE = "America/Los_Angeles"
 
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-
-# Ours is "en-us"
-LANGUAGE_CODE = local_settings.LANGUAGE_CODE
+LANGUAGE_CODE = "en-us"
 
 CACHES = local_settings.CACHES
 
@@ -122,7 +111,7 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = absolute_path('upload-media')
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'upload-media')
 HUMAN_PICS = os.path.join(MEDIA_ROOT, 'human_pics')
 ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
 
@@ -131,8 +120,11 @@ ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/upload-media/'
 
-STATIC_ROOT = local_settings.STATIC_ROOT
-STATIC_URL = local_settings.STATIC_URL
+# Specify where images, scripts, and compiled stylesheets should go.
+STATIC_ROOT = os.path.join(PROJECT_PATH, "static")
+
+# Specify the root URL for images, scripts, and compiled stylesheets.
+STATIC_URL = "/static/"
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
@@ -177,7 +169,7 @@ TEMPLATE_DIRS = (
     # "C:/www/django/templates".  Always use forward slashes, even on
     # Windows.  Don't forget to use absolute paths, not relative
     # paths.
-    absolute_path("HVZ", "templates"),
+    os.path.join(PROJECT_PATH, "HVZ", "templates"),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -247,7 +239,8 @@ START_TIMES = {
 
 WSGI_APPLICATION = 'passenger_wsgi.application'
 
+MOD_PHONE_NUMBER = "909-555-5555"
+
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
 NOW = local_settings.NOW or timezone.now
-MOD_PHONE_NUMBER = local_settings.MOD_PHONE_NUMBER

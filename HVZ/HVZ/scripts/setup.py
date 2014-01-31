@@ -5,7 +5,7 @@ import sys
 import subprocess
 
 def main():
-    if not has_attr(sys, 'real_prefix'):
+    if not hasattr(sys, 'real_prefix'):
         print("Not inside a virtualenv! Run")
         print("    source bin/activate")
         print("from the root directory of your site to enter the virtualenv")

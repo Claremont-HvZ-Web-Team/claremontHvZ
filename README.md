@@ -19,6 +19,13 @@ Using pip, you should have an easy time installing virtualenv:
 
     pip install virtualenv
 
+Secondly, you'll need to install [Compass] [5]. You can do this with
+
+    sudo gem install compass
+
+If you don't have RubyGems installed, get Compass installed using your
+favorite package manager or method.
+
 Building the site
 -----------------
 
@@ -57,7 +64,8 @@ Now complete the build with
 
     python ~/programming/claremonthvz.org/HVZ/HVZ/scripts/setup.py
 
-If all went well, that should be it!
+If all went well, that should be it! There's a detailed guide to the
+build process on the [wiki] [6].
 
 ### Running a development version of the server
 
@@ -78,6 +86,7 @@ These tests will check registration, feeding, and permission scenarios.
 
 [1]: http://www.pip-installer.org/ "PyPI Package Manager"
 [2]: http://mxcl.github.io/homebrew/ "Homebrew"
-[3]: https://pypi.python.org/pypi/virtualenv/ "VirtualEnv"
-[4]: https://www.djangoproject.com/ "Django"
-[5]: https://rubygems.org/gems/compass "Compass"
+[3]: http://pypi.python.org/pypi/virtualenv/ "VirtualEnv"
+[4]: http://www.djangoproject.com/ "Django"
+[5]: http://rubygems.org/gems/compass "Compass"
+[6]: http://github.com/jthemphill/claremontHvZ/wiki/Full-installation-process

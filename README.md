@@ -33,78 +33,31 @@ Now build a virtualenv in the root directory, which for me was
 
     virtualenv ~/programming/claremonthvz.org
 
+Virtualenv provides a wrapper between your machine and the site. As
+long as the site only interacts with packages inside this wrapper, we
+know that we can port the site over to other machines without
+accidentally relying on some random laptop's quirks.
+
+To actually *use* the virtualenv, you'll need to activate it:
+
+    source ~/programming/claremonthvz.org/bin/activate
+
+This command only affects your current terminal, so you'll need to
+rerun it every time you want to work on the site. I highly recommend
+you add an alias to your .bashrc along the lines of
+
+    alias hvz="cd ~/programming/claremonthvz.org && source bin/activate && cd claremontHvZ/HVZ"
+
 Clone your forked GitHub repo (you don't have to use the command line
 for this):
 
     git clone git@github.com:MYUSERNAME/claremontHvZ.git
 
-And install the site's dependencies.
+Now complete the build with
 
-    cd ~/programming/claremonthvz.org/claremontHvZ
-    pip install -r dev-requirements.txt
+    python ~/programming/claremonthvz.org/HVZ/HVZ/scripts/setup.py
 
-To compile stylesheets, we use Compass.
-
-    gem install compass
-
-Moving passenger_wsgi.py
-------------------------
-
-Django relies on a file called `passenger_wsgi.py` to locate and load
-the HVZ settings module and web specification library. Our production
-server runs a more complicated one provided by DreamHost, but you can
-just copy the simple development sample in the root directory:
-
-    cd ~/programming/claremonthvz.org/claremontHvZ/HVZ
-    cp sample_passenger_wsgi.py passenger_wsgi.py
-
-Specifying settings
--------------------
-
-The site has two settings files. One file, called `settings.py`, is
-supposed to stay constant for our site. The other file, called
-`local_settings.py`, contains data that is secret or specific to a
-particular machine or both. You'll need to create this file. You can
-start by copying the sample `local_settings_sample.py` we've provided
-for you:
-
-    cd ~/programming/claremonthvz.org/claremontHvZ/HVZ/HVZ
-    cp sample_local_settings.py local_settings.py
-
-Running the site
-----------------
-
-You control the site by running `manage.py`, found in
-`claremontHvZ/HVZ`.
-
-### Database synchronization
-
-To initialize the database:
-
-    python manage.py syncdb
-
-You'll want to do this after every major change to `models.py`.
-
-### Loading colleges data
-
-To load data about the Claremont Colleges:
-
-    python manage.py loaddata HVZ/main/fixtures/production.json
-
-### Static file collection
-
-To move the compiled images, stylesheets, and scripts to a `static` directory:
-
-    python manage.py collectstatic
-
-To compile static files:
-
-    cd ~/programming/claremonthvz.org/HVZ/HVZ/main/static
-    compass compile --sass-dir sass --css-dir styles
-
-If you're working on the style files, keep a terminal running
-`compass watch`. This will continually check for changes to
-your stylesheets.
+If all went well, that should be it!
 
 ### Running a development version of the server
 

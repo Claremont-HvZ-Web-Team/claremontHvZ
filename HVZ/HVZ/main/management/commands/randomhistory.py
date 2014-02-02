@@ -2,6 +2,7 @@ from datetime import datetime, time, timedelta
 import random
 from optparse import make_option
 
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 from HVZ.main.models import Player, Game, Building
@@ -15,17 +16,40 @@ class Command(BaseCommand):
             '--meals',
             type='int',
         ),
+        make_option(
+            '-p',
+            '--players',
+            type='int',
+        ),
+        make_option(
+            '-z',
+            '--ozs',
+            type='int',
+        ),
+        make_option(
+            '--password',
+            type='string',
+        ),
     )
 
     def handle(self, *args, **options):
         try:
             self.game = Game.imminent_game()
         except Game.DoesNotExist:
-            self.stderr.write("No currently-running game found. Create a game at /admin/ first.")
-            return
+            # Create game and players
+            call_command(
+                'randomplayers',
+                players=options.get('players'),
+                ozs=options.get('ozs'),
+                password=options.get('password'),
+                stdout=self.stdout,
+                stderr=self.stderr,
+            )
+            self.game = Game.imminent_game()
 
         humans = Player.current_players().filter(team='H')
-        if not len(humans):
+        zombies = Player.current_players().filter(team='Z')
+        if not len(humans) or not len(zombies):
             self.stderr.write(
                 '\n'.join(["There are no players in the current game.",
                            "To generate a batch of random players, run",

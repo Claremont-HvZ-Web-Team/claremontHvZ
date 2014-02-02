@@ -1,4 +1,5 @@
 from datetime import timedelta
+import mock
 
 from django.core import management
 from django.core.urlresolvers import reverse
@@ -220,21 +221,86 @@ class SignupTest(BaseTest):
         self.assertEqual(response.status_code, 200)
 
 
-class RandomPlayerTest(BaseTest):
+def devnull():
+    devnull = mock.MagicMock()
+    def write(x):
+        return None
+    devnull.write = write
+    return devnull
 
-    @override_settings(PASSWORD_HASHERS=(
-            'django.contrib.auth.hashers.MD5PasswordHasher',))
-    def test_small(self):
-        num_players = 12
-        num_ozs = 6
-        names = "misc/names.pickle"
-        password = "fdsa"
+
+class RandomPlayerTest(BaseTest):
+    num_players = 12
+    num_ozs = 6
+    password = "fdsa"
+
+    def test_no_game(self):
+        models.Game.objects.all().delete()
+        self.assertEqual(models.Game.objects.count(), 0)
+
         management.call_command(
             "randomplayers",
-            players=num_players,
-            ozs=num_ozs,
-            names=names,
-            password=password,
+            players=self.num_players,
+            ozs=self.num_ozs,
+            password=self.password,
+            stderr=devnull(),
         )
-        self.assertEqual(num_players, models.Player.objects.count())
-        self.assertEqual(num_ozs, models.Player.objects.filter(team='Z').count())
+
+        self.assertEqual(models.Game.objects.count(), 1)
+        self.assertEqual(self.num_players, models.Player.objects.count())
+        self.assertEqual(
+            self.num_ozs,
+            models.Player.objects.filter(team='Z').count()
+        )
+
+    def test_no_buildings(self):
+        models.Building.objects.all().delete()
+        self.assertEqual(models.Building.objects.count(), 0)
+        self.assertEqual(len(list(models.Building.dorms().all())), 0)
+
+        management.call_command(
+            'randomplayers',
+            players=self.num_players,
+            ozs=self.num_ozs,
+            stdout=devnull(),
+            stderr=devnull(),
+        )
+
+        self.assertNotEqual(models.Building.objects.count(), 0)
+
+    @override_settings(
+        PASSWORD_HASHERS=(
+            'django.contrib.auth.hashers.MD5PasswordHasher',
+        )
+    )
+    def test_small(self):
+        management.call_command(
+            "randomplayers",
+            players=self.num_players,
+            ozs=self.num_ozs,
+            password=self.password,
+            stderr=devnull(),
+        )
+        self.assertEqual(self.num_players, models.Player.objects.count())
+        self.assertEqual(
+            self.num_ozs,
+            models.Player.objects.filter(team='Z').count()
+        )
+
+class RandomHistoryTest(BaseTest):
+    num_players = 12
+    num_ozs = 6
+
+    def test_no_game(self):
+        models.Game.objects.all().delete()
+        self.assertEqual(models.Game.objects.count(), 0)
+
+        management.call_command(
+            'randomhistory',
+            players=self.num_players,
+            ozs=self.num_ozs,
+            stdout=devnull(),
+            stderr=devnull()
+        )
+
+        self.assertEqual(models.Game.objects.count(), 1)

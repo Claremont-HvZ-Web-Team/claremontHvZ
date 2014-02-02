@@ -1,8 +1,10 @@
+import os
 import string
 import itertools
 import random
 from optparse import make_option
 
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -11,8 +13,6 @@ from HVZ.main.models import Player, Game, School, Building
 
 
 PASSWORD = "asdf"
-SCHOOLS = School.objects.all()
-DORMS = Building.dorms()
 FEEDS = itertools.permutations(settings.VALID_CHARS, r=settings.FEED_LEN)
 
 NUM_PLAYERS = 200
@@ -41,6 +41,7 @@ class Command(BaseCommand):
             type='int',
         ),
         make_option(
+            '-z',
             '--ozs',
             type='int',
         ),
@@ -55,15 +56,22 @@ class Command(BaseCommand):
         try:
             self.game = Game.imminent_game()
         except Game.DoesNotExist:
-            self.stderr.write("No currently-running game found. Create a game at /admin/ first.")
-            return
+            self.stderr.write("No currently-running game found.")
+            call_command('newgame', stdout=self.stdout, stderr=self.stderr)
+            self.game = Game.imminent_game()
 
-        if not SCHOOLS or not DORMS:
-            self.stderr.write(
-                '\n'.join(["You have not initialized the site with data about the campus.",
-                           "To solve this problem, run",
-                           "    ./manage.py loaddata HVZ/main/fixtures/production.json"]))
-            return
+        self.schools = list(School.objects.all())
+        self.dorms = list(Building.dorms().all())
+
+        if len(self.schools) == 0 or len(self.dorms) == 0:
+            call_command(
+                'loaddata',
+                os.path.join('HVZ', 'main', 'fixtures', 'production.json'),
+                stdout=self.stdout,
+                stderr=self.stderr,
+            )
+            self.schools = list(School.objects.all())
+            self.dorms = list(Building.dorms().all())
 
         num_players = options.get('players') or NUM_PLAYERS
         num_ozs = options.get('ozs') or NUM_OZS
@@ -97,8 +105,8 @@ class Command(BaseCommand):
                 user=u,
                 cell="1234567890",
                 game=self.game,
-                school=random.choice(SCHOOLS),
-                dorm=random.choice(DORMS),
+                school=random.choice(self.schools),
+                dorm=random.choice(self.dorms),
                 grad_year=self.year+random.randint(0, 4),
                 can_oz=random.random()>0.5,
                 feed=''.join(FEEDS.next()),

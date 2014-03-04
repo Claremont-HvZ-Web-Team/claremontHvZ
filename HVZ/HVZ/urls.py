@@ -25,6 +25,8 @@ urlpatterns = patterns(
     url(r'^players/', include('HVZ.players.urls')),
     url(r'^status/', include('HVZ.stats.urls')),
 
+    url(r'^api', include('HVZ.api.urls')),
+
     # mobile site does not exist. redirect to same page, hopefully with
     # responsive design shit.
     url(r'^mobile/(.*)', mobile_redirect),

@@ -204,6 +204,7 @@ INSTALLED_APPS = (
     'HVZ.missions',
     'HVZ.stats',
     'HVZ.forum',
+    'HVZ.api',
 )
 
 # App-specific settings below:

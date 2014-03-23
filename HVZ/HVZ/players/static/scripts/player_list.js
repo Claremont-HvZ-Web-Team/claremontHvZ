@@ -51,39 +51,54 @@ $(document).ready(function() {
     }
 
     function renderTable($table, data, placeholder) {
-        var html = document.createDocumentFragment();
+        // If data is empty, append the placeholder
+        if (data.length === 0) {
+            $table.children('tbody').append(placeholder);
+        } else {
+            $table.children('tbody').children('tr.placeholder').detach();
+        }
 
-        for (var i = 0; i < data.length; ++i) {
+        var $rows = $table.children('tbody').children('tr');
 
-            var row = document.createElement('tr');
-
-            for (var j = 0; j < data[i].length; ++j) {
-                var cell = document.createElement('td');
-                cell.textContent = data[i][j];
-                row.appendChild(cell);
+        // This assumes the data is in the same order as the HTML rows.
+        var i = 0;
+        $rows.each(function() {
+            if ($(this).hasClass('placeholder')) {
+                return;
             }
 
-            html.appendChild(row);
-        }
+            if (i < data.length && this.children[0].textContent === data[i][0]) {
+                $(this).removeClass('hidden');
+                $(this).addClass('visible');
 
-        // If data is empty, instead append the placeholder
-        if (data.length === 0) {
-            html.appendChild(placeholder);
-        }
+                if (i % 2 === 0) {
+                    $(this).addClass('even');
+                    $(this).removeClass('odd');
+                } else {
+                    $(this).removeClass('even');
+                    $(this).addClass('odd');
+                }
 
-        var $body = $table.children('tbody');
-        $table.fadeOut(function() {
-            $body.children().detach();
-            $body.append(html);
-            $table.fadeIn();
+                ++i;
+            } else {
+                $(this).addClass('hidden');
+                $(this).removeClass('visible');
+            }
         });
 
         return $table;
     }
 
     function update(new_human_data, new_zombie_data) {
-        renderTable($('#human_list'), new_human_data, human_placeholder);
-        renderTable($('#zombie_list'), new_zombie_data, zombie_placeholder);
+        $('#human_list').fadeOut(function() {
+            renderTable($(this), new_human_data, human_placeholder);
+            $(this).fadeIn();
+        });
+
+        $('#zombie_list').fadeOut(function() {
+            renderTable($(this), new_zombie_data, zombie_placeholder);
+            $(this).fadeIn();
+        });
 
         $('#human_count').fadeOut(function() {
             $(this).text(new_human_data.length);

@@ -5,13 +5,13 @@
 }
 
 #human_list {
-    tbody tr:nth-child(even) {
+    tbody tr.odd {
         background: adjust-color($bg_red, $alpha:-0.75);
     }
 }
 
 #zombie_list {
-    tbody tr:nth-child(even) {
+    tbody tr.odd {
         background: adjust-color($bg_green, $alpha:-0.75);
     }
 }

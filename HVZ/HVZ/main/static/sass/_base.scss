@@ -72,9 +72,10 @@ th, td {
 
 tr {
     padding: $table_padding_amount;
-     &:nth-child(even) {
-        background: adjust-color($bg_grey, $alpha:-0.85);
-     }
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background: adjust-color($bg_grey, $alpha:-0.85);
 }
 
 .disclaimers p {

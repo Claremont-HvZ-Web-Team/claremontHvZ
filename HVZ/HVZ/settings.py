@@ -121,7 +121,11 @@ ZOMBIE_PICS = os.path.join(MEDIA_ROOT, 'zombie_pics')
 MEDIA_URL = '/upload-media/'
 
 # Specify where images, scripts, and compiled stylesheets should go.
-STATIC_ROOT = os.path.join(PROJECT_PATH, "static")
+STATIC_ROOT = getattr(
+    local_settings,
+    'STATIC_ROOT',
+    os.path.join(PROJECT_PATH, "static")
+)
 
 # Specify the root URL for images, scripts, and compiled stylesheets.
 STATIC_URL = "/static/"

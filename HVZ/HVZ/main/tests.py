@@ -1,7 +1,8 @@
+import re
 from datetime import timedelta
 import mock
 
-from django.core import management
+from django.core import mail, management
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.test.client import Client
@@ -304,3 +305,32 @@ class RandomHistoryTest(BaseTest):
         )
 
         self.assertEqual(models.Game.objects.count(), 1)
+
+class ForgotPasswordTest(BaseTest):
+    def test_reset_password(self):
+        c = Client()
+        self.login_as_tabler(c)
+        c.post(reverse("register"), HUGH_MANN)
+
+        self.assertEqual(len(mail.outbox), 0)
+        c.post(reverse("password_reset"), {'email': HUGH_MANN['email']})
+        self.assertEqual(len(mail.outbox), 1)
+
+        body = mail.outbox[0].body.split()
+
+        # Slightly modified version of the regex found in HvZ.main.urls
+        # (no start char)
+        confirm_re = re.compile(
+            'user/password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/'
+        )
+
+        matches = [confirm_re.search(x) for x in body]
+        reset_url = next(x for x in matches if x)
+
+        c.post(
+            reset_url.string,
+            {'new_password1': 'egad', 'new_password2': 'egad'},
+            follow=True,
+        )
+
+        self.assertTrue(c.login(username=HUGH_MANN['username'], password='egad'))

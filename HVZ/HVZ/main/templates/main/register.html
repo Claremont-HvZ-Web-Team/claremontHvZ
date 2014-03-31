@@ -11,7 +11,7 @@
 <div class="panel {% if form.errors %}panel-danger{% else %}panel-default{% endif %}">
   <div class="panel-heading">
     {% if form.errors %}
-      <h2 class="panel-title">There were some problems</h2>
+      <h2 class="panel-title">Try that again</h2>
       {{form.non_field_errors}}
     {% else %}
       <h2 class="panel-title">Register!</h2>
@@ -22,18 +22,11 @@
      method="post"
      action="{% url 'register' %}">
     {% csrf_token %}
-    {% for field in form  %}
-    <div class="form-group">
+    {% for field in form %}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
       <label for="{{field.id_for_label}}">{{ field.label }}</label>
-      {{field|attr:"class:form-control"}}
-      <p class="help-block">{{field.help_text}}</p>
-      {% if field.errors %}
-      <div class="panel panel-danger">
-        <div class="panel-body">
-          {{field.errors}}
-        </div>
-      </div>
-      {% endif %}
+      {{field|add_class:"form-control"}}
+      {% if field.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
     {% endfor %}
     <input type="submit" class="btn" />

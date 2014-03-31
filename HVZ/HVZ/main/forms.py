@@ -66,7 +66,6 @@ class RegisterForm(forms.ModelForm):
         label=_("Password (again)"),
         widget=forms.PasswordInput,
         required=True,
-        help_text=_("Enter the same password as above, for verification."),
     )
 
     school = forms.ModelChoiceField(
@@ -81,30 +80,24 @@ class RegisterForm(forms.ModelForm):
         empty_label=_("Select a dorm"),
     )
 
-    grad_year = forms.IntegerField(required=True)
+    grad_year = forms.IntegerField(
+        label=_("Expected graduation year"),
+        required=True,
+    )
 
     # cell = USPhoneNumberField(
     #     label=_("Cell Number"),
     #     required=False,
-    #     help_text=_("If you want to be able to text message the game's website "
-    #                 "enter in your phone number here. We will not use this "
-    #                 "number except in response to texts from you.")
     # )
 
     can_oz = forms.BooleanField(
-        label=_("OZ Pool"),
+        label=_("Candidate for Original Zombie"),
         required=False,
-        help_text=_("Check this box if you would like to begin afflicted with "
-                    "the zombie curse.")
     )
 
     feed = FeedCodeField(
         label="Feed Code",
-        required=True,
-        help_text=_("When you are finished entering in all of your other "
-                    "information, have the tabler registering you type in your "
-                    "feed code. Feed codes can only contain the letters {}."
-                    ).format(settings.VALID_CHARS)
+        required=True
     )
 
     class Meta:

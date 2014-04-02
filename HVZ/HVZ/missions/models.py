@@ -116,7 +116,7 @@ class Plot(models.Model):
             Q(visible=True) | Q(visible__isnull=True, reveal_time__lt=settings.NOW()),
             team=team,
             mission__game=game,
-        ).exclude(before_story='')
+        ).exclude(before_story='').exclude(before_story__isnull=True)
 
     def get_story(self, team):
         if self.mission.unfinished():

@@ -47,7 +47,7 @@
 <div class="row">
   <div class="login_holder col-sm-offset-9 col-sm-3">
     {% if request.user.is_authenticated %}
-      logged in as {{request.user.first_name}}<br/>
+      logged in as {{request.user.username}}{% if request.user.player_set.all.0.team  == 'Z'%}, you have {{request.user.player_set.all.0.brains}} brain{% if request.user.player_set.all.0.brains  != 1%}s{% endif %}{% endif %}<br/>
       <a href="{% url 'logout' %}" class="login btn">logout</a>
     {% elif '/login' not in request.path %}
       <a class="login btn" href="{% url 'login' %}">Log In!</a>

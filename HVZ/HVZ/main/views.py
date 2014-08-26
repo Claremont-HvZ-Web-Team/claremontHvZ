@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
+from django.shortcuts import render
 
 from HVZ.main.models import Game, ModSchedule
 from HVZ.feed.models import Meal
@@ -44,11 +45,14 @@ class Register(FormView):
         return super(Register, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse("register")
+        return reverse("success")
 
     def form_valid(self, form):
         form.save()
         return super(Register, self).form_valid(form)
+
+def success(request):
+    return render(request, 'main/success.html', {})
 
 
 class TwilioCallHandler(TemplateView):

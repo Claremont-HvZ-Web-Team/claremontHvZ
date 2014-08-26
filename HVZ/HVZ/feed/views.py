@@ -30,16 +30,22 @@ class EatView(FormView):
     def form_valid(self, form):
         def grab(s):
             return form.cleaned_data[s]
-
+        zombie = Player.logged_in_player(self.request)
+        victim = Player.current_players().select_for_update().get(feed=grab("feedcode"))
         m = Meal(
-            eater=Player.logged_in_player(self.request),
-            eaten=(Player.current_players().select_for_update()
-                   .get(feed=grab("feedcode"))),
+            eater=zombie,
+            eaten=victim,
             time=grab('time'),
             location=grab("location"),
             description=grab("description"),
         )
         m.full_clean()
         m.save()
-
+        
+        victim.clan = zombie.clan
+        victim.save()
+        
+        zombie.brains += 1;
+        zombie.save()
+        
         return super(EatView, self).form_valid(form)

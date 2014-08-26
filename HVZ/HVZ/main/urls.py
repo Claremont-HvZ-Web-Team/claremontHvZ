@@ -4,16 +4,18 @@ from django.contrib.auth.views import (
 )
 from django.conf.urls import patterns, url
 
-from views import LandingPage, Register, TwilioCallHandler
+from views import LandingPage, Register, TwilioCallHandler, success
 
 urlpatterns = patterns('HVZ.main.views',
     url(r'^login', login,  name="login"),
     url(r'^logout', logout_then_login, name="logout"),
     url(r'^register/', Register.as_view(), name="register"),
+    url(r'^success/', success, name="success"),
 
     # Auth versions of the above basics
     url(r'^login', login,  name="auth_login"),
-    url(r'^register/', Register.as_view(), name="registration_register"),
+    url(r'^register/', success, name="registration_register"),
+
 
     url(r'^user/password/reset/$',
         password_reset,

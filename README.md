@@ -62,7 +62,7 @@ for this):
 
 Now complete the build with
 
-    python ~/programming/claremonthvz.org/HVZ/HVZ/scripts/setup.py
+    python ~/programming/claremonthvz.org/claremontHvZ/setup.py
 
 If all went well, that should be it! There's a detailed guide to the
 build process on the [wiki] [6].

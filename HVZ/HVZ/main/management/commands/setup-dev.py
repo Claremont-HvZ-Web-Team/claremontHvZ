@@ -1,4 +1,5 @@
 import os
+from optparse import make_option
 
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
@@ -7,11 +8,22 @@ from django.conf import settings
 from HVZ.main import models
 
 class Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '--auto',
+            help="Disable interactive terminal input",
+            action="store_true",
+            default=False,
+        ),
+    )
+
     def handle(self, *args, **options):
+
+        auto = options['auto']
 
         self.stderr.write("Synchronizing the database...")
         self.delimit()
-        call_command('syncdb', interactive=True)
+        call_command('syncdb', interactive = not auto)
 
         self.stderr.write("Synchronized!")
         self.delimit()

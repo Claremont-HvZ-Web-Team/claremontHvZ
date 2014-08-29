@@ -45,7 +45,7 @@ class Meal(models.Model):
             self.time = settings.NOW()
         
 
-        self.eaten.clan = eater.clan
+        self.eaten.clan = self.eater.clan
 
         self.eaten.save()
 

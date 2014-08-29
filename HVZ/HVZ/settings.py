@@ -198,6 +198,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'south',
+    'longerusernameandemail',
 
     'widget_tweaks',
 

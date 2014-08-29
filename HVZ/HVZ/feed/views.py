@@ -42,10 +42,5 @@ class EatView(FormView):
         m.full_clean()
         m.save()
         
-        victim.clan = zombie.clan
-        victim.save()
-        
-        zombie.brains += 1;
-        zombie.save()
         
         return super(EatView, self).form_valid(form)

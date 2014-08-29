@@ -118,10 +118,6 @@ class RegisterForm(forms.ModelForm):
         """Ensure that a user does not register twice for the same game."""
         email = self.cleaned_data['email']
 
-        # Check both username and email because we're using both
-        # fields for the same purpose... slice is there because
-        # Django's builtin username field has a limit of 30
-        # characters.
         if Player.current_players().filter(
                Q(user__username=email) | Q(user__email=email)
            ).exists():

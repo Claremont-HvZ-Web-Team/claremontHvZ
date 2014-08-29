@@ -43,7 +43,14 @@ class Meal(models.Model):
         self.eaten.team = "Z"
         if not self.time:
             self.time = settings.NOW()
+        
+
+        self.eaten.clan = eater.clan
+
         self.eaten.save()
+
+        self.eater.brains += 1;
+        self.eater.save()
         return super(Meal, self).save()
 
     @staticmethod

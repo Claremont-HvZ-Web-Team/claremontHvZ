@@ -47,7 +47,7 @@ def main():
         copy_template_files(project_path)
 
         os.chdir(project_path)
-        subprocess.call([
+        subprocess.check_call([
             'python',
             'manage.py',
             'setup-dev',

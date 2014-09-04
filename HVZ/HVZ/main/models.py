@@ -17,6 +17,9 @@ class FeedCodeField(models.CharField):
     def clean(self, value, model):
         return super(FeedCodeField, self).clean(value.upper(), model)
 
+# code so south migration knows how to interpret a FeedCodeField
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^HVZ.main\.models\.FeedCodeField"])
 
 class School(models.Model):
     """Represents a campus"""
@@ -194,10 +197,17 @@ class Player(models.Model):
 
     feed = FeedCodeField()
 
+    brains = models.IntegerField(default=0)
+
     team = models.CharField(
         max_length=1,
         choices=TEAMS.items(),
         default="H",
+    )
+
+    clan = models.CharField(
+        max_length=32,
+        null=True
     )
 
     upgrade = models.CharField(

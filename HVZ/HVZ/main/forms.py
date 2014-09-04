@@ -68,6 +68,10 @@ class RegisterForm(forms.ModelForm):
         required=True,
     )
 
+    mailbox = forms.CharField(
+        label=_("Mailbox Number")
+    )
+
     school = forms.ModelChoiceField(
         queryset=School.objects,
         required=True,
@@ -107,6 +111,7 @@ class RegisterForm(forms.ModelForm):
                   'email',
                   'password1',
                   'password2',
+                  'mailbox',
                   'school',
                   'dorm',
                   'grad_year',

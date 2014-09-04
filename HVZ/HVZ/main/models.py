@@ -20,6 +20,7 @@ class FeedCodeField(models.CharField):
 # code so south migration knows how to interpret a FeedCodeField
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^HVZ.main\.models\.FeedCodeField"])
+add_introspection_rules([], ["^django_localflavor_us\.models\.PhoneNumberField"])
 
 class School(models.Model):
     """Represents a campus"""

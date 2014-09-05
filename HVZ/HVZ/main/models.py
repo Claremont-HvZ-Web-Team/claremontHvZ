@@ -191,6 +191,7 @@ class Player(models.Model):
     game = models.ForeignKey(Game)
 
     school = models.ForeignKey(School, related_name="player_set")
+    mailbox = models.CharField(max_length=20, null=True)
     dorm = models.ForeignKey(Building)
     grad_year = models.PositiveIntegerField(blank=True, null=True)
 

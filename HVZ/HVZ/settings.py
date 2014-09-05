@@ -244,6 +244,11 @@ WSGI_APPLICATION = 'passenger_wsgi.application'
 
 MOD_PHONE_NUMBER = "909-555-5555"
 
+
+MODERATOR_EMAIL = "moderator@claremonthvz.org"
+ANON_HARRASSMENT_EMAIL = "hvzanonymouscomplaint@gmail.com"
+
 # Callables that return the "current" date and time.
 # Can be overridden in local_settings or tests to return a fixed point in time.
 NOW = local_settings.NOW or timezone.now
+

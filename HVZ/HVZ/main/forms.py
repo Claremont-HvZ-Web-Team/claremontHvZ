@@ -183,3 +183,15 @@ class RegisterForm(forms.ModelForm):
             player.save()
 
         return player
+
+class HarrassmentForm(forms.Form):
+    description = forms.CharField(
+                    widget=forms.Textarea,
+                    label="Description",
+                    required=True
+                    )
+    
+    anonymous = forms.BooleanField(
+                    label="Check to send anonymously",
+                    required=False
+                    )

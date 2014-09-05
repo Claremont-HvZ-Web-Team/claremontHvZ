@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
+from django.conf import settings
 
 from HVZ.main.models import Game, ModSchedule
 from HVZ.feed.models import Meal
-from HVZ.main.forms import PrettyAuthForm, RegisterForm
+from HVZ.main.forms import PrettyAuthForm, RegisterForm, HarrassmentForm
 from HVZ.main.decorators import require_unfinished_game
 
 
@@ -76,3 +78,30 @@ class TwilioCallHandler(TemplateView):
             pass
 
         return context
+
+class HarrassmentView(FormView):
+    template_name = "main/harrassmentForm.html"
+    form_class = HarrassmentForm
+
+    
+    def dispatch(self, *args, **kwargs):
+        return super(HarrassmentView,self).dispatch(*args,**kwargs)
+
+    def get_success_url(self):
+        # TODO Should have own confirmation
+        return reverse("harrassmentForm")
+
+    def form_valid(self, form):
+        description = form.cleaned_data['description']
+        toAddress = settings.MODERATOR_EMAIL
+        if (form.cleaned_data['anonymous']):
+            # Send email anonymously
+            fromAddress = settings.ANON_HARRASSMENT_EMAIL
+        else :
+            # Send data from users email
+            thisUser = self.request.user
+            fromAddress = thisUser.email
+        
+        send_mail('Harrassment Complaint',description,fromAddress,[toAddress],fail_silently=False)    
+        
+        return super(HarrassmentView,self).form_valid(form)

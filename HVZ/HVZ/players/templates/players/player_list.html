@@ -101,6 +101,7 @@
           <th>School</th>
           <th>Year</th>
           <th>Tags</th>
+          <th>Brains</th>
           <th>Class</th>
         </tr>
       </thead>
@@ -111,6 +112,7 @@
           <td class="school"><div>{{ player.school }}</div></td>
           <td class="year"><div>{{ player.grad_year }}</div></td>
           <td class="meal_count"><div>{{ player.meal_count }}</div></td>
+          <td class="brains_count"><div>{{player.brains}}</div></td>
           <td class="upgrade"><div>{{ player.upgrade|upgrade_name }}</div></td>
         </tr>
         {% empty %}

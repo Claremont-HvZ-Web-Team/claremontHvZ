@@ -8,8 +8,9 @@
    <link rel="stylesheet" type-"text/css" href="{% static 'styles/feed/donate.css' %}">
 {% endblock stylein %}
 
-{% block morehead %}
-<script type="text/javascript" src="{% static 'scripts/donate.js' %}"></script>
+
+{% block scriptin %}
+<script src="{% static 'scripts/donate.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,25 +23,32 @@
 <form method="post" action="{% url 'feed_donate' %}">
   	{% csrf_token %}
   	
-
-  	{% for field in form %}
-  	<div class="form-group{% if field.errors %} has-error{% endif %}">
-      <label for="{{field.id_for_label}}">{{ field.label }}</label>
-      {{field|add_class:"form-control"}}
-      {% if field.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <label for="{{form.receiver.id_for_label}}">{{form.receiver.label}}</label>
+      {{ form.receiver }}
+      {% if form.receiver.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
-  	{% endfor %}
-    
-    <input id="donatorMealsBase" type="hidden" value={{donator_meals}}/>
-    
-    <input id="donatorUpgradeBase" type="hidden" value="{{donator_upgrade}}"/>
-    
+
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <label for="{{form.numberOfMeals.id_for_label}}">{{form.numberOfMeals.label}}</label>
+      {{ form.numberOfMeals }}
+      {% if form.numberOfMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <input id="id_donatorMeals" name="donatorMeals" type="number" value="{{player.brains}}"/>
+      {% if form.donatorMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <input id="id_donatorUpgrade" name="donatorUpgrade" type="text" value="{{player.upgrade}}" />
+
+      {% if form.donatorUpgrade.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
     
   	<input type="submit" class="btn" />
   	
   </form>
-{% endblock %}
 
-{% block scriptin %}
-<!--<script type="text/javascript" src="{% static 'scripts/donate.js' %}"></script>-->
 {% endblock %}

@@ -48,23 +48,8 @@ class EatView(FormView):
         
         return super(EatView, self).form_valid(form)
 
-# TODO Should this be done as a validator? I would like to 
-# do that, but then I have to attach the logged in player
-# to the form somehow. Regardless, at least some of this
-# logic relating to how many meals are required belongs
-# somewhere else.
-def zombie_has_enough_meals(zombie,mealsToDonate):
-    """Ensure that this zombie can donate the number of meals without
-    dropping below the threshold for their current upgrade"""
-    thresholds = {'n' : 4, 'N' : 7, 'D' : 10, 'E' : 8}
-    if zombie.upgrade in thresholds:
-        minimumAmount = thresholds[zombie.upgrade]
-    else :
-        minimumAmount = 0
-    if zombie.brains - mealsToDonate >= minimumAmount:
-        return True
-    else :
-        return False
+
+
 
 class DonateView(FormView):
     form_class = DonateForm
@@ -111,13 +96,11 @@ class DonateView(FormView):
         receivingPlayer = grab('receiver')
         brains = grab('numberOfMeals')
 
-        # TODO Should definitely work this in as a validator,
-        # so that it throws an error in the form
-        if zombie_has_enough_meals(donatingPlayer,brains):
-            donatingPlayer.brains -= brains
-            receivingPlayer.brains += brains
-            donatingPlayer.save()
-            receivingPlayer.save()
+        
+        donatingPlayer.brains -= brains
+        receivingPlayer.brains += brains
+        donatingPlayer.save()
+        receivingPlayer.save()
 
         return super(DonateView, self).form_valid(form)
 

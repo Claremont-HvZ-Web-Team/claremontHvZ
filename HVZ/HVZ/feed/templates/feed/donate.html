@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% load widget_tweaks %}
+
+{% block stylein %}
+   <link rel="stylesheet" type="text/css" href="{% static 'styles/feed/eat.css' %}">
+   <link rel="stylesheet" type-"text/css" href="{% static 'styles/feed/donate.css' %}">
+{% endblock stylein %}
+
+
+{% block scriptin %}
+<script src="{% static 'scripts/donate.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h2>
+	Donate Brains
+</h2>
+{% if form.errors %}
+    {{form.errors}}
+{% endif %}
+<form method="post" action="{% url 'feed_donate' %}">
+  	{% csrf_token %}
+  	
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <label for="{{form.receiver.id_for_label}}">{{form.receiver.label}}</label>
+      {{ form.receiver }}
+      {% if form.receiver.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <label for="{{form.numberOfMeals.id_for_label}}">{{form.numberOfMeals.label}}</label>
+      {{ form.numberOfMeals }}
+      {% if form.numberOfMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <input id="id_donatorMeals" name="donatorMeals" type="number" value="{{player.brains}}"/>
+      {% if form.donatorMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <input id="id_donatorUpgrade" name="donatorUpgrade" type="text" value="{{player.upgrade}}" />
+
+      {% if form.donatorUpgrade.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+
+    
+  	<input type="submit" class="btn" />
+  	
+  </form>
+
+{% endblock %}

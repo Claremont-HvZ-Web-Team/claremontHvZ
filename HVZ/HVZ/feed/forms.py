@@ -5,8 +5,8 @@ from django import forms
 from django.conf import settings
 
 from HVZ.main.forms import FeedCodeField
-from HVZ.main.models import Building, Game
-from HVZ.feed.validators import human_with_code
+from HVZ.main.models import Building, Game, Player
+from HVZ.feed.validators import human_with_code, zombie_has_enough_meals
 from HVZ.feed.widgets import SelectTimeWidget
 
 CAL = calendar.TextCalendar(firstweekday=6)
@@ -104,4 +104,52 @@ class MealForm(forms.Form):
             raise forms.ValidationError("You can't eat in the future, bro.")
 
         cleaned_data['time'] = feed_time
+        return cleaned_data
+
+class DonateForm(forms.Form):
+
+    receiver = forms.ModelChoiceField(
+        Player.objects.filter(team="Z"),
+        required=True
+        )
+
+    numberOfMeals = forms.IntegerField(
+        required=True,
+        label="Number of Brains",
+        )
+
+    donatorMeals = forms.IntegerField(
+        required=False,
+        label="",
+        )
+
+    donatorUpgrade = forms.CharField(
+        required=False,
+        label="",
+        )
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(DonateForm, self).clean(*args, **kwargs)
+        print cleaned_data
+        if not 'receiver' in cleaned_data:
+            raise forms.ValidationError("You must specify a person to receive your brains!")
+
+        if not 'numberOfMeals' in cleaned_data:
+            raise forms.ValidationError("You must specify a number of brains to donate!")
+
+        receivingPlayer = cleaned_data['receiver']
+
+        if not receivingPlayer.team == "Z":
+            raise forms.ValidationError("You somehow donated brains to a Human! They don't want your brains! Yet...")
+
+        num_meals = cleaned_data['numberOfMeals']
+        if num_meals <= 0:
+            raise forms.ValidationError("You must donate a positive number of brains!")
+
+        donatorMeals = cleaned_data['donatorMeals']
+        donatorUpgrade = cleaned_data['donatorUpgrade']
+        if not zombie_has_enough_meals(donatorMeals,donatorUpgrade,num_meals):
+            raise forms.ValidationError("You don't have enough brains!")
+
+        
         return cleaned_data

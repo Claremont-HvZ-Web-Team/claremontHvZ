@@ -114,7 +114,7 @@ class DonateForm(forms.Form):
         )
 
     numberOfMeals = forms.ModelChoiceField(
-        range(Player.brains),
+        range(player.brains),
         required=True,
         )
 

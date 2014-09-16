@@ -73,7 +73,6 @@ class DonateView(FormView):
         thisPlayer = Player.logged_in_player(request)
         contextDict = {
             "donator_meals" : thisPlayer.brains,
-            "current_upgrade" : thisPlayer.upgrade,
             "form" : form,
         }
         context = RequestContext(request,contextDict)

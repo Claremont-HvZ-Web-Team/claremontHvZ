@@ -5,13 +5,9 @@
 
 {% block stylein %}
    <link rel="stylesheet" type="text/css" href="{% static 'styles/feed/eat.css' %}">
-   <link rel="stylesheet" type-"text/css" href="{% static 'styles/feed/donate.css' %}">
 {% endblock stylein %}
 
 
-{% block scriptin %}
-<script src="{% static 'scripts/donate.js' %}"></script>
-{% endblock %}
 
 {% block content %}
 <h2>
@@ -24,14 +20,15 @@
   	{% csrf_token %}
   	
     <div class="form-group{% if field.errors %} has-error{% endif %}">
-      <label for="{{form.receiver.id_for_label}}">{{form.receiver.label}}</label>
+      <label>Pay to the order of </label>
       {{ form.receiver }}
       {% if form.receiver.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
 
     <div class="form-group{% if field.errors %} has-error{% endif %}">
-      <label for="{{form.numberOfMeals.id_for_label}}">{{form.numberOfMeals.label}}</label>
+      <label>The value of </label>
       {{ form.numberOfMeals }}
+      <label>brains.</label>
       {% if form.numberOfMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
 

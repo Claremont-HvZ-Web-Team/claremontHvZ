@@ -113,10 +113,10 @@ class DonateForm(forms.Form):
         required=True
         )
 
-    # numberOfMeals = forms.ModelChoiceField(
-    #     range(player.brains),
-    #     required=True,
-    #     )
+    numberOfMeals = forms.ModelChoiceField(
+        range(player.brains),
+        required=True,
+        )
 
 
     def clean(self, *args, **kwargs):

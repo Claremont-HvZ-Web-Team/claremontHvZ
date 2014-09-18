@@ -11,7 +11,7 @@
 
 {% block content %}
 <h2>
-	Donate Brains
+	Transfer Brains
 </h2>
 {% if form.errors %}
     {{form.errors}}
@@ -27,22 +27,10 @@
 
     <div class="form-group{% if field.errors %} has-error{% endif %}">
       <label>The value of </label>
-      <input id="id_test" name="test" value="adsfadsf"/>
+      {{ form.numberOfMeals }}
       <label>brains.</label>
       {% if form.numberOfMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
-
-    <div class="form-group{% if field.errors %} has-error{% endif %}">
-      <input id="id_donatorMeals" name="donatorMeals" type="number" value="{{player.brains}}"/>
-      {% if form.donatorMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
-    </div>
-
-    <div class="form-group{% if field.errors %} has-error{% endif %}">
-      <input id="id_donatorUpgrade" name="donatorUpgrade" type="text" value="{{player.upgrade}}" />
-
-      {% if form.donatorUpgrade.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
-    </div>
-
     
   	<input type="submit" class="btn" />
   	

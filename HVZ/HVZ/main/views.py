@@ -88,8 +88,7 @@ class HarrassmentView(FormView):
         return super(HarrassmentView,self).dispatch(*args,**kwargs)
 
     def get_success_url(self):
-        # TODO Should have own confirmation
-        return reverse("harrassmentForm")
+        return reverse("harrassmentConfirmation")
 
     def form_valid(self, form):
         description = form.cleaned_data['description']
@@ -105,3 +104,6 @@ class HarrassmentView(FormView):
         send_mail('Harrassment Complaint',description,fromAddress,[toAddress],fail_silently=False)    
         
         return super(HarrassmentView,self).form_valid(form)
+
+def harrassmentConfirmation(request):
+    return render(request,"main/harrassmentConfirmation.html",{})

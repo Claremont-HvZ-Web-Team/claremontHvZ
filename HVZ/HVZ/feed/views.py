@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, loader
 from django.http import HttpResponse
 from django.views.decorators.cache import never_cache
+from django.shortcuts import render
 
 from HVZ.main.decorators import team_required, require_active_game
 
@@ -48,7 +49,10 @@ class EatView(FormView):
         
         return super(EatView, self).form_valid(form)
 
-
+def transSuccess(request):
+    return render(request, 'feed/success.html', {})
+def transNope(request):
+    return render(request, 'feed/nope.html', {})
 
 
 class DonateView(FormView):
@@ -63,7 +67,6 @@ class DonateView(FormView):
 
     def get_form(self,form_class):
         form = super(FormView, self).get_form(form_class)
-        form.initial = self.kwargs
         return form
 
     @method_decorator(never_cache)
@@ -82,7 +85,7 @@ class DonateView(FormView):
         # TODO Should this have a confirmation? Or 
         # possibly go back to the same page to donate
         # to a different person?
-        return reverse("player_list")
+        return reverse("transSuccess")
 
     
 
@@ -95,6 +98,9 @@ class DonateView(FormView):
         receivingPlayer = grab('receiver')
         brains = grab('numberOfMeals')
 
+        if donatingPlayer.brains < brains:
+            context = RequestContext(self.request, {})
+            return HttpResponse(loader.get_template("feed/nope.html").render(context))
         
         donatingPlayer.brains -= brains
         receivingPlayer.brains += brains

@@ -9,14 +9,9 @@ def human_with_code(feedcode):
         raise ValidationError(
             "{} doesn't correspond to a playing human!".format(feedcode))
 
-def zombie_has_enough_meals(donatorMeals,donatorUpgrade,mealsToDonate):
+def zombie_has_enough_meals(donatorMeals,mealsToDonate):
 	"""Ensure this zombie can donate as many meals as they claim"""
-	thresholds = {'n' : 4, 'N' : 7, 'D' : 10, 'E' : 8}
-	if donatorUpgrade in thresholds:
-		minimumAmount = thresholds[donatorUpgrade]
-	else :
-		minimumAmount = 0
-	if donatorMeals - mealsToDonate < minimumAmount:
+	if donatorMeals - mealsToDonate < 0:
 		return False
 	else :
 		return True

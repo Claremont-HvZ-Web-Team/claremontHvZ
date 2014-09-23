@@ -191,7 +191,7 @@ class Player(models.Model):
     game = models.ForeignKey(Game)
 
     school = models.ForeignKey(School, related_name="player_set")
-    mailbox = models.CharField(max_length=20, null=True)
+    mailbox = models.CharField(max_length=20, null=True, blank=True)
     dorm = models.ForeignKey(Building)
     grad_year = models.PositiveIntegerField(blank=True, null=True)
 
@@ -201,6 +201,8 @@ class Player(models.Model):
 
     brains = models.IntegerField(default=0)
 
+    notes = models.CharField(max_length=255, null=True, blank=True)
+
     team = models.CharField(
         max_length=1,
         choices=TEAMS.items(),
@@ -209,7 +211,8 @@ class Player(models.Model):
 
     clan = models.CharField(
         max_length=32,
-        null=True
+        null=True,
+        blank=True,
     )
 
     upgrade = models.CharField(

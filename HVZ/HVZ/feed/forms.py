@@ -113,15 +113,15 @@ class DonateForm(forms.Form):
         required=True
         )
 
-    numberOfMeals = forms.ModelChoiceField(
-        range(player.brains),
+    numberOfMeals = forms.IntegerField(
         required=True,
+        label="Number of Brains",
         )
+    def __init__(self, *args, **kwargs):
+        super(DonateForm, self).__init__(*args, **kwargs)
+    def clean(self):
 
-
-    def clean(self, *args, **kwargs):
-        cleaned_data = super(DonateForm, self).clean(*args, **kwargs)
-        print cleaned_data['test']
+        cleaned_data = super(DonateForm, self).clean()
         if not 'receiver' in cleaned_data:
             raise forms.ValidationError("You must specify a person to receive your brains!")
 

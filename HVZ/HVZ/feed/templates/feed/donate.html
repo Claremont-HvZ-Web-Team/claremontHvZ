@@ -17,23 +17,24 @@
     {{form.errors}}
 {% endif %}
 <form method="post" action="{% url 'feed_donate' %}">
-  	{% csrf_token %}
-  	
+    {% csrf_token %}
+    
     <div class="form-group{% if field.errors %} has-error{% endif %}">
-      <label>Pay to the order of </label>
+      <label for="{{form.receiver.id_for_label}}">Pay to the order of </label>
       {{ form.receiver }}
       {% if form.receiver.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
 
     <div class="form-group{% if field.errors %} has-error{% endif %}">
-      <label>The value of </label>
+      <label for="{{form.numberOfMeals.id_for_label}}">The value of </label>
       {{ form.numberOfMeals }}
-      <label>brains.</label>
+      <label for="{{form.numberOfMeals.id_for_label}}">brains.</label>
       {% if form.numberOfMeals.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
     </div>
+
     
-  	<input type="submit" class="btn" />
-  	
-  </form>
+    <input type="submit" class="btn" />
+  
+</form>
 
 {% endblock %}

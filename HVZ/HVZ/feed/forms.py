@@ -109,7 +109,7 @@ class MealForm(forms.Form):
 class DonateForm(forms.Form):
 
     receiver = forms.ModelChoiceField(
-        Player.objects.filter(team="Z"),
+        Player.current_players().filter(team="Z"),
         required=True
         )
 

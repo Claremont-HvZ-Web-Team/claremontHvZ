@@ -58,7 +58,7 @@ def success(request):
 
 def spitList(request, clan):
     if request.user.is_staff:
-        context = {'clan': clan, 'players':Player.objects.all().filter(clan=clan)}
+        context = {'clan': clan, 'players':Player.objects.all().filter(game=Game.nearest_game(), clan=clan)}
     else:
         context = {'clan': 'No Permission', 'players':[]}
     return render(request, 'main/spitList.html', context)

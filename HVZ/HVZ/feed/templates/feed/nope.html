@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block stylein %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main/register.css' %}"/>
+{% endblock stylein %}
+
+{% block content %}
+<h1>Nope. You can't give more brains than you have.</h1>
+<a href={% url 'feed_donate' %}>Go back</a>
+{% endblock %}

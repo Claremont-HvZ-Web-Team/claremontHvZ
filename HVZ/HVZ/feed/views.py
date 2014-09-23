@@ -98,10 +98,11 @@ class DonateView(FormView):
         receivingPlayer = grab('receiver')
         brains = grab('numberOfMeals')
 
+
         if donatingPlayer.brains < brains:
             context = RequestContext(self.request, {})
             return HttpResponse(loader.get_template("feed/nope.html").render(context))
-        if donatingPlayer != receivingPlayer:
+        if donatingPlayer.user.get_full_name() != receivingPlayer.user.get_full_name():
             donatingPlayer.brains -= brains
             receivingPlayer.brains += brains
             donatingPlayer.save()

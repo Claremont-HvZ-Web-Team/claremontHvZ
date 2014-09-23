@@ -130,6 +130,7 @@ class DonateForm(forms.Form):
 
         receivingPlayer = cleaned_data['receiver']
 
+
         if not receivingPlayer.team == "Z":
             raise forms.ValidationError("You somehow donated brains to a Human! They don't want your brains! Yet...")
 

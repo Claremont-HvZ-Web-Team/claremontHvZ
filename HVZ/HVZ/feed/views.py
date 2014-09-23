@@ -60,7 +60,7 @@ class DonateView(FormView):
     template_name = "feed/donate.html"
 
     @method_decorator(login_required)
-    #@method_decorator(require_active_game)
+    @method_decorator(require_active_game)
     @method_decorator(team_required('Z'))
     def dispatch(self, *args, **kwargs):
         return super(DonateView,self).dispatch(*args,**kwargs)

@@ -222,8 +222,9 @@ class Player(models.Model):
         null=True,
     )
 
+
     def __unicode__(self):
-        return u"Player: {}".format(self.user)
+        return u"Player: {}".format(self.user.get_full_name())
 
     @classmethod
     def current_players(cls):

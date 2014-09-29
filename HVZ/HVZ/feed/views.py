@@ -60,7 +60,7 @@ class DonateView(FormView):
     template_name = "feed/donate.html"
 
     @method_decorator(login_required)
-    #@method_decorator(require_active_game)
+    @method_decorator(require_active_game)
     @method_decorator(team_required('Z'))
     def dispatch(self, *args, **kwargs):
         return super(DonateView,self).dispatch(*args,**kwargs)
@@ -98,10 +98,11 @@ class DonateView(FormView):
         receivingPlayer = grab('receiver')
         brains = grab('numberOfMeals')
 
+
         if donatingPlayer.brains < brains:
             context = RequestContext(self.request, {})
             return HttpResponse(loader.get_template("feed/nope.html").render(context))
-        if donatingPlayer != receivingPlayer:
+        if donatingPlayer.user.get_full_name() != receivingPlayer.user.get_full_name():
             donatingPlayer.brains -= brains
             receivingPlayer.brains += brains
             donatingPlayer.save()

@@ -54,7 +54,7 @@ class Thread(models.Model):
             return False
 
         if user.is_staff:
-            return settings.VERBOSE_TEAMS.items()
+            return settings.VERBOSE_TEAMS.items() + Player.objects.values('clan')
 
         try:
             player = Player.user_to_player(user)
@@ -63,6 +63,7 @@ class Thread(models.Model):
 
         return (
             (player.team, settings.VERBOSE_TEAMS[player.team]),
+            (player.clan, player.clan),
             ('B', settings.VERBOSE_TEAMS['B']),
         )
 

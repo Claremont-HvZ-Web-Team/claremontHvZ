@@ -117,20 +117,11 @@ class DonateForm(forms.Form):
         required=True,
         label="Number of Brains",
         )
+    def __init__(self, *args, **kwargs):
+        super(DonateForm, self).__init__(*args, **kwargs)
+    def clean(self):
 
-    donatorMeals = forms.IntegerField(
-        required=False,
-        label="",
-        )
-
-    donatorUpgrade = forms.CharField(
-        required=False,
-        label="",
-        )
-
-    def clean(self, *args, **kwargs):
-        cleaned_data = super(DonateForm, self).clean(*args, **kwargs)
-        print cleaned_data
+        cleaned_data = super(DonateForm, self).clean()
         if not 'receiver' in cleaned_data:
             raise forms.ValidationError("You must specify a person to receive your brains!")
 
@@ -145,11 +136,5 @@ class DonateForm(forms.Form):
         num_meals = cleaned_data['numberOfMeals']
         if num_meals <= 0:
             raise forms.ValidationError("You must donate a positive number of brains!")
-
-        donatorMeals = cleaned_data['donatorMeals']
-        donatorUpgrade = cleaned_data['donatorUpgrade']
-        if not zombie_has_enough_meals(donatorMeals,donatorUpgrade,num_meals):
-            raise forms.ValidationError("You don't have enough brains!")
-
         
         return cleaned_data

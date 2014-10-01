@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import render
 from django.conf import settings
 
-from HVZ.main.models import Game, ModSchedule
+from HVZ.main.models import Game, ModSchedule, Player
 from HVZ.feed.models import Meal
 from HVZ.main.forms import PrettyAuthForm, RegisterForm, HarrassmentForm
 from HVZ.main.decorators import require_unfinished_game
@@ -56,6 +56,13 @@ class Register(FormView):
 def success(request):
     return render(request, 'main/success.html', {})
 
+def spitList(request, clan):
+    if request.user.is_staff:
+        context = {'clan': clan, 'players':Player.objects.all().filter(game=Game.nearest_game(), clan=clan)}
+    else:
+        context = {'clan': 'No Permission', 'players':[]}
+    return render(request, 'main/spitList.html', context)
+
 
 class TwilioCallHandler(TemplateView):
     template_name = "main/call.xml"
@@ -78,6 +85,7 @@ class TwilioCallHandler(TemplateView):
             pass
 
         return context
+
 
 class HarrassmentView(FormView):
     template_name = "main/harrassmentForm.html"

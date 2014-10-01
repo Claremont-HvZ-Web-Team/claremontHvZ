@@ -103,6 +103,7 @@
           <th>Tags</th>
           <th>Brains</th>
           <th>Class</th>
+          <th>Clan</th>
         </tr>
       </thead>
       <tbody>
@@ -114,6 +115,7 @@
           <td class="meal_count"><div>{{ player.meal_count }}</div></td>
           <td class="brains_count"><div>{{player.brains}}</div></td>
           <td class="upgrade"><div>{{ player.upgrade|upgrade_name }}</div></td>
+          <td class="clan"><div>{{ player.clan }}</div></td>
         </tr>
         {% empty %}
         <tr class="placeholder">

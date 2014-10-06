@@ -195,6 +195,10 @@ class JSONZombieAncestry(JSONResponseMixin, BaseListView):
 class JSONPlayerStats(JSONResponseMixin, BaseListView):
     FIELDS = ('team', 'grad_year', 'school', 'dorm')
 
+    @staticmethod
+    def _bounded_grad_year(grad_year):
+        return abs(Game.nearest_game().start_date.year - grad_year) < 5
+
     def get_queryset(self):
         return Player.current_players()
 
@@ -230,11 +234,15 @@ class JSONPlayerStats(JSONResponseMixin, BaseListView):
             index = 0 if item['team'] == "Z" else 1
 
             if item['grad_year']:
+
                 axis_lookup['grad_year'].setdefault(item['grad_year'], str(item['grad_year']))
 
             for key in aggregates:
                 if item[key]:
                     try:
+                        if key == 'grad_year' and not self._bounded_grad_year(item['grad_year']):
+                            continue
+
                         if key == 'dorm':
                             aggregates[key][index]['data'][dorm_ordering.index(item[key])] += 1
                         else:

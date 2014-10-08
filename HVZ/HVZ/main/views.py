@@ -58,7 +58,7 @@ def success(request):
 
 def spitList(request, clan):
     if request.user.is_staff:
-        clan = string.replace(clan, "_", " ")
+        clan = clan.replace("_", " ")
         context = {'clan': clan, 'players':Player.objects.all().filter(game=Game.nearest_game(), clan=clan)}
     else:
         context = {'clan': 'No Permission', 'players':[]}

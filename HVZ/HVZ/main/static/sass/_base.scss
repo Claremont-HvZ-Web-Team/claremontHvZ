@@ -30,13 +30,17 @@ textarea {
 #supercontainer {
     background-color: white;
     background-image: url(/static/images/subtle_grunge.png);
-    @include box-shadow(0, 15px, 15px, rgba(0, 0, 0, 1));
+    @include box-shadow(0, 2px, 15px, rgba(0, 0, 0, 1));
     padding-left: 0;
     padding-right: 0;
 
     .row {
         margin-left: 0;
         margin-right: 0;
+        padding-bottom: 0;
+    }
+    #intro {
+        margin-bottom: -20px;
     }
 }
 
@@ -50,6 +54,11 @@ $container_width: 1000px;
     }
 }
 
+@media (max-width: 991px) {
+    footer {
+        text-align: center;
+    }
+}
 footer {
     padding: 1em;
 

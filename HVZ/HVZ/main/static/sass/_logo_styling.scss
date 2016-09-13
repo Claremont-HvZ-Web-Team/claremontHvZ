@@ -31,14 +31,18 @@ $logo_height: 284px;
 
 #breakoutbar {
     height: 40px;
+    width: 98%;
     background-color: $bg_green;
     background-image: url(/static/images/green_grunge.jpg);
     background-position: 0px;
 
     margin-left: 2%;
+    margin-right: 2%;
 
     @include rounded_corner(top-left);
     @include rounded_corner(bottom-left);
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
 }
 
 #zombieproglead {
@@ -48,13 +52,17 @@ $logo_height: 284px;
     background-position: 0px 50%;
     background-repeat: no-repeat;
     float: right;
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
 }
 
 #zombieprog {
     height: 100%;
+    width: 27%;
     float: right;
-    width: 0%;
     background-color: $bg_red;
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
 }
 
 .modcall {
@@ -75,6 +83,10 @@ $logo_height: 284px;
     margin-bottom: 0;
     border: 0;
 
+    width: 99%;
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
+
     a {
         font-size: 23px;
         text-transform: uppercase;
@@ -90,11 +102,8 @@ $logo_height: 284px;
     display: table-cell;
     width: $logo_width;
 
-    &:not(.big) {
-        @include box-shadow(5px, -1px, 10px, rgba(0, 0, 0, 0.5));
-    }
-
-    z-index: 100;
+    z-index: 1;
+    padding-right: 10px;
 
     @media (max-width: 992px) {
         display: none;

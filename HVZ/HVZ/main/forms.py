@@ -57,20 +57,20 @@ class RegisterForm(forms.ModelForm):
     email = forms.EmailField(required=True)
 
     password1 = forms.CharField(
-        label=_("Password"),
+        label=_("Create a password"),
         widget=forms.PasswordInput,
         required=True
     )
 
     password2 = forms.CharField(
-        label=_("Password (again)"),
+        label=_("Retype the password"),
         widget=forms.PasswordInput,
         required=True,
     )
 
-    mailbox = forms.CharField(
-        label=_("Mailbox Number")
-    )
+    #mailbox = forms.CharField(
+    #    label=_("Mailbox Number")
+    #)
 
     school = forms.ModelChoiceField(
         queryset=School.objects,
@@ -100,7 +100,7 @@ class RegisterForm(forms.ModelForm):
     )
 
     feed = FeedCodeField(
-        label="Feed Code",
+        label="Enter the Feed Code on your index card (not case sensitive)",
         required=True
     )
 
@@ -111,7 +111,6 @@ class RegisterForm(forms.ModelForm):
                   'email',
                   'password1',
                   'password2',
-                  'mailbox',
                   'school',
                   'dorm',
                   'grad_year',

@@ -1,4 +1,4 @@
-Claremont Humans versus Zombies Site
+Claremont Humans vs. Zombies Site
 ====================================
 
 This is the website for the Claremont College's biannual HvZ game.

@@ -1,7 +1,7 @@
 {% load staticfiles %}
-<div class="alert alert-danger fade in" role="alert">
+<div class="alert alert-danger fade in" role="alert" style="width: 97%; margin: 10px auto 20px;">
       <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-      <strong>Google Doc:</strong> <a href="https://docs.google.com/document/d/1CXWBrwvWLoMcP5zDgT_4YcB8NfRgo8oK3UMIcmNJ-s4/edit">Live Update Page.</a>
+      <strong>Google Doc:</strong> <a href="https://docs.google.com/document/d/1CXWBrwvWLoMcP5zDgT_4YcB8NfRgo8oK3UMIcmNJ-s4/edit">Live Update Page</a>
 </div>
 <header class="bar-logo">
   <div class="barholder">
@@ -11,7 +11,7 @@
         <div id="zombieproglead"></div>
       </div>
     </a>
-    <div class="modcall">
+    <div class="modcall" style="visibility: hidden;">
       Mod on Call:
       {% firstof CURRENT_MOD.user.first_name.lower "nobody" %}
       {% firstof MOD_PHONE_NUMBER "(123) 456-7890" %}
@@ -37,13 +37,9 @@
   <div id="logo" class="{% if is_landing_page %}big{% endif %}">
     <a href="{% url 'main_landing' %}">
       <img src="{% spaceless %}
-                {% if is_landing_page %}
                 {% static 'images/logo.png' %}
-                {% else %}
-                {% static 'images/square_logo.png' %}
-                {% endif %}
                 {% endspaceless %}"
-           alt="Humans vs. Zombies: Claremont"/>
+           alt="Claremont Humans vs. Zombies"/>
     </a>
   </div>
 </header>

@@ -6598,12 +6598,15 @@ button.close {
   margin-left: auto;
 }
 
-.pull-right {
-  float: right !important;
-}
+@media (min-width: 991px) {
+  .pull-right {
+    float: right !important;
+    text-align: right;  /* user added */
+  }
 
-.pull-left {
-  float: left !important;
+  .pull-left {
+    float: left !important;
+  }
 }
 
 .hide {

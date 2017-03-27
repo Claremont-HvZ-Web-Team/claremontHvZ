@@ -6,6 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 #from django_localflavor_us.forms import USPhoneNumberField
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from HVZ.main.models import Building, Game, School, Player
 from HVZ.main.validators import validate_chars
@@ -87,6 +88,8 @@ class RegisterForm(forms.ModelForm):
     grad_year = forms.IntegerField(
         label=_("Expected graduation year"),
         required=True,
+	min_value=2000,
+	max_value=2100,
     )
 
     # cell = USPhoneNumberField(
@@ -104,6 +107,14 @@ class RegisterForm(forms.ModelForm):
         required=True
     )
 
+
+    waiver_box = forms.BooleanField(
+    	label=mark_safe('I have read and agree to the <a href='
+	'"https://drive.google.com/file/d/0B78zrV_AHqA4VHJLdzRQOFpfT28/view">'
+	'HvZ Waiver of Liability</a>'),
+	required=True,
+    )
+
     class Meta:
         model = Player
         fields = ('first_name',
@@ -116,6 +127,7 @@ class RegisterForm(forms.ModelForm):
                   'grad_year',
                   'can_oz',
                   'feed',
+		  'waiver_box',
         )
 
     def clean_email(self):

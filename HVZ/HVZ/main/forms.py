@@ -6,6 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 #from django_localflavor_us.forms import USPhoneNumberField
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from HVZ.main.models import Building, Game, School, Player
 from HVZ.main.validators import validate_chars
@@ -57,20 +58,20 @@ class RegisterForm(forms.ModelForm):
     email = forms.EmailField(required=True)
 
     password1 = forms.CharField(
-        label=_("Password"),
+        label=_("Create a password"),
         widget=forms.PasswordInput,
         required=True
     )
 
     password2 = forms.CharField(
-        label=_("Password (again)"),
+        label=_("Retype the password"),
         widget=forms.PasswordInput,
         required=True,
     )
 
-    mailbox = forms.CharField(
-        label=_("Mailbox Number")
-    )
+    #mailbox = forms.CharField(
+    #    label=_("Mailbox Number")
+    #)
 
     school = forms.ModelChoiceField(
         queryset=School.objects,
@@ -87,6 +88,8 @@ class RegisterForm(forms.ModelForm):
     grad_year = forms.IntegerField(
         label=_("Expected graduation year"),
         required=True,
+	min_value=2000,
+	max_value=2100,
     )
 
     # cell = USPhoneNumberField(
@@ -100,8 +103,16 @@ class RegisterForm(forms.ModelForm):
     )
 
     feed = FeedCodeField(
-        label="Feed Code",
+        label="Enter the Feed Code on your index card (not case sensitive)",
         required=True
+    )
+
+
+    waiver_box = forms.BooleanField(
+    	label=mark_safe('I have read and agree to the <a href='
+	'"https://drive.google.com/file/d/0B78zrV_AHqA4VHJLdzRQOFpfT28/view">'
+	'HvZ Waiver of Liability</a>'),
+	required=True,
     )
 
     class Meta:
@@ -111,12 +122,12 @@ class RegisterForm(forms.ModelForm):
                   'email',
                   'password1',
                   'password2',
-                  'mailbox',
                   'school',
                   'dorm',
                   'grad_year',
                   'can_oz',
                   'feed',
+		  'waiver_box',
         )
 
     def clean_email(self):

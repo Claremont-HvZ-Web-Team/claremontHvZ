@@ -6,20 +6,17 @@ This is the website for the Claremont College's biannual HvZ game.
 Dev machine setup
 -----------------
 
-Developing for the site will require [Django] [4], [VirtualEnv] [3],
-and [Compass] [5]. If you are familiar with and have (or know how to
+Developing for the site will require [Django](http://www.djangoproject.com/), [VirtualEnv](http://pypi.python.org/pypi/virtualenv/),
+and [Compass](http://rubygems.org/gems/compass). If you are familiar with and have (or know how to
 get) all of these, feel free to skip this section.
 
-First off, install [pip] [1] using your favorite package manager. If
-you're developing on a Mac, I recommend installing/using [homebrew]
-[2] as your package manager of choice. Then `brew install python` will
-install pip.
+First off, install [pip](http://www.pip-installer.org/) using your favorite package manager. If you're developing on a Mac, I recommend installing/using [homebrew](http://mxcl.github.io/homebrew/) as your package manager of choice. Then `brew install python` will install pip.
 
 Using pip, you should have an easy time installing virtualenv:
 
     pip install virtualenv
 
-Secondly, you'll need to install [Compass] [5]. You can do this with
+Secondly, you'll need to install [Compass](http://rubygems.org/gems/compass). You can do this with
 
     sudo gem install compass
 
@@ -65,7 +62,7 @@ Now complete the build with
     python ~/programming/claremonthvz.org/claremontHvZ/setup.py
 
 If all went well, that should be it! There's a detailed guide to the
-build process on the [wiki] [6].
+build process on the [wiki](http://github.com/Claremont-HvZ-Web-Team/claremontHvZ/wiki/Full-installation-process).
 
 ### Running a development version of the server
 
@@ -82,11 +79,3 @@ To run our unit tests:
     python manage.py test HVZ
 
 These tests will check registration, feeding, and permission scenarios.
-
-
-[1]: http://www.pip-installer.org/ "PyPI Package Manager"
-[2]: http://mxcl.github.io/homebrew/ "Homebrew"
-[3]: http://pypi.python.org/pypi/virtualenv/ "VirtualEnv"
-[4]: http://www.djangoproject.com/ "Django"
-[5]: http://rubygems.org/gems/compass "Compass"
-[6]: http://github.com/jthemphill/claremontHvZ/wiki/Full-installation-process

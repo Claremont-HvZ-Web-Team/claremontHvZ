@@ -70,3 +70,4 @@ To run a development version of the server:
     python manage.py runserver
 
 You can then access the site by directing your browser to `localhost:8000`.
+

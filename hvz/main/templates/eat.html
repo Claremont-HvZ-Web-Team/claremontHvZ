@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% load widget_tweaks %}
+
+{% block stylein %}
+   <link rel="stylesheet" type="text/css" href="{% static 'styles/feed/eat.css' %}">
+{% endblock stylein %}
+
+{% block content %}
+{% if form.errors %}
+    {{form.errors}}
+{% endif %}
+<form method="post" action="{% url 'eat' %}">
+  {% csrf_token %}
+  <div class="eat_form">
+    <div class="form-group">
+        <label for="{{form.feedcode.id_for_label}}">{{ form.feedcode.label }}</label>
+        {{form.feedcode|attr:"class:form-control"}}
+    </div>
+    <div class="form-group">
+        <label>{{form.time.label}}</label>
+        <div class="form-control">{{form.day}} {{form.time}}</div>
+    </div>
+    <div class="form-group">
+        <label for="{{form.location.id_for_label}}">{{form.location.label}}</label>
+        {{form.location|attr:"class:form-control"}}
+    </div>
+    <div class="form-group">
+        <label for="{{form.description.id_for_label}}">{{ form.description.label }}</label>
+        {{form.description|attr:"class:form-control"}}
+    </div>
+  </div>
+  <input type="submit" class="btn form-control" />
+</form>
+{% endblock %}

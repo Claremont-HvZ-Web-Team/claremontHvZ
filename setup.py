@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
-
 import os
 import sys
 import subprocess
@@ -36,7 +34,7 @@ def main():
 
     project_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        'HVZ'
+        'hvz'
     )
     old_dir = os.getcwd()
 
@@ -74,7 +72,7 @@ def install_dependencies(project_path):
         'pip',
         'install',
         '-r',
-        os.path.join(os.path.dirname(project_path), 'dev-requirements.txt'),
+        os.path.join(os.path.dirname(project_path), 'requirements.txt'),
         '--use-mirrors',
     ])
 

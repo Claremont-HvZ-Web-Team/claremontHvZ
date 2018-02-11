@@ -6,20 +6,17 @@ This is the website for the Claremont College's biannual HvZ game.
 Dev machine setup
 -----------------
 
-Developing for the site will require [Django] [4], [VirtualEnv] [3],
-and [Compass] [5]. If you are familiar with and have (or know how to
+Developing for the site will require [Django](http://www.djangoproject.com/), [VirtualEnv](http://pypi.python.org/pypi/virtualenv/),
+and [Compass](http://rubygems.org/gems/compass). If you are familiar with and have (or know how to
 get) all of these, feel free to skip this section.
 
-First off, install [pip] [1] using your favorite package manager. If
-you're developing on a Mac, I recommend installing/using [homebrew]
-[2] as your package manager of choice. Then `brew install python` will
-install pip.
+First off, install [pip](http://www.pip-installer.org/) using your favorite package manager. If you're developing on a Mac, I recommend installing/using [homebrew](http://mxcl.github.io/homebrew/) as your package manager of choice. Then `brew install python3` will install pip.
 
 Using pip, you should have an easy time installing virtualenv:
 
-    pip install virtualenv
+    pip3 install virtualenv
 
-Secondly, you'll need to install [Compass] [5]. You can do this with
+Secondly, you'll need to install [Compass](http://rubygems.org/gems/compass). You can do this with
 
     sudo gem install compass
 
@@ -53,7 +50,7 @@ This command only affects your current terminal, so you'll need to
 rerun it every time you want to work on the site. I highly recommend
 you add an alias to your .bashrc along the lines of
 
-    alias hvz="cd ~/programming/claremonthvz.org && source bin/activate && cd claremontHvZ/HVZ"
+    alias hvz="cd ~/programming/claremonthvz.org && source bin/activate && cd hvz"
 
 Clone your forked GitHub repo (you don't have to use the command line
 for this):
@@ -62,10 +59,9 @@ for this):
 
 Now complete the build with
 
-    python ~/programming/claremonthvz.org/claremontHvZ/setup.py
+    ~/programming/claremonthvz.org/hvz/setup.py
 
-If all went well, that should be it! There's a detailed guide to the
-build process on the [wiki] [6].
+If all went well, that should be it!
 
 ### Running a development version of the server
 
@@ -74,19 +70,3 @@ To run a development version of the server:
     python manage.py runserver
 
 You can then access the site by directing your browser to `localhost:8000`.
-
-### Running unit tests
-
-To run our unit tests:
-
-    python manage.py test HVZ
-
-These tests will check registration, feeding, and permission scenarios.
-
-
-[1]: http://www.pip-installer.org/ "PyPI Package Manager"
-[2]: http://mxcl.github.io/homebrew/ "Homebrew"
-[3]: http://pypi.python.org/pypi/virtualenv/ "VirtualEnv"
-[4]: http://www.djangoproject.com/ "Django"
-[5]: http://rubygems.org/gems/compass "Compass"
-[6]: http://github.com/jthemphill/claremontHvZ/wiki/Full-installation-process

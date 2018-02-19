@@ -3,7 +3,7 @@ import datetime
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
-from HVZ.main.models import Game
+from hvz.main.models import Game
 
 SUNDAY = 6
 MONDAY = 0

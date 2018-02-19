@@ -83,7 +83,7 @@ def copy_template_files(project_path):
 
     files = 0
 
-    os.chdir(os.path.join(project_path, 'HVZ'))
+    os.chdir(os.path.join(project_path, 'hvz'))
     if not os.path.exists('local_settings.py'):
         print("local_settings.py...")
         subprocess.call([

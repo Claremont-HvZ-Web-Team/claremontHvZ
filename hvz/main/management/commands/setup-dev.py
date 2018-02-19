@@ -5,7 +5,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
-from HVZ.main import models
+from hvz.main import models
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 'loaddata',
                 os.path.join(
                     settings.PROJECT_PATH,
-                    'HVZ', 'main', 'fixtures', 'production.json'
+                    'hvz', 'main', 'fixtures', 'campus.json'
                 )
             )
 
@@ -89,7 +89,7 @@ class Command(BaseCommand):
         self.delimit()
         self.stderr.write("Running unit tests...")
         self.delimit()
-        call_command('test', 'HVZ', stdout=self.stdout, stderr=self.stderr)
+        call_command('test', 'hvz', stdout=self.stdout, stderr=self.stderr)
 
         self.delimit()
         self.stderr.write("Build Complete!")

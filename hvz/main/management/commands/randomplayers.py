@@ -65,7 +65,7 @@ class Command(BaseCommand):
         if len(self.schools) == 0 or len(self.dorms) == 0:
             call_command(
                 'loaddata',
-                os.path.join('HVZ', 'main', 'fixtures', 'campus.json'),
+                os.path.join('hvz', 'main', 'fixtures', 'campus.json'),
                 stdout=self.stdout,
                 stderr=self.stderr,
             )

@@ -3,7 +3,7 @@
 # The Google doc containing mission information.
 MISSION_DOC_LINK = "https://docs.google.com/document/d/1CXWBrwvWLoMcP5zDgT_4YcB8NfRgo8oK3UMIcmNJ-s4"
 
-MODERATOR_EMAIL = "moderator@claremonthvz.org"
+MODERATOR_EMAIL = "mod@claremonthvz.org"
 ANON_HARRASSMENT_EMAIL = "hvzanonymouscomplaint@gmail.com"
 
 # The length of a feed code.
@@ -153,6 +153,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = local_settings.STATIC_ROOT
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"

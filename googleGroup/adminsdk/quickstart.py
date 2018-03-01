@@ -21,5 +21,5 @@ http = credentials.authorize(Http())
 
 directory = build('admin', 'directory_v1', http=http)
 
-response = directory.resources().calendars().list(customer='my_customer')
+response = directory.groups()
 print(response.execute(http=http))

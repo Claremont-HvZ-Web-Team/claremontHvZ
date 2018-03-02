@@ -250,6 +250,11 @@ class Player(models.Model):
         game = game or Game.nearest_game()
         return cls.objects.get(game=game, user=u)
 
+    # Written by WAT
+    @classmethod
+    def get_player_email(self):
+    	print(self.user.email)
+
     class Meta:
         # A User can only have one Player per Game, and a feed code
         # can only correspond to one player per game.

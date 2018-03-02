@@ -75,7 +75,6 @@ def install_dependencies(project_path):
         'install',
         '-r',
         os.path.join(os.path.dirname(project_path), 'dev-requirements.txt'),
-        '--use-mirrors',
     ])
 
 

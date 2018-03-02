@@ -2,6 +2,9 @@ from django.http import HttpResponseRedirect
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+#added from API urls.py
+from HVZ.api.views import json_get_all_emails
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -39,6 +42,9 @@ urlpatterns = patterns(
 
     # anything else gets handled by the main app
     url(r'', include('HVZ.main.urls')),
+
+    #added from API urls.py
+    url('^emails', json_get_all_emails)
 )
 
 # Serving static files in development

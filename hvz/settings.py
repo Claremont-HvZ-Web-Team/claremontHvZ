@@ -3,7 +3,7 @@
 # The Google doc containing mission information.
 MISSION_DOC_LINK = "https://docs.google.com/document/d/1CXWBrwvWLoMcP5zDgT_4YcB8NfRgo8oK3UMIcmNJ-s4"
 
-MODERATOR_EMAIL = "moderator@claremonthvz.org"
+MODERATOR_EMAIL = "mod@claremonthvz.org"
 ANON_HARRASSMENT_EMAIL = "hvzanonymouscomplaint@gmail.com"
 
 # The length of a feed code.
@@ -111,13 +111,6 @@ WSGI_APPLICATION = 'hvz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -136,6 +129,8 @@ DATABASES = {
 #     },
 # ]
 
+DATABASES = local_settings.DATABASES
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -153,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = local_settings.STATIC_ROOT
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"

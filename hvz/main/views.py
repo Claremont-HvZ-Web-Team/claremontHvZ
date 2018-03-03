@@ -307,13 +307,14 @@ def json_zombie_ancestry(request):
         eater__game=models.Game.nearest_game()
     ).select_related('eater', 'eaten')
 
-    possible_ozs = set(players)
+    possible_ozs = set([p for p in players])
     children = collections.defaultdict(list)
     for m in meals:
         if m.eaten not in players:
             continue
         children[m.eater].append(m.eaten)
-        possible_ozs.remove(m.eaten)
+        if m.eaten in possible_ozs:
+            possible_ozs.remove(m.eaten)
 
     ozs = [p for p in players if p in possible_ozs]
 

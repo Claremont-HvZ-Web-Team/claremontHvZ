@@ -43,8 +43,10 @@ urlpatterns = patterns(
     # anything else gets handled by the main app
     url(r'', include('HVZ.main.urls')),
 
-    #added from API urls.py
-    url('^emails', json_get_all_emails)
+    # #added from API urls.py
+    # url('^emails', json_get_all_emails)
+
+    # url('^mailer', mailer)
 )
 
 # Serving static files in development

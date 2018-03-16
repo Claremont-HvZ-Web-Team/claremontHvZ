@@ -3,9 +3,14 @@ import json
 from django.http import HttpResponse
 
 from HVZ.main.models import Player
+from django.core.mail import send_mail
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
+from HVZ.api.forms import MailerForm
+
 
 def json_get_all_emails(request):
-    """A pretty useless function that displays all graduation years.
+    """A function that displays all emails.
 
     You should replace this with one you actually want.
 
@@ -24,3 +29,18 @@ def json_get_all_emails(request):
         json_data,
         content_type="application/json"
     )
+
+class Mailer(FormView):
+    form_class = MailerForm
+    template_name = "api/mailer.html"
+
+    def dispatch(self, *args, **kwargs):
+        return super(Mailer, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse("success")
+
+    def form_valid(self, form):
+        form.save()
+        return super(Mailer, self).form_valid(form)
+

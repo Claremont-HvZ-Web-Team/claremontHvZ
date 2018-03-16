@@ -11,7 +11,7 @@ credz = store.get()
 if not credz or credz.invalid:
 	flow = client.flow_from_clientsecrets(CLIENT_SECRET)
 	credz = tools.run(flow, store)
-SERVICE = build()
+	SERVICE = build()
 	r = requests.get('https://www.googleapis.com/admin/directory/v1/groups/hvztesinggroup@googlegroups.com/members',
 	{
 	   "email": "johnshi0718@gmail.com",

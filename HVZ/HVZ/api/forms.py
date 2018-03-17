@@ -1,4 +1,5 @@
 from django import forms
+from HVZ.main.models import Player
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -10,13 +11,18 @@ from django.utils.safestring import mark_safe
 
 class MailerForm(forms.Form):
 
+	ALLPLAYERS = "All"
+	CHOICES = [
+		(ALLPLAYERS, "All Players")
+	]
 	# TODO: Should we make this a field in the email "form?"
 	sender = "mods@claremonthv.org"
 
 	#Email Field validates that the given value is a valid email address
-	recipient = forms.EmailField(
+	recipient = forms.ChoiceField(
 		label=_("To:"),
-		required=True
+		required=True, 
+		choices = CHOICES
 		)
 
 	subject = forms.CharField(
@@ -28,3 +34,7 @@ class MailerForm(forms.Form):
 		label=_("Body:"),
 		required=True
 		)
+
+	def send_email(self):
+		# send email using the self.cleand_data dictionary
+		pass

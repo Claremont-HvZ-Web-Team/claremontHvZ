@@ -1,16 +1,4 @@
-<div class="fieldWrapper">
-    <label> To: </label>
-    {{ form.recipient }}
-</div>
-
-<div class="fieldWrapper">
-	<label> Subject: </label>
-    {{ form.subject }}
-</div>
-
-<div class="fieldWrapper">
-    <label> Message: </label>
-    {{ form.body }}
-</div>
-
-<input type= "submit" value="Send">
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Send message" />
+</form>

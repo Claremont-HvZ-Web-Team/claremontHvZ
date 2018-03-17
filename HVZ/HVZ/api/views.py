@@ -18,6 +18,7 @@ def json_get_all_emails(request):
 
     # Check out HVZ/main/models.py for helper functions relating to Players.
     # Player.current_players() returns all Players in the current Game.
+    
     emails = [p.user.email for p in Player.current_players()]
     
     # json.dumps creates a string from a Python object. You can then
@@ -43,7 +44,8 @@ class Mailer(FormView):
 
     def form_valid(self, form):
 
-        sender = "mods@claremonthv.org"
+        sender = "hvzwattest@gmail.com"
+        # sender = "mod@claremonthvz.org"
         if form.is_valid():
             # send email using the self.cleand_data dictionary
             subject = form.cleaned_data['subject']
@@ -52,6 +54,13 @@ class Mailer(FormView):
 
         if(recipient_title == MailerForm.ALLPLAYERS):
             recipients = [p.user.email for p in Player.current_players()]
+
+        # TODO: Test these further. It seems that all players are humans by default.
+        # elif(recipient_title == MailerForm.HUMANS):
+        #     recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
+
+        # elif(recipient_title == MailerForm.ZOMBIES):
+        #     recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
 
         # TODO: Authentication error for sender
         send_mail(subject, body, sender, recipients)

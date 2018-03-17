@@ -44,7 +44,8 @@ class Mailer(FormView):
 
     def form_valid(self, form):
 
-        sender = "mods@claremonthv.org"
+        sender = "hvzwattest@gmail.com"
+        # sender = "mod@claremonthvz.org"
         if form.is_valid():
             # send email using the self.cleand_data dictionary
             subject = form.cleaned_data['subject']

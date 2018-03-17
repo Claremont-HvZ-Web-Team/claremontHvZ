@@ -20,7 +20,9 @@ class MailerForm(forms.Form):
 		(ZOMBIES, "Zombies"),
 	]
 	# TODO: Should we make this a field in the email "form?"
-	sender = "mod@claremonthvz.org"
+	
+	sender = "hvzwattest@gmail.com"
+	# sender = "mod@claremonthvz.org"
 
 	#Email Field validates that the given value is a valid email address
 	recipient = forms.ChoiceField(

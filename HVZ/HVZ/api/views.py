@@ -31,19 +31,6 @@ def json_get_all_emails(request):
         content_type="application/json"
     )
 
-def get_humans(request):
-    emails = [p.user.email for p in Player.current_players() if p.team == "H"]
-    
-    # json.dumps creates a string from a Python object. You can then
-    # read the string and convert it into an Objective-C data
-    # structure using NSJSONSerialization in Objective-C.
-    json_data = json.dumps(emails)
-
-    return HttpResponse(
-        json_data,
-        content_type="application/json"
-    )
-
 class Mailer(FormView):
     form_class = MailerForm
     template_name = "api/mailer.html"
@@ -67,11 +54,12 @@ class Mailer(FormView):
         if(recipient_title == MailerForm.ALLPLAYERS):
             recipients = [p.user.email for p in Player.current_players()]
 
-        elif(recipient_title == MailerForm.HUMANS):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
+        # TODO: Test these further. It seems that all players are humans by default.
+        # elif(recipient_title == MailerForm.HUMANS):
+        #     recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
 
-        elif(recipient_title == MailerForm.ZOMBIES):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
+        # elif(recipient_title == MailerForm.ZOMBIES):
+        #     recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
 
         # TODO: Authentication error for sender
         send_mail(subject, body, sender, recipients)

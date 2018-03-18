@@ -58,6 +58,7 @@ class Mailer(FormView):
         # TODO: Test these further. It seems that all players are humans by default.
         # elif(recipient_title == MailerForm.HUMANS):
         #     recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
+        # test
 
         # elif(recipient_title == MailerForm.ZOMBIES):
         #     recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        

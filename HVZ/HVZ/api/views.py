@@ -63,7 +63,7 @@ class Mailer(FormView):
         # elif(recipient_title == MailerForm.ZOMBIES):
         #     recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
 
-        # TODO: Authentication error for sender
+        # TODO: Authentication error for sender for mod@claremonthvz.org
         send_mail(subject, body, sender, recipients)
         
         return super(Mailer, self).form_valid(form)

@@ -13,7 +13,7 @@ class MailerForm(forms.Form):
 
 	ALLPLAYERS = "All"
 	HUMANS = "Humans"
-	ZOMBIES = "ZOMBIES"
+	ZOMBIES = "Zombies"
 	CHOICES = [
 		(ALLPLAYERS, "All Players"),
 		(HUMANS, "Humans"),
@@ -38,7 +38,8 @@ class MailerForm(forms.Form):
 
 	body = forms.CharField(
 		label=_("Body:"),
-		required=True
+		required=True,
+		widget=forms.Textarea()
 		)
 
 	def send_email(self):

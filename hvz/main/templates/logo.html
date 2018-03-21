@@ -11,6 +11,7 @@
     </a>
     <nav id="main_nav" class="navbar navbar-inverse" role="navigation">
       <ul class="nav navbar-nav">
+        <li><a href="{% rules_link %}">Rules</a></li>
         {% if player and player.team == "Z" %}
         <li><a href="{% url 'eat' %}">Eat</a></li>
         {% endif %}

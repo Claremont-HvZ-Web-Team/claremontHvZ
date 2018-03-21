@@ -1,5 +1,8 @@
 ### GAME SPECIFIC THINGS GO HERE.
 
+# The Google doc containing rules information.
+RULES_DOC_LINK = "https://docs.google.com/document/d/1EgbmfgW7gOVOz_RZ6K_i8zeZznK3rgQhMtiBio3jCyU"
+
 # The Google doc containing mission information.
 MISSION_DOC_LINK = "https://docs.google.com/document/d/1CXWBrwvWLoMcP5zDgT_4YcB8NfRgo8oK3UMIcmNJ-s4"
 

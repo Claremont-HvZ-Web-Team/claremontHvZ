@@ -42,17 +42,18 @@ def register_success(request):
 
 class RegisterView(generic.FormView):
     form_class = forms.RegisterForm
-    template_name = "register.html"
+    template_name = "main/register.html"
 
+    @method_decorator(permission_required("main.add_player"))
     def dispatch(self, *args, **kwargs):
-        return super(RegisterView, self).dispatch(*args, **kwargs)
+        return super(Register, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse("register_success")
+        return reverse("success")
 
     def form_valid(self, form):
         form.save()
-        return super(RegisterView, self).form_valid(form)
+        return super(Register, self).form_valid(form)
 
 class EatView(generic.FormView):
     form_class = forms.MealForm

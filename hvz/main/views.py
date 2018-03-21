@@ -3,7 +3,7 @@ import collections
 import datetime as dt
 import json
 
-from django import db
+from django import db, urls
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import permission_required, login_required
 from django.conf import settings
@@ -42,18 +42,18 @@ def register_success(request):
 
 class RegisterView(generic.FormView):
     form_class = forms.RegisterForm
-    template_name = "main/register.html"
+    template_name = "register.html"
 
     @method_decorator(permission_required("main.add_player"))
     def dispatch(self, *args, **kwargs):
-        return super(Register, self).dispatch(*args, **kwargs)
+        return super(RegisterView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse("success")
+        return urls.reverse(register_success)
 
     def form_valid(self, form):
         form.save()
-        return super(Register, self).form_valid(form)
+        return super(RegisterView, self).form_valid(form)
 
 class EatView(generic.FormView):
     form_class = forms.MealForm
@@ -70,7 +70,7 @@ class EatView(generic.FormView):
         return form
 
     def get_success_url(self):
-        return reverse("main_landing")
+        return urls.reverse(landing_page)
 
     def form_valid(self, form):
         def grab(s):
@@ -430,7 +430,7 @@ class HarrassmentView(generic.FormView):
         return super(HarrassmentView,self).dispatch(*args,**kwargs)
 
     def get_success_url(self):
-        return reverse("harrassmentConfirmation")
+        return urls.reverse(harrassmentConfirmation)
 
     def form_valid(self, form):
         description = form.cleaned_data['description']

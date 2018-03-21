@@ -147,8 +147,15 @@ class RegisterForm(forms.ModelForm):
         email = grab('email')
         password = grab('password1')
 
-        user = User.objects.select_for_update().get(username=email)
-        user.set_password(password)
+        try:
+            user = User.objects.select_for_update().get(username=email)
+            user.set_password(password)
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                email=email,
+                username=email,
+                password=password,
+            )
 
         user.first_name = grab("first_name")
         user.last_name = grab("last_name")
@@ -188,8 +195,8 @@ class MealForm(forms.Form):
     )
 
     def clean(self, *args, **kwargs):
-        cleaned_data['time'] = settings.NOW()
-        return cleaned_data
+        self.cleaned_data['time'] = settings.NOW()
+        return self.cleaned_data
 
 
 class HarrassmentForm(forms.Form):

@@ -104,6 +104,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'hvz.main.context_processors.inject_outbreak_percentage',
+                'hvz.main.context_processors.inject_current_player',
             ],
         },
     },

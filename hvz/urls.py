@@ -23,19 +23,19 @@ urlpatterns = [
         name="password_reset",
     ),
     path(
-        'password_reset/<uidb64>/<token>/',
-        auth_views.PasswordResetConfirmView.as_view(
-            template_name='password_reset_confirm.html',
-        ),
-        {'post_reset_redirect': 'password_reset/done'},
-        name='password_reset_confirm',
-    ),
-    path(
         'password_reset/done/',
         auth_views.PasswordResetDoneView.as_view(
             template_name='password_reset_done.html',
         ),
         name='password_reset_done',
+    ),
+    path(
+        'password_reset/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name='password_reset_confirm.html',
+            success_url='/',
+        ),
+        name='password_reset_confirm',
     ),
     path('players/', views.player_list, name='player_list'),
     path('register/', views.RegisterView.as_view(), name='register'),

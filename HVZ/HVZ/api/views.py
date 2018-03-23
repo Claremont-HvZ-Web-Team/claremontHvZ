@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from HVZ.api.forms import MailerForm
-
+from django.shortcuts import render
 
 def json_get_all_emails(request):
     """A function that displays all emails.
@@ -75,4 +75,3 @@ class Mailer(FormView):
         send_mail(subject, body, sender, recipients)
         
         return super(Mailer, self).form_valid(form)
-

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block stylein %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main/register.css' %}"/>
+{% endblock stylein %}
+
+{% block content %}
+<h1>Email Sent Successful!</h1>
+<a href={% url 'mailer' %}><h2>Go back</h2></a>
+{% endblock %}

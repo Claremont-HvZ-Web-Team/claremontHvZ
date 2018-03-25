@@ -21,11 +21,12 @@ def json_get_all_emails(request):
     # Player.current_players() returns all Players in the current Game.
     
     emails = [p.user.email for p in Player.current_players()]
-    
+    format = ",".join(emails)
+
     # json.dumps creates a string from a Python object. You can then
     # read the string and convert it into an Objective-C data
     # structure using NSJSONSerialization in Objective-C.
-    json_data = json.dumps(emails)
+    json_data = json.dumps(format)
 
     return HttpResponse(
         json_data,

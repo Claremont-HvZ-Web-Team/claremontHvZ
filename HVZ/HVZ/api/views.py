@@ -38,7 +38,7 @@ class Mailer(FormView):
     template_name = "api/mailer.html"
 
     # return url
-    success_url = '/success/'
+    success_url = 'successmailer'
 
     def dispatch(self, *args, **kwargs):
         # used to display the form
@@ -48,6 +48,8 @@ class Mailer(FormView):
         # after the mail is sent successfully, it goes to the success page
         # At this point, it is the same as registration success page
         # in the future, we will have more details 
+
+        # this needs to be changed somehow
         return super(Mailer, self).get_success_url()
 
     def form_valid(self, form):

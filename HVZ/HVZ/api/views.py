@@ -1,3 +1,4 @@
+# file for code review
 import json
 
 from django.http import HttpResponse
@@ -7,7 +8,7 @@ from django.core.mail import send_mail
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from HVZ.api.forms import MailerForm
-
+from django.shortcuts import render
 
 def json_get_all_emails(request):
     """A function that displays all emails.
@@ -34,12 +35,18 @@ def json_get_all_emails(request):
 class Mailer(FormView):
     form_class = MailerForm
     template_name = "api/mailer.html"
+
+    # return url
     success_url = '/success/'
 
     def dispatch(self, *args, **kwargs):
+        # used to display the form
         return super(Mailer, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
+        # after the mail is sent successfully, it goes to the success page
+        # At this point, it is the same as registration success page
+        # in the future, we will have more details 
         return super(Mailer, self).get_success_url()
 
     def form_valid(self, form):
@@ -52,6 +59,9 @@ class Mailer(FormView):
             body = form.cleaned_data['body']
             recipient_title = form.cleaned_data['recipient']
 
+        # based on inputs from the recipients field, retrieve the list of players 
+        # to send emails to, options are:
+        # all players, humans, or zombies
         if(recipient_title == MailerForm.ALLPLAYERS):
             recipients = [p.user.email for p in Player.current_players()]
 
@@ -61,8 +71,7 @@ class Mailer(FormView):
         elif(recipient_title == MailerForm.ZOMBIES):
             recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
 
-        # TODO: Authentication error for sender for mod@claremonthvz.org
+        # send mail based on the given inputs
         send_mail(subject, body, sender, recipients)
         
         return super(Mailer, self).form_valid(form)
-

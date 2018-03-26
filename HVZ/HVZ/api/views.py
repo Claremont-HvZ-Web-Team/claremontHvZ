@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from HVZ.api.forms import MailerForm
 from django.shortcuts import render
+from django.core.urlresolvers import reverse
 
 def json_get_all_emails(request):
     """A function that displays all emails.
@@ -32,6 +33,9 @@ def json_get_all_emails(request):
         content_type="application/json"
     )
 
+def success(request):
+    return render(request, 'api/success.html', {})
+
 class Mailer(FormView):
     form_class = MailerForm
     template_name = "api/mailer.html"
@@ -47,7 +51,10 @@ class Mailer(FormView):
         # after the mail is sent successfully, it goes to the success page
         # At this point, it is the same as registration success page
         # in the future, we will have more details 
-        return super(Mailer, self).get_success_url()
+        
+        # return render(request, 'api/success.html', {})
+        # return super(Mailer, self).get_success_url()
+        return reverse("mail_success")
 
     def form_valid(self, form):
 

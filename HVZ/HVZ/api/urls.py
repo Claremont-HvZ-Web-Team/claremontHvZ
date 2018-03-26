@@ -8,7 +8,7 @@ urlpatterns = patterns('HVZ.api.views',
     # Replace this view with your own
     url('^emails', json_get_all_emails),
 
-    url('^mailer', staff_member_required(Mailer.as_view())),
+    url('^mailer', staff_member_required(Mailer.as_view()), name="mailer"),
 
     url('^success', success, name="mail_success")
 )

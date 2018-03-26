@@ -52,8 +52,6 @@ class Mailer(FormView):
         # At this point, it is the same as registration success page
         # in the future, we will have more details 
         
-        # return render(request, 'api/success.html', {})
-        # return super(Mailer, self).get_success_url()
         return reverse("mail_success")
 
     def form_valid(self, form):

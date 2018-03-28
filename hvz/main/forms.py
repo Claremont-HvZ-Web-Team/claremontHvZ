@@ -113,12 +113,6 @@ class RegisterForm(forms.ModelForm):
         required=True
     )
     waiver_box = forms.BooleanField(
-        label='I have read and agree to the HvZ Waiver of Liability',
-        required=True,
-    )
-
-
-    waiver_box = forms.BooleanField(
         label=mark_safe('I have read and agree to the <a href='
     '"https://drive.google.com/file/d/0B78zrV_AHqA4VHJLdzRQOFpfT28/view">'
     'HvZ Waiver of Liability</a>'),

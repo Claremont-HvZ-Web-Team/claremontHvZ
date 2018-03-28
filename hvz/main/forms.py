@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Q
-
+from django.utils.safestring import mark_safe
 from hvz.main import models, validators
 
 class PrettyAuthForm(AuthenticationForm):
@@ -117,6 +117,13 @@ class RegisterForm(forms.ModelForm):
         required=True,
     )
 
+
+    waiver_box = forms.BooleanField(
+        label=mark_safe('I have read and agree to the <a href='
+    '"https://drive.google.com/file/d/0B78zrV_AHqA4VHJLdzRQOFpfT28/view">'
+    'HvZ Waiver of Liability</a>'),
+    required=True,
+    )
 
     def clean_feed(self):
         """Ensure that the same feed code is not used twice in the same game."""

@@ -112,6 +112,11 @@ class RegisterForm(forms.ModelForm):
         label="Enter the Feed Code on your index card (not case sensitive)",
         required=True
     )
+    waiver_box = forms.BooleanField(
+        label='I have read and agree to the HvZ Waiver of Liability',
+        required=True,
+    )
+
 
     def clean_feed(self):
         """Ensure that the same feed code is not used twice in the same game."""
@@ -134,6 +139,7 @@ class RegisterForm(forms.ModelForm):
             'grad_year',
             'can_oz',
             'feed',
+            'waiver_box',
         )
 
     @transaction.atomic

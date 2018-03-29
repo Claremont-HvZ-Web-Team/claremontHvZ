@@ -143,6 +143,7 @@ class RegisterForm(forms.ModelForm):
             'password1',
             'password2',
             'school',
+            'dorm',
             'grad_year',
             'can_oz',
             'feed',

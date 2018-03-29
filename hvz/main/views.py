@@ -388,7 +388,8 @@ def json_player_stats(request):
                         continue
 
                     if key == 'dorm_id':
-                        aggregates[key][index]['data'][dorm_ordering.index(item[key])] += 1
+                        if item[key] in dorm_ordering:
+                            aggregates[key][index]['data'][dorm_ordering.index(item[key])] += 1
                     else:
                         aggregates[key][index]['data'][item[key]] += 1
                 except KeyError:

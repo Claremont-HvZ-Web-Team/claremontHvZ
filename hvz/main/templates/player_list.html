@@ -98,6 +98,7 @@
           <th>School</th>
           <th>Year</th>
           <th>Tags</th>
+          <th>Brains</th>
           <th>Class</th>
         </tr>
       </thead>
@@ -108,6 +109,7 @@
           <td class="school"><div>{{ player.school|default_if_none:"" }}</div></td>
           <td class="year"><div>{{ player.grad_year|default_if_none:"" }}</div></td>
           <td class="meal_count"><div>{{ player.meal_count }}</div></td>
+          <td class="brains"><div>{{ player.brains }}</div></td>
           <td class="role"><div>{{ player.role|default_if_none:"" }}</div></td>
         </tr>
         {% empty %}

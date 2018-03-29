@@ -126,6 +126,7 @@ class Player(models.Model):
 
     role = models.ForeignKey(
         Role,
+        blank=True,
         null=True,
         on_delete=models.SET_NULL,
     )
@@ -136,12 +137,20 @@ class Player(models.Model):
         School,
         related_name="player_set",
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
     )
 
-    dorm = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
+    dorm = models.ForeignKey(
+        Building,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
     grad_year = models.PositiveIntegerField(blank=True, null=True)
+
+    brains = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return u"Player: {}".format(self.user.get_full_name())

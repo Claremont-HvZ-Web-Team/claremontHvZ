@@ -110,7 +110,7 @@ class RegisterForm(forms.ModelForm):
 
     feed = FeedCodeField(
         label="Enter the Feed Code on your index card (not case sensitive)",
-        required=True
+        required=True,
     )
     waiver_box = forms.BooleanField(
         label=mark_safe('I have read and agree to the <a href='

@@ -8,6 +8,8 @@ urlpatterns = [
     path('', views.landing_page, name='main_landing'),
     path('admin/', admin.site.urls),
     path('eat/', views.EatView.as_view(), name='eat'),
+    path('transfer/success/', views.DonateView.as_view(), name="donate_success"),
+    path('transfer/', views.DonateView.as_view(), name="donate"),
     path(
         'login/',
         auth_views.LoginView.as_view(template_name='login.html'),

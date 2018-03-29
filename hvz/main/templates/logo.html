@@ -14,6 +14,7 @@
         <li><a href="{% rules_link %}">Rules</a></li>
         {% if player and player.team == "Z" %}
         <li><a href="{% url 'eat' %}">Eat</a></li>
+        <li><a href="{% url 'donate' %}">Transfer</a></li>
         {% endif %}
 	    <li><a href="{% url 'player_list' %}">Players</a></li>
 	    <li><a href="{% mission_link %}">Missions</a></li>

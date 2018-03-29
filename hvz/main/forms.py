@@ -206,6 +206,62 @@ class MealForm(forms.Form):
         self.cleaned_data['time'] = settings.NOW()
         return self.cleaned_data
 
+class DonateForm(forms.Form):
+
+    receiver = forms.ModelChoiceField(
+        models.Player.current_players().filter(team="Z"),
+        required=True,
+    )
+
+    num_brains = forms.IntegerField(
+        required=True,
+        min_value=1,
+        label="Number of Brains",
+    )
+
+    def __init__(self, *args, donor, **kwargs):
+        super(DonateForm, self).__init__(*args, **kwargs)
+
+        self.donor = donor
+        self.fields['receiver'].queryset = (
+            self.fields['receiver'].queryset.exclude(id=donor.id)
+        )
+        self.fields['num_brains'].max_value = donor.brains
+
+    def clean(self):
+
+        cleaned_data = super(DonateForm, self).clean()
+        if not 'receiver' in cleaned_data:
+            raise forms.ValidationError(
+                "You must specify a person to receive your brains!"
+            )
+
+        receiver = cleaned_data['receiver']
+
+        if receiver == self.donor:
+            raise forms.ValidationError("You cannot donate to yourself!")
+
+        if receiver.team == "H":
+            raise forms.ValidationError(
+                "You donated brains to a Human! They don't want your brains! Yet..."
+            )
+
+        if not 'num_brains' in cleaned_data:
+            raise forms.ValidationError(
+                "You must specify a number of brains to donate!"
+            )
+
+        num_brains = cleaned_data['num_brains']
+        if num_brains <= 0:
+            raise forms.ValidationError(
+                "You must donate a positive number of brains!"
+            )
+        if num_brains > self.donor.brains:
+            raise forms.ValidationError(
+                "You cannot donate more brains than you have!"
+            )
+
+        return cleaned_data
 
 class HarrassmentForm(forms.Form):
     description = forms.CharField(

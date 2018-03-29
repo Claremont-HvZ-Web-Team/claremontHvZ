@@ -216,11 +216,14 @@ class Meal(models.Model):
         )
 
     def save(self):
-        self.eaten.team = "Z"
         if not self.time:
             self.time = settings.NOW()
+
+        self.eaten.team = "Z"
+        self.eater.brains += 1
 
         with transaction.atomic():
             self.eaten.save()
             self.eater.save()
+
         return super(Meal, self).save()

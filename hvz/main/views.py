@@ -7,6 +7,7 @@ from django import db, urls
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import permission_required, login_required
 from django.conf import settings
+from django.db import transaction
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -138,6 +139,41 @@ class PlayerEmailView(generic.ListView):
     def get_queryset(self):
         game = models.Game.nearest_game()
         return models.Player.objects.filter(game=game)
+
+
+class DonateView(generic.FormView):
+    form_class = forms.DonateForm
+    template_name = "donate.html"
+
+    @method_decorator(login_required)
+    @method_decorator(decorators.team_required('Z'))
+    def dispatch(self, *args, **kwargs):
+        return super(DonateView,self).dispatch(*args,**kwargs)
+
+    def get_success_url(self):
+        return urls.reverse('donate_success')
+
+    def get_form_kwargs(self):
+        kwargs = super(DonateView, self).get_form_kwargs()
+        kwargs['donor'] = models.Player.logged_in_player(self.request)
+        return kwargs
+
+    def form_valid(self,form):
+        def grab(s):
+            return form.cleaned_data[s]
+
+        donor = models.Player.logged_in_player(self.request)
+        receiver = grab('receiver')
+        num_brains = grab('num_brains')
+
+        donor.brains -= num_brains
+        receiver.brains += num_brains
+
+        with transaction.atomic():
+            donor.save()
+            receiver.save()
+
+        return super(DonateView, self).form_valid(form)
 
 ### STATS PAGE ###
 

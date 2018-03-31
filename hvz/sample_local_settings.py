@@ -52,7 +52,7 @@ DATABASES = {
                                                 # 'mysql', 'sqlite3'
                                                 # or 'oracle'.
 
-        'NAME': os.path.join(BASE_DIR, 'hvz.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

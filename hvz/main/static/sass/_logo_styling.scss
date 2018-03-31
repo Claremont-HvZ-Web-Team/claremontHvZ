@@ -1,0 +1,117 @@
+$logo_width: 271px;
+$logo_height: 284px;
+
+.bar-logo {
+    display: table;
+    width: 100%;
+}
+
+.barholder {
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.login_holder {
+    padding-top: 15px;
+
+    div {
+        padding-bottom: 0.5em;
+    }
+
+    input {
+        font-size: 20px;
+        width: 100%;
+        border-radius: 4px;
+    }
+
+    .login {
+        width: 100%;
+    }
+}
+
+#breakoutbar {
+    height: 40px;
+    width: 98%;
+    background-color: $bg_green;
+    background-image: url(/static/images/green_grunge.jpg);
+    background-position: 0px;
+
+    margin-left: 2%;
+    margin-right: 2%;
+
+    @include rounded_corner(top-left);
+    @include rounded_corner(bottom-left);
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
+}
+
+#zombieproglead {
+    height: 100%;
+    width: 25px;
+    background-image:url(/static/images/zombie_outbreak_edge2.png);
+    background-position: 0px 50%;
+    background-repeat: no-repeat;
+    float: right;
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
+}
+
+#zombieprog {
+    height: 100%;
+    width: 27%;
+    float: right;
+    background-color: $bg_red;
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
+}
+
+.modcall {
+    margin: 0.5em auto;
+    display: block;
+    text-transform: uppercase;
+    text-align: center;
+    font: {
+        size: 0.9em;
+    }
+}
+
+#main_nav {
+    background-color: black;
+    color: $link_color;
+    border-radius: 0;
+
+    margin-bottom: 0;
+    border: 0;
+
+    width: 99%;
+    @include rounded_corner(top-right);
+    @include rounded_corner(bottom-right);
+
+    a {
+        font-size: 23px;
+        text-transform: uppercase;
+    }
+
+    .navbar-nav {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+#logo {
+    display: table-cell;
+    width: $logo_width;
+
+    z-index: 1;
+    padding-right: 10px;
+
+    @media (max-width: 992px) {
+        display: none;
+    }
+}
+
+@-moz-document url-prefix("http://") {
+    #logo:not(.big) {
+        margin-top: -32px;
+    }
+}

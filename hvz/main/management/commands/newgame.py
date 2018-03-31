@@ -22,20 +22,17 @@ class Command(BaseCommand):
         else:
             start_date += datetime.timedelta((start_date.weekday() - TUESDAY) % 7)
 
-        end_date = start_date + datetime.timedelta(SATURDAY - TUESDAY)
-
-        if Game.objects.filter(start_date=start_date, end_date=end_date).exists():
+        if Game.objects.filter(start_date=start_date).exists():
             self.stderr.write("You don't need to create a game!")
             return
 
-        game = Game(start_date=start_date, end_date=end_date)
+        game = Game(start_date=start_date)
         game.full_clean()
         game.save()
 
         self.stderr.write(
-            "Game created from {:%A %d} to {:%A %d}, {:%B %Y}".format(
+            "Game created from {:%A %d}, {:%B %Y}".format(
                 start_date,
-                end_date,
                 start_date,
             )
         )

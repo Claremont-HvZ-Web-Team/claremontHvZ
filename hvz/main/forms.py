@@ -209,7 +209,7 @@ class MealForm(forms.Form):
 class DonateForm(forms.Form):
 
     receiver = forms.ModelChoiceField(
-        models.Player.current_players().filter(team="Z"),
+        None,
         required=True,
     )
 
@@ -224,7 +224,9 @@ class DonateForm(forms.Form):
 
         self.donor = donor
         self.fields['receiver'].queryset = (
-            self.fields['receiver'].queryset.exclude(id=donor.id)
+            models.Player.current_players()
+                .filter(team="Z")
+                .exclude(id=donor.id)
         )
         self.fields['num_brains'].max_value = donor.brains
 

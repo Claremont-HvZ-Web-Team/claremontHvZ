@@ -1,0 +1,20 @@
+.clearer {
+    clear: both;
+}
+
+.errors {
+    .errorlist {
+        background-color: $bg_red;
+        color: white;
+
+        text-align: center;
+        padding: 0.25em 0;
+
+    }
+}
+
+.error {
+    background-color: $bg_red;
+    color: white;
+    text-align: center;
+}

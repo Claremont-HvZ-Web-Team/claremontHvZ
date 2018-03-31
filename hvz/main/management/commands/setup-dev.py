@@ -8,14 +8,13 @@ from django.conf import settings
 from hvz.main import models
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--auto',
             help="Disable interactive terminal input",
             action="store_true",
             default=False,
-        ),
-    )
+        )
 
     def handle(self, *args, **options):
 
@@ -23,7 +22,7 @@ class Command(BaseCommand):
 
         self.stderr.write("Synchronizing the database...")
         self.delimit()
-        call_command('syncdb', interactive = not auto)
+        call_command('migrate', interactive = not auto)
 
         self.stderr.write("Synchronized!")
         self.delimit()
@@ -35,7 +34,7 @@ class Command(BaseCommand):
             call_command(
                 'loaddata',
                 os.path.join(
-                    settings.PROJECT_PATH,
+                    settings.BASE_DIR,
                     'hvz', 'main', 'fixtures', 'campus.json'
                 )
             )

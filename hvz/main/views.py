@@ -262,7 +262,7 @@ def json_population_time_series(request):
 def json_get_all_emails(request):
     """A function that displays all emails.
     """
-    emails = [p.user.email for p in Player.current_players()]
+    emails = [p.user.email for p in models.Player.current_players()]
     
     # json.dumps creates a string from a Python object.
     json_data = json.dumps(emails)

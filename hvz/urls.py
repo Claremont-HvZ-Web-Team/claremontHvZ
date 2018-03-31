@@ -43,6 +43,8 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('register/success', views.register_success),
 
+    path('emails/', views.json_get_all_emails, name='emails'),
+
     path('status/', views.PopStatPage.as_view(), name='stats_index'),
     path('status/tags', views.MealLog.as_view(), name='stats_meal_log'),
     path('status/outbreak', views.OutbreakPage.as_view(), name='stats_outbreak'),

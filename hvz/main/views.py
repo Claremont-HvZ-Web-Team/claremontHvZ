@@ -12,6 +12,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import generic
+from django.http import HttpResponse
 
 from hvz.main import decorators, forms, mixins, models
 
@@ -257,6 +258,22 @@ def json_population_time_series(request):
         {'label': 'humans', 'data': human_tally, 'color': 'rgb(128, 0, 0)'},
         {'label': 'zombies', 'data': zombie_tally, 'color': 'rgb(0, 128, 0)'},
     ])
+
+def json_get_all_emails(request):
+    """A function that displays all emails.
+    """
+    emails = [p.user.email for p in models.Player.current_players()]
+    
+    # json.dumps creates a string from a Python object.
+    json_data = json.dumps(emails)
+
+    return HttpResponse(
+        json_data,
+        content_type="application/json"
+    )
+
+def success(request):
+    return render(request, 'api/success.html', {})
 
 
 def time_endpoints(game):

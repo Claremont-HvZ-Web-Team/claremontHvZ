@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 from HVZ.main.models import Player
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from HVZ.api.forms import MailerForm
@@ -44,7 +45,7 @@ class Mailer(FormView):
 
     def form_valid(self, form):
 
-        sender = "hvzwattest@gmail.com"
+        sender = "hvzwattest4@gmail.com"
         # sender = "mod@claremonthvz.org"
         if form.is_valid():
             # send email using the self.cleand_data dictionary
@@ -60,9 +61,10 @@ class Mailer(FormView):
 
         elif(recipient_title == MailerForm.ZOMBIES):
             recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
-
+        
         # TODO: Authentication error for sender for mod@claremonthvz.org
-        send_mail(subject, body, sender, recipients)
+        mailBag = EmailMessage(subject, body, sender, [], recipients)
+        mailBag.send(fail_silently=False)
         
         return super(Mailer, self).form_valid(form)
 

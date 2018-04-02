@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load player_extras %}
+
+{% block stylein %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'styles/players/players_main.css' %}">
+{% endblock stylein %}
+
+{% block scriptin %}
+<script src="{% static 'scripts/player_list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>Players in the {{ game_season }} Game</h1>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">Filter players</h2>
+  </div>
+  <form id="filter_form" class="panel-body">
+    <select id="school" name="school">
+      <option value="">Select a school</option>
+      {% for s in schools %}
+        <option
+           value="{{s.name}}"
+           {% if s.name == school %}selected="selected"{% endif %}>
+          {{s.name}}
+        </option>
+      {% endfor %}
+    </select>
+    <select id="gradyear" name="gradyear">
+      <option value="">Select a class year</option>
+      {% for y in years %}
+      <option
+         value="{{y}}"
+         {% if y == gradyear %}selected="selected"{% endif %}>
+        {{y}}
+      </option>
+      {% endfor %}
+    </select>
+    <button class="noscript">Go!</button>
+  </form>
+</div>
+<div class="panel panel-default visible-xs visible-sm hidden-print">
+  <div class="panel-heading">
+    <h2 class="panel-title">Jump to list</h2>
+  </div>
+  <div class="panel-body">
+    <ul class="nav nav-pills">
+      <li><a href="#humans">Humans</a></li>
+      <li><a href="#zombies">Zombies</a></li>
+    </ul>
+  </div>
+</div>
+<div id="tables" class="row">
+{# HUMANS #}
+<div id="humans" class="col-md-6">
+  <h2 class="title">
+    Humans: <span id="human_count">{{humans|length}}</span>
+  </h2>
+  <div class="table-responsive">
+    <table id="human_list" class="player_list col-md-6 table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>School</th>
+          <th>Year</th>
+          <th>Class</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for player in humans %}
+          <tr class="player {{ player.team }} {% cycle 'even' 'odd' %}">
+          <td class="name"><div>{{ player.user.get_full_name }}</div></td>
+          <td class="school"><div>{{ player.school|default_if_none:"" }}</div></td>
+          <td class="year"><div>{{ player.grad_year|default_if_none:"" }}</div></td>
+          <td class="role"><div>{{ player.role|default_if_none:"" }}</div></td>
+        </tr>
+        {% empty %}
+        <tr class="placeholder">
+          <td colspan="4">There aren't any humans!</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{# ZOMBIES #}
+<div id="zombies" class="col-md-6">
+  <h2 class="title">Zombies: <span id="zombie_count">{{zombies|length}}</span></h2>
+  <div class="table-responsive">
+    <table id="zombie_list" class="player_list col-md-6 table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>School</th>
+          <th>Year</th>
+          <th>Tags</th>
+          <th>Brains</th>
+          <th>Class</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for player in zombies %}
+          <tr class="player {{ player.team }} {% cycle 'even' 'odd' %}">
+          <td class="name"><div>{{ player.user.get_full_name }}</div></td>
+          <td class="school"><div>{{ player.school|default_if_none:"" }}</div></td>
+          <td class="year"><div>{{ player.grad_year|default_if_none:"" }}</div></td>
+          <td class="meal_count"><div>{{ player.meal_count }}</div></td>
+          <td class="brains"><div>{{ player.brains }}</div></td>
+          <td class="role"><div>{{ player.role|default_if_none:"" }}</div></td>
+        </tr>
+        {% empty %}
+        <tr class="placeholder">
+          <td colspan="7">There aren't any zombies!</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+<div class="clearer"></div>
+{% endblock %}

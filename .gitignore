@@ -9,3 +9,4 @@ passenger_wsgi.py
 *.css
 .sass-cache
 *.DS_Store
+lib/

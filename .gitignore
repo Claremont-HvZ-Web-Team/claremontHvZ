@@ -10,3 +10,5 @@ db.sqlite3
 *.css
 .sass-cache
 public
+*.DS_Store
+lib/

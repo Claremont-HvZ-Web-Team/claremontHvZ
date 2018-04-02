@@ -45,12 +45,7 @@ class Mailer(FormView):
         return super(Mailer, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        # after the mail is sent successfully, it goes to the success page
-        # At this point, it is the same as registration success page
-        # in the future, we will have more details 
-
-        # this needs to be changed somehow
-        return super(Mailer, self).get_success_url()
+        return reverse("mail_success")
 
     def form_valid(self, form):
 

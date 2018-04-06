@@ -14,10 +14,23 @@ class MailerForm(forms.Form):
 	ALLPLAYERS = "All"
 	HUMANS = "Humans"
 	ZOMBIES = "Zombies"
+	
+	# Schools
+	HMC = "HMC"
+	CMC = "CMC"
+	PITZER = "Pitzer"
+	POMONA = "Pomona"
+	SCRIPPS = "Scripps"
+	
 	CHOICES = [
 		(ALLPLAYERS, "All Players"),
 		(HUMANS, "Humans"),
 		(ZOMBIES, "Zombies"),
+		(HMC, "HMC"),
+		(CMC, "CMC"),
+		(PITZER, "Pitzer"),
+		(POMONA, "Pomona),
+		(SCRIPPS, "Scripps"),
 	]
 	# TODO: Should we make this a field in the email "form?"
 	

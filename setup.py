@@ -68,7 +68,7 @@ def install_dependencies(project_path):
         'pip',
         'install',
         '-r',
-        os.path.join(os.path.dirname(project_path), 'dev-requirements.txt'),
+        os.path.join(project_path, 'requirements.txt'),
     ])
 
 

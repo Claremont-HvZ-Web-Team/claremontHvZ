@@ -23,11 +23,12 @@ def json_get_all_emails(request):
     # Player.current_players() returns all Players in the current Game.
     
     emails = [p.user.email for p in Player.current_players()]
-    
+    format = ",".join(emails)
+
     # json.dumps creates a string from a Python object. You can then
     # read the string and convert it into an Objective-C data
     # structure using NSJSONSerialization in Objective-C.
-    json_data = json.dumps(emails)
+    json_data = json.dumps(format)
 
     return HttpResponse(
         json_data,
@@ -42,7 +43,7 @@ class Mailer(FormView):
     template_name = "api/mailer.html"
 
     # return url
-    success_url = '/success/'
+    success_url = 'successmailer'
 
     def dispatch(self, *args, **kwargs):
         # used to display the form
@@ -52,7 +53,6 @@ class Mailer(FormView):
         # after the mail is sent successfully, it goes to the success page
         # At this point, it is the same as registration success page
         # in the future, we will have more details 
-        
         return reverse("mail_success")
 
     def form_valid(self, form):

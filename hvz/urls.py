@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import path, include
 
 from hvz.main import views
 
@@ -69,4 +69,5 @@ urlpatterns = [
         views.json_population_time_series,
         name="data_pop_time_series",
     ),
+    path('api/', include('hvz.api.urls'))
 ]

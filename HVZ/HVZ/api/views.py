@@ -57,6 +57,8 @@ class Mailer(FormView):
 
     def form_valid(self, form):
 
+        kindOptions = {"MailerForm.HUMANS": "H", "MailerForm.ZOMBIES":"Z"}
+
         sender = "hvzwattest4@gmail.com"
         # sender = "mod@claremonthvz.org"
         if form.is_valid():
@@ -65,34 +67,27 @@ class Mailer(FormView):
             body = form.cleaned_data['body']
             recipient_title = form.cleaned_data['recipient']
 
-        # based on inputs from the recipients field, retrieve the list of players 
-        # to send emails to, options are:
-        # all players, humans, or zombies
-        if(recipient_title == MailerForm.ALLPLAYERS):
-            recipients = [p.user.email for p in Player.current_players()]
-
-        elif(recipient_title == MailerForm.HUMANS):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
-
-        elif(recipient_title == MailerForm.ZOMBIES):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]
-        
+        # Default recipients' list is all players
+        recipients = [p.user.email for p in Player.current_players()]
+        # Using a dictionary to have more robust way to select players
+        if recipient_title in kindOptions: 
+            recipients = [p.user.email for p in Player.current_players if p.team == kindOptions[recipient_title]]
         # option to send emails to players from a specific college
         # should we add Keck and CGU as well?
-        elif(recipient_title == MailerForm.HMC):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Mudd"]
+        # elif(recipient_title == MailerForm.HMC):
+        #     recipients = [p.user.email for p in Player.current_players() if p.school.name == "Mudd"]
             
-        elif(recipient_title == MailerForm.CMC):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "CMC"]
+        # elif(recipient_title == MailerForm.CMC):
+        #     recipients = [p.user.email for p in Player.current_players() if p.school.name == "CMC"]
             
-        elif(recipient_title == MailerForm.PITZER):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pitzer"]
+        # elif(recipient_title == MailerForm.PITZER):
+        #     recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pitzer"]
             
-        elif(recipient_title == MailerForm.POMONA):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pomona"]
+        # elif(recipient_title == MailerForm.POMONA):
+        #     recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pomona"]
             
-        elif(recipient_title == MailerForm.SCRIPPS):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Scripps"]
+        # elif(recipient_title == MailerForm.SCRIPPS):
+        #     recipients = [p.user.email for p in Player.current_players() if p.school.name == "Scripps"]
             
         
         # TODO: Authentication error for sender for mod@claremonthvz.org

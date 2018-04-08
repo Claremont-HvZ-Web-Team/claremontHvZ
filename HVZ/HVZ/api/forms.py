@@ -33,9 +33,9 @@ class MailerForm(forms.Form):
 		(HMC, "HMC"),
 		(CMC, "CMC"),
 		(PITZER, "Pitzer"),
-		(POMONA, "Pomona),
-		(SCRIPPS, "Scripps"),
-	]
+		(POMONA, "Pomona"),
+		(SCRIPPS, "Scripps")]
+
 	# TODO: Should we make this a field in the email "form?"
 	
 	sender = "hvzwattest@gmail.com"

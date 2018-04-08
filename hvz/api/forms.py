@@ -33,7 +33,7 @@ class MailerForm(forms.Form):
 
 	subject = forms.CharField(
 		label=_("Subject:"),
-		required=False
+		required=True
 		)
 
 	body = forms.CharField(

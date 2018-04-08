@@ -12,12 +12,23 @@ from django.utils.safestring import mark_safe
 class MailerForm(forms.Form):
 
 	ALLPLAYERS = "All"
-	HUMANS = "Humans"
-	ZOMBIES = "Zombies"
+	HUMANS = "H"
+	ZOMBIES = "Z"
+	HMC = "HMC"
+	CMC = "CMC"
+	PITZER = "Pitzer"
+	POMONA = "Pomona"
+	SCRIPPS = "Scripps"
+
 	CHOICES = [
 		(ALLPLAYERS, "All Players"),
 		(HUMANS, "Humans"),
 		(ZOMBIES, "Zombies"),
+		(HMC, "HMC"),
+		(CMC, "CMC"),
+		(PITZER, "Pitzer"),
+		(POMONA, "Pomona"),
+		(SCRIPPS, "Scripps"),
 	]
 	# TODO: Should we make this a field in the email "form?"
 	
@@ -25,7 +36,7 @@ class MailerForm(forms.Form):
 	# sender = "mod@claremonthvz.org"
 
 	#Email Field validates that the given value is a valid email address
-	recipient = forms.ChoiceField(
+	recipient = forms.MultipleChoiceField(
 		label=_("To:"),
 		required=True, 
 		choices = CHOICES

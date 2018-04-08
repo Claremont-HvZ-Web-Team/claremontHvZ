@@ -39,7 +39,7 @@ class MailerForm(forms.Form):
 	body = forms.CharField(
 		label=_("Body:"),
 		required=True,
-		widget=forms.Textarea()
+		widget=forms.Textarea(attrs={'cols': '100', 'rows': 10})
 		)
 
 	def send_email(self):

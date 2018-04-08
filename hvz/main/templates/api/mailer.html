@@ -8,8 +8,18 @@
 {% endblock stylein %}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Send message" />
-</form>
+<form
+     class="register_form panel-body"
+     method="post"
+     action="{% url 'mailer' %}">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+      <label for="{{field.id_for_label}}">{{ field.label }}</label>
+      {{field|add_class:"form-control"}}
+      {% if field.errors %}<p class="help-block">{{field.errors|first}}</p>{% endif %}
+    </div>
+    {% endfor %}
+    <input type="submit" class="btn" />
+  </form>
 {% endblock %}

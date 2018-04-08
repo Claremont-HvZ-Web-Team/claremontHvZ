@@ -14,10 +14,27 @@ class MailerForm(forms.Form):
 	ALLPLAYERS = "All"
 	HUMANS = "Humans"
 	ZOMBIES = "Zombies"
+	
+	# Schools
+	HMC = "HMC"
+	CMC = "CMC"
+	PITZER = "Pitzer"
+	POMONA = "Pomona"
+	SCRIPPS = "Scripps"
+	
+	# Initial version is just to add schools to the same dropdown menu
+	#
+	# Plan is to allow either another dropdown menu (just for schools) in addition to
+	# this one or allow for multiple options to be checked off or something similar
 	CHOICES = [
 		(ALLPLAYERS, "All Players"),
 		(HUMANS, "Humans"),
 		(ZOMBIES, "Zombies"),
+		(HMC, "HMC"),
+		(CMC, "CMC"),
+		(PITZER, "Pitzer"),
+		(POMONA, "Pomona),
+		(SCRIPPS, "Scripps"),
 	]
 	# TODO: Should we make this a field in the email "form?"
 	

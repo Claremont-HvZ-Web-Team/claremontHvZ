@@ -75,7 +75,25 @@ class Mailer(FormView):
             recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
 
         elif(recipient_title == MailerForm.ZOMBIES):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
+            recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]
+        
+        # option to send emails to players from a specific college
+        # should we add Keck and CGU as well?
+        elif(recipient_title == MailerForm.HMC):
+            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Mudd"]
+            
+        elif(recipient_title == MailerForm.CMC):
+            recipients = [p.user.email for p in Player.current_players() if p.school.name == "CMC"]
+            
+        elif(recipient_title == MailerForm.PITZER):
+            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pitzer"]
+            
+        elif(recipient_title == MailerForm.POMONA):
+            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pomona"]
+            
+        elif(recipient_title == MailerForm.SCRIPPS):
+            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Scripps"]
+            
         
         # TODO: Authentication error for sender for mod@claremonthvz.org
         mailBag = EmailMessage(subject, body, sender, [], recipients)

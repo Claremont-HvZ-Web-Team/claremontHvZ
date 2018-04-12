@@ -65,19 +65,17 @@ class Mailer(FormView):
             subject = form.cleaned_data['subject']
             body = form.cleaned_data['body']
             recipient_title = form.cleaned_data['recipient']
-
         # based on inputs from the recipients field, retrieve the list of players 
         # to send emails to, options are:
         # all players, humans, or zombies
-        if(recipient_title == MailerForm.ALLPLAYERS):
-            recipients = [p.user.email for p in Player.current_players()]
 
-        elif(recipient_title == MailerForm.HUMANS):
+        if(recipient_title == list(MailerForm.ALLPLAYERS)):
+            recipients = [p.user.email for p in Player.current_players()]
+        elif(MailerForm.HUMANS in recipient_title):
             recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
 
-        elif(recipient_title == MailerForm.ZOMBIES):
+        elif(MailerForm.ZOMBIES in recipient_title):
             recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
-        
         # TODO: Authentication error for sender for mod@claremonthvz.org
         mailBag = EmailMessage(subject, body, sender, [], recipients)
         mailBag.send(fail_silently=False)

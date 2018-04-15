@@ -1,17 +1,15 @@
-# file for code review
 import json
 
 from django.http import HttpResponse
-
-from hvz.main.models import Player
-from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from hvz.api.forms import MailerForm
 from django.shortcuts import render
-from hvz.api import views
 from django.urls import reverse
+from django .conf import settings
+
+from hvz.main.models import Player
+from hvz.api.forms import MailerForm
 
 def json_get_all_emails(request):
     """A function that displays all emails.
@@ -50,37 +48,39 @@ class Mailer(FormView):
         return super(Mailer, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        # after the mail is sent successfully, it goes to the success page
-        # At this point, it is the same as registration success page
-        # in the future, we will have more details 
-        
+        # after the mail is sent successfully, it goes to the success page  
         return reverse("mail_success")
 
     def form_valid(self, form):
-
-        sender = "hvzwattest4@gmail.com"
+        sender = "hvzwattest@gmail.com"
         # sender = "mod@claremonthvz.org"
         if form.is_valid():
-            # send email using the self.cleand_data dictionary
+            # send email using the self.cleaned_data dictionary
             subject = form.cleaned_data['subject']
             body = form.cleaned_data['body']
             recipient_title = form.cleaned_data['recipient']
 
-        # based on inputs from the recipients field, retrieve the list of players 
-        # to send emails to, options are:
-        # all players, humans, or zombies
-        if(recipient_title == MailerForm.ALLPLAYERS):
-            recipients = [p.user.email for p in Player.current_players()]
+            # based on inputs from the recipients field, retrieve the list of players 
+            # to send emails to, options are:
+            # all players, humans, or zombies
+            if(recipient_title == MailerForm.ALLPLAYERS):
+                recipients = [p.user.email for p in Player.current_players()]
 
-        elif(recipient_title == MailerForm.HUMANS):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
+            elif(recipient_title == MailerForm.HUMANS):
+                recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
 
-        elif(recipient_title == MailerForm.ZOMBIES):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
-        
-        # TODO: Authentication error for sender for mod@claremonthvz.org
-        mailBag = EmailMessage(subject, body, sender, [], recipients)
+            elif(recipient_title == MailerForm.ZOMBIES):
+                recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]        
+            # Create an EmailMessage objwct with our given parameters
+            mailBag = EmailMessage(subject, body, sender, [], recipients)
+            # Check if the user uploaded an attachment (POST), and attach 
+            # it to all messages if so
+            if self.request.method == 'POST':
+                if(self.request.FILES):
+                    attachment = self.request.FILES['attachment']
+                    mailBag.attach(attachment.name, attachment.read(), attachment.content_type)
+
+        # Send the emails out!
         mailBag.send(fail_silently=False)
-
         
         return super(Mailer, self).form_valid(form)

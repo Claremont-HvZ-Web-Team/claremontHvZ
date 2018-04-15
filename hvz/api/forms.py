@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
+from django import forms
 
 class MailerForm(forms.Form):
 
@@ -33,15 +34,21 @@ class MailerForm(forms.Form):
 
 	subject = forms.CharField(
 		label=_("Subject:"),
-		required=False
+		required=True
 		)
 
 	body = forms.CharField(
 		label=_("Body:"),
-		required=True,
-		widget=forms.Textarea()
+		required=False,
+		widget=forms.Textarea(attrs={'cols': '100', 'rows': 10})
+		)
+
+	attachment = forms.FileField(
+		label= ("Attachment:"),
+		required=False
 		)
 
 	def send_email(self):
 		# send email using the self.cleand_data dictionary
 		pass
+		

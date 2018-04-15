@@ -4,12 +4,23 @@
 {% load widget_tweaks %}
 
 {% block stylein %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/main/register.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/main/register.css' %}" />
 {% endblock stylein %}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Send message" />
-</form>
+<div class="panel {% if form.errors %}panel-danger{% else %}panel-default{% endif %}">
+  <div class="panel-heading">
+    {% if form.errors %}
+      <h2 class="panel-title">Try that again</h2>
+      {{form.non_field_errors}}
+    {% else %}
+      <h2 class="panel-title">Send an Email</h2>
+    {% endif %}
+  </div>
+  <form action ="{% url 'mailer' %}" method = "POST" class="register_form panel-body" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="submit" />
+  </form>
+</div>
 {% endblock %}

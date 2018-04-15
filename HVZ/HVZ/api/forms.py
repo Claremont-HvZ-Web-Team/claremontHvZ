@@ -15,29 +15,21 @@ class MailerForm(forms.Form):
 	HUMANS = "Humans"
 	ZOMBIES = "Zombies"
 	
-	# Schools
-	HMC = "HMC"
-	CMC = "CMC"
-	PITZER = "Pitzer"
-	POMONA = "Pomona"
-	SCRIPPS = "Scripps"
-	
 	# Initial version is just to add schools to the same dropdown menu
 	#
 	# Plan is to allow either another dropdown menu (just for schools) in addition to
 	# this one or allow for multiple options to be checked off or something similar
-	CHOICES = [
+	KindCHOICES = [
 		(ALLPLAYERS, "All Players"),
 		(HUMANS, "Humans"),
-		(ZOMBIES, "Zombies"),
-		(HMC, "HMC"),
-		(CMC, "CMC"),
-		(PITZER, "Pitzer"),
-		(POMONA, "Pomona),
-		(SCRIPPS, "Scripps"),
-	]
-	# TODO: Should we make this a field in the email "form?"
-	
+		(ZOMBIES, "Zombies")]
+
+	SchoolCHOICES = [
+		('Mudd', 'Mudd'),
+		('CMC', 'CMC'),
+		('Pitzer', 'Pitzer'),
+		('Pomona', 'Pomona'),
+		('Scripps', 'Scripps')]
 	sender = "hvzwattest@gmail.com"
 	# sender = "mod@claremonthvz.org"
 
@@ -45,9 +37,12 @@ class MailerForm(forms.Form):
 	recipient = forms.ChoiceField(
 		label=_("To:"),
 		required=True, 
-		choices = CHOICES
+		choices = KindCHOICES
 		)
-
+	school = forms.MultipleChoiceField(
+		choices = SchoolCHOICES,
+		widget = forms.CheckboxSelectMultiple(),
+		required = False)
 	subject = forms.CharField(
 		label=_("Subject:"),
 		required=False

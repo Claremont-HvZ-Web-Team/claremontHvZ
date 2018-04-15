@@ -57,6 +57,8 @@ class Mailer(FormView):
 
     def form_valid(self, form):
 
+        kindOptions = {"Humans": "H", "ZOMBIES":"Z"}
+
         sender = "hvzwattest4@gmail.com"
         # sender = "mod@claremonthvz.org"
         if form.is_valid():
@@ -64,40 +66,36 @@ class Mailer(FormView):
             subject = form.cleaned_data['subject']
             body = form.cleaned_data['body']
             recipient_title = form.cleaned_data['recipient']
+            schoolSelection = form.cleaned_data['school']
 
-        # based on inputs from the recipients field, retrieve the list of players 
-        # to send emails to, options are:
-        # all players, humans, or zombies
-        if(recipient_title == MailerForm.ALLPLAYERS):
-            recipients = [p.user.email for p in Player.current_players()]
-
-        elif(recipient_title == MailerForm.HUMANS):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "H"]
-
-        elif(recipient_title == MailerForm.ZOMBIES):
-            recipients = [p.user.email for p in Player.current_players() if p.team == "Z"]
+        kind_recipients = []
+        kind_label = "[" + recipient_title + "]"
+        # Using a dictionary to have more robust way to select players
+        if (recipient_title in kindOptions):
+            kind_recipients = [p.user.email for p in Player.current_players() if p.team == kindOptions[recipient_title]]
+        else:
+            # Default recipients list is all players
+            kind_recipients = [p.user.email for p in Player.current_players()]
+       
+        subject = kind_label + subject
+       
+        school_recipients = []
+        for schools in schoolSelection:
+            school_label = "[" + schools + "]"
+            subject = school_label + subject
+            school_recipients.append([p.user.email for p in Player.current_players() if p.school.name == schools])
         
-        # option to send emails to players from a specific college
-        # should we add Keck and CGU as well?
-        elif(recipient_title == MailerForm.HMC):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Mudd"]
-            
-        elif(recipient_title == MailerForm.CMC):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "CMC"]
-            
-        elif(recipient_title == MailerForm.PITZER):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pitzer"]
-            
-        elif(recipient_title == MailerForm.POMONA):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Pomona"]
-            
-        elif(recipient_title == MailerForm.SCRIPPS):
-            recipients = [p.user.email for p in Player.current_players() if p.school.name == "Scripps"]
-            
+        # flatten the list of lists
+        school_recipients = [item for sublist in school_recipients for item in sublist]
         
+        # combine two lists to get to right list of recipients
+        recipients = []
+        if(len(school_recipients) == 0):
+            recipients = kind_recipients
+        else:
+            recipients = list(set(kind_recipients).intersection(set(school_recipients)))
+
         # TODO: Authentication error for sender for mod@claremonthvz.org
         mailBag = EmailMessage(subject, body, sender, [], recipients)
         mailBag.send(fail_silently=False)
-
-        
         return super(Mailer, self).form_valid(form)

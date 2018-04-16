@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Response>
-	<Pause length="2" />
-	<Say voice="woman" language="en">You have reached Claremont HvZ, your source for Humans vs Zombies of the Claremont Colleges. You are now being connected to the on duty moderator, {{ name }}.</Say>
-	<Dial>{{ cell }}</Dial>
-</Response>

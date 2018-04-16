@@ -1,0 +1,46 @@
+{% load staticfiles %}
+{% load logo_extras %}
+
+<header class="bar-logo">
+  <div class="barholder">
+    <a href="/">
+      <div id="breakoutbar">
+        <div id="zombieprog" style="width: {{outbreak_percent}}%;"></div>
+        <div id="zombieproglead"></div>
+      </div>
+    </a>
+    <nav id="main_nav" class="navbar navbar-inverse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li><a href="{% rules_link %}">Rules</a></li>
+        {% if player and player.team == "Z" %}
+        <li><a href="{% url 'eat' %}">Eat</a></li>
+        <li><a href="{% url 'donate' %}">Transfer</a></li>
+        {% endif %}
+	    <li><a href="{% url 'player_list' %}">Players</a></li>
+	    <li><a href="{% mission_link %}">Missions</a></li>
+	    <li><a href="{% url 'stats_index' %}">Stats</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div id="logo" class="{% if is_landing_page %}big{% endif %}">
+    <a href="{% url 'main_landing' %}">
+      <img src="{% spaceless %}
+                {% static 'images/logo.png' %}
+                {% endspaceless %}"
+           alt="Claremont Humans vs. Zombies"/>
+    </a>
+  </div>
+</header>
+{% if not is_landing_page %}
+<div class="row">
+  <div class="login_holder col-sm-offset-9 col-sm-3">
+    {% if request.user.is_authenticated %}
+      logged in as {{request.user.username}}
+      <a href="{% url 'logout' %}" class="login btn">logout</a>
+    {% elif '/login' not in request.path %}
+      <a class="login btn" href="{% url 'login' %}">Log In!</a>
+      {% elif request.user.is_authenticated %}
+    {% endif %}
+  </div>
+</div>
+{% endif %}

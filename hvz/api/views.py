@@ -1,15 +1,17 @@
+# file for code review
 import json
 
 from django.http import HttpResponse
+
+from hvz.main.models import Player
+from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from django.shortcuts import render
-from django.urls import reverse
-from django .conf import settings
-
-from hvz.main.models import Player
 from hvz.api.forms import MailerForm
+from django.shortcuts import render
+from hvz.api import views
+from django.urls import reverse
 
 def json_get_all_emails(request):
     """A function that displays all emails.
@@ -49,10 +51,11 @@ class Mailer(FormView):
         return super(Mailer, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-
         # after the mail is sent successfully, it goes to the success page
         # At this point, it is the same as registration success page
         # in the future, we will have more details 
+        
+
         return reverse("mail_success")
 
     def form_valid(self, form):
@@ -63,10 +66,12 @@ class Mailer(FormView):
 
         # sender = "mod@claremonthvz.org"
         if form.is_valid():
-            # send email using the self.cleaned_data dictionary
+            # send email using the self.cleand_data dictionary
             subject = form.cleaned_data['subject']
             body = form.cleaned_data['body']
             recipient_title = form.cleaned_data['recipient']
+
+
             schoolSelection = form.cleaned_data['school']
 
             kind_recipients = []
@@ -107,6 +112,8 @@ class Mailer(FormView):
                     mailBag.attach(attachment.name, attachment.read(), attachment.content_type)
 
         # Send the emails out!
+
         mailBag.send(fail_silently=False)
+
         
         return super(Mailer, self).form_valid(form)

@@ -6,7 +6,7 @@ from hvz.main import models
 def inject_outbreak_percentage(request):
     try:
         newest_game = models.Game.nearest_game()
-    except modelsGame.DoesNotExist:
+    except models.Game.DoesNotExist:
         # Just return an arbitrary sane value
         return {'outbreak_percent': 96}
 

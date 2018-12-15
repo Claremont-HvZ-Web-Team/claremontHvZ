@@ -98,6 +98,8 @@ def player_list(request):
         gradyear = int(request.GET.get('gradyear'))
     except ValueError:
         gradyear = None
+    except TypeError:
+        gradyear = None
 
     context = {}
 

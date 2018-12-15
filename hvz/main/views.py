@@ -94,7 +94,10 @@ class EatView(generic.FormView):
 
 def player_list(request):
     school = request.GET.get('school')
-    gradyear = request.GET.get('gradyear')
+    try:
+        gradyear = int(request.GET.get('gradyear'))
+    except ValueError:
+        gradyear = None
 
     context = {}
 

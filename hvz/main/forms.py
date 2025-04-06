@@ -109,7 +109,8 @@ class RegisterForm(forms.ModelForm):
     )
 
     feed = FeedCodeField(
-        label="Enter the Feed Code on your index card (not case sensitive)",
+        label=("Choose your own unique 6 character feedcode using only the letters "
+	    + ", ".join(settings.VALID_CHARS)),
         required=True,
     )
     waiver_box = forms.BooleanField(

@@ -27,8 +27,7 @@ class FeedCodeField(forms.CharField):
     def clean(self, value):
         return super(FeedCodeField, self).clean(value.upper())
 
-    default_validators = (forms.CharField.default_validators +
-                          [validators.validate_feedcode_chars])
+    default_validators = forms.CharField.default_validators
 
 class RegisterForm(forms.ModelForm):
 
@@ -109,8 +108,7 @@ class RegisterForm(forms.ModelForm):
     )
 
     feed = FeedCodeField(
-        label=("Choose your own unique 5 character feedcode using only the letters "
-	    + ", ".join(settings.VALID_CHARS)),
+        label=("Choose your own unique 5 character feedcode"),
         required=True,
     )
     waiver_box = forms.BooleanField(
